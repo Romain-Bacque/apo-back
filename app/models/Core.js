@@ -1,3 +1,5 @@
-class Core {}
+class Core {
+    
+}
 
 module.exports = Core;
