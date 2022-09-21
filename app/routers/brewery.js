@@ -6,7 +6,7 @@ router.route('/')
     .get(breweryController.getAllBreweries)
     .post(breweryController.addBrewery);
 
-router.route(':id')
+router.route('/:id')
     .put(breweryController.editBrewery)
     .delete(breweryController.deleteBrewery);
 
