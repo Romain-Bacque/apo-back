@@ -1,9 +1,8 @@
-//const Users = require('./users');
+//const Users = require('./users'); // User model
 const bcrypt = require('bcryptjs');
 const localStrategy = require('passport-local').Strategy;
 
 module.exports = (passport) => {
-
     passport.use(new localStrategy((username, password, done) => {
         Users.findOne({ username }, (err, user) => {
             if (err) throw err;
