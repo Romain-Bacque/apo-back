@@ -5,7 +5,6 @@ const categoryRoutes = require('./category');
 const eventRoutes = require('./event');
 const router = express.Router();
 
-const reqLogger = require('../middlewares/reqLogger');
 
 router.use('/', reqLogger, (req, res, next) => require('../controllers/home')(req, res, next));
 router.use('/auth', authRoutes);

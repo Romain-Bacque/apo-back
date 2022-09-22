@@ -7,6 +7,4 @@ const app = express();
 
 app.use(require('./app'));
 
-app.listen(port, _ => {
-    debug(`listening on port ${port}`);
-});
+app.listen(process.env.PORT || 3000);
