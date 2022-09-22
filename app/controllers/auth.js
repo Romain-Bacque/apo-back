@@ -1,6 +1,5 @@
 const debug = require('debug')('controller');
 const { Auth } = require('../models/');
-const ExpressError = require('../service/ExpressError');
 
 const authController = {
     async login(req, res) {
@@ -9,7 +8,7 @@ const authController = {
     async register(req, res) {
     
     },
-    async logout(_, res) {
+    async logout(req, res) {
     
     },
     async editUser(req, res) {

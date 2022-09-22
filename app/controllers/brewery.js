@@ -1,9 +1,8 @@
 const debug = require('debug')('controller');
 const { Brewery } = require('../models/');
-const ExpressError = require('../service/ExpressError');
 
 const breweryController = {
-    async getAllBreweries(_, res) {
+    async getAllBreweries(req, res) {
 
     },
     async addBrewery(req, res) {

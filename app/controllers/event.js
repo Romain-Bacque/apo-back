@@ -1,9 +1,8 @@
 const debug = require('debug')('controller');
 const { Event } = require('../models/');
-const ExpressError = require('../service/ExpressError');
 
 const eventController = {
-    async getAllEvents(_, res) {
+    async getAllEvents(req, res) {
 
     },
     async addEvent(req, res) {
