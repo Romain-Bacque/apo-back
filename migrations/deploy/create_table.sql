@@ -37,14 +37,14 @@ CREATE TABLE IF NOT EXISTS "event" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "event_start" DATE,
-    "brawery_id" INT REFERENCES "brawery"("id"),
+    "brewery_id" INT REFERENCES "brewery"("id"),
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS "brewery_has_category" (
     "category_id" INT REFERENCES "category"("id"),
-    "brawery_id" INT REFERENCES "brawery"("id"),
+    "brewery_id" INT REFERENCES "brewery"("id"),
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
