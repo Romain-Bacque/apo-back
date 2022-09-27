@@ -5,6 +5,8 @@ const localStrategy = require('passport-local').Strategy;
 
 module.exports = async (passport) => {
 
+// comment
+
     async function authenticate (email, password, done){
 
         const sqlString = `SELECT * FROM user WHERE email = $1;`;
