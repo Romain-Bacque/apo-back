@@ -6,7 +6,7 @@ const userController = {
 
     },
     async register(req, res) {
-    
+        console.log('edffds')
     },
     async logout(req, res) {
     

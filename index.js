@@ -9,5 +9,5 @@ const port = process.env.PORT || 3000;
 app.use(require('./app'));
 
 app.listen(port, _ => {
-    debug(`connected to port ${port}`)
-})
+    console.log(`connected to port ${port}`)
+});
