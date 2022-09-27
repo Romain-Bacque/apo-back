@@ -1,7 +1,7 @@
 const debug = require('debug')('controller');
-const { Auth } = require('../models/');
+const { User } = require('../models');
 
-const authController = {
+const userController = {
     async login(req, res) {
 
     },
@@ -19,4 +19,4 @@ const authController = {
     },
 }
 
-module.exports = authController;
+module.exports = userController;

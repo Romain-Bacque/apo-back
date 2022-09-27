@@ -1,10 +1,10 @@
-const Auth = require('./Brewery');
+const User = require('./Brewery');
 const Brewery = require('./Brewery');
 const Category = require('./Brewery');
 const Event = require('./Brewery');
 
 module.exports = {
-    Auth,
+    User,
     Brewery,
     Category,
     Event

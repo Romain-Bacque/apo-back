@@ -31,7 +31,7 @@ app.use(cors({
 app.use(passport.initialize());
 app.use(passport.session());
 
-require('./config/passportConfig')(passport);
+require('./config/passportConfig')(passport);;
 
 app.use(require('./routers'));
 
