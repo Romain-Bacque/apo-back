@@ -6,7 +6,7 @@ const eventRoutes = require('./event');
 const router = express.Router();
 
 
-router.use('/', (req, res, next) => require('../controllers/home')(req, res, next));
+router.post('/', (req, res, next) => require('../controllers/home')(req, res, next));
 router.use('/user', userRoutes);
 router.use('/brewery', breweryRoutes);
 router.use('/category', categoryRoutes);

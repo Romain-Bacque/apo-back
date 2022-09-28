@@ -1,7 +1,7 @@
-const User = require('./Brewery');
+const User = require('./User');
 const Brewery = require('./Brewery');
-const Category = require('./Brewery');
-const Event = require('./Brewery');
+const Category = require('./Category');
+const Event = require('./Event');
 
 module.exports = {
     User,

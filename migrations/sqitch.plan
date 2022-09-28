@@ -1,4 +1,4 @@
 %syntax-version=1.0.0
 %project=bieres
 
-create_table 2022-09-21T10:40:34Z Etudiant O'clock <student@teleporter> # création de la table
+1.create_table 2022-09-21T10:40:34Z Etudiant O'clock <student@teleporter> # création de la table

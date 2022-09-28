@@ -5,9 +5,9 @@ BEGIN;
 CREATE TABLE IF NOT EXISTS "user" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "name" TEXT NOT NULL,
-    "email" mail NOT NULL UNIQUE,
-    "password" TEXT NOT NULL UNIQUE,
-    "role" TEXT NOT NULL DEFAULT ("user"),
+    "email" TEXT NOT NULL UNIQUE,
+    "password" TEXT NOT NULL,
+    "role" TEXT NOT NULL DEFAULT ('user'),
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS "brewery" (
     "title" TEXT NOT NULL,
     "phone" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
-    "address" adress NOT NULL,
+    "address" TEXT NOT NULL,
     "image" TEXT,
     "user_id" INT REFERENCES "user"("id"),
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
