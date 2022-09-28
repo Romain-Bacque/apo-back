@@ -2,7 +2,7 @@ BEGIN;
 
 TRUNCATE TABLE "user", "brewery", "category", "event", "brewery_has_category", "participate" RESTART IDENTITY CASCADE;
 
-INSERT INTO "user" ("firstname", "lastname", "email", "password", "role") VALUES 
+INSERT INTO "user" ("name", "email", "password", "role") VALUES 
     (''),
     (''),
     (''),

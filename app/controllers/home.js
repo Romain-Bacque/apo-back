@@ -1,4 +1,4 @@
 module.exports = async (req, res, next) => {
 
-    res.send('Ok');
+    res.send('toto');
 }

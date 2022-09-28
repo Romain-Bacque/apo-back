@@ -5,8 +5,7 @@ DROP TABLE IF EXISTS "user", "brewery", "category", "event", "brewery_has_catego
 
 CREATE TABLE IF NOT EXISTS "user" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "firstname" TEXT NOT NULL,
-    "lastname" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL UNIQUE,
     "password" TEXT NOT NULL UNIQUE,
     "role" TEXT NOT NULL DEFAULT (user),
