@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
-    "role" TEXT NOT NULL DEFAULT ('user'),
+    "role" TEXT NOT NULL,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );

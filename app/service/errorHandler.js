@@ -4,8 +4,8 @@ const path = require("path");
 
 const errorHandler = {
     // Méthode de déclenchement d'une erreur si erreur 404
-    notFound(_, __, next) {
-        next(new ExpressError("Page Not Found", 404));
+    notFound() {
+        throw new ExpressError("Page Not Found", 404);
     },
 
     // Methode de gestion des erreurs
