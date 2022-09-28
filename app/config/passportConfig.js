@@ -13,11 +13,9 @@ module.exports = async (passport) => {
             
             if (hashPassword) {
                 return done(null, user);
-            }
-            else {
+            } else {
                 return done(null, false);
-            }
-            
+            }            
         } catch(err) {
             return done(err, false);
         }
