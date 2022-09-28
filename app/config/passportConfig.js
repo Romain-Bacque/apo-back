@@ -8,10 +8,17 @@ module.exports = async (passport) => {
         const values = [email];
 
         const user = (await client.query(sqlString, values)).rows[0];
+<<<<<<< HEAD
 
         return user;
     }
 
+=======
+
+        return user;
+    }
+
+>>>>>>> 1ec7f4ef3c8d726dede4428ae40074a8bb67d3c2
     async function authenticate (email, password, done) {      
         try {            
             const user = await getUserByEmail(email);
@@ -31,6 +38,7 @@ module.exports = async (passport) => {
             return done(err, false);
         }
     }
+}
     
     // Create a new local strategy with Postgresql
     passport.use(new localStrategy({ usernameField: 'email', passwordField: 'password' }, authenticate));
@@ -40,5 +48,8 @@ module.exports = async (passport) => {
         
     // deserializeUser function uses the id from the session (user email in this case) to look up the user in the database and retrieve the user object with data, and attach it to req.user
     passport.deserializeUser((email, done) => done(null, email));
+<<<<<<< HEAD
 
 }
+=======
+>>>>>>> 1ec7f4ef3c8d726dede4428ae40074a8bb67d3c2
