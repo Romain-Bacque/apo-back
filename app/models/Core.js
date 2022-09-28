@@ -1,7 +1,7 @@
 class Core {
     // #id;
     // #created_at;
-    // #update_at;
+    // #updated_at;
 
     // constructor(config) {
     //     this.id = config.id;

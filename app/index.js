@@ -1,13 +1,10 @@
 const express = require('express');
 const app = express();
-
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const cors = require('cors');
-
 const passport = require('passport');
-const passportLocal = require('passport-local').Strategy;
-
+require('passport-local').Strategy;
 
 app.use(cookieParser("secretcode"));
 app.use(express.json());
@@ -26,7 +23,7 @@ app.use(session({
 app.use(cors({
     origin: "http://localhost:3000",
     credentials: true
-}))
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
