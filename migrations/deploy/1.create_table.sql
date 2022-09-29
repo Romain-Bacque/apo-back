@@ -42,17 +42,28 @@ CREATE TABLE IF NOT EXISTS "event" (
 );
 
 CREATE TABLE IF NOT EXISTS "brewery_has_category" (
-    "category_id" INT REFERENCES "category"("id"),
-    "brewery_id" INT REFERENCES "brewery"("id"),
+    "category_id" INT REFERENCES "category"("id") ON DELETE CASCADE,
+    "brewery_id" INT REFERENCES "brewery"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS "participate" (
-    "user_id" INT REFERENCES "user"("id"),
-    "event_id" INT REFERENCES "event"("id"),
+    "user_id" INT REFERENCES "user"("id") ON DELETE CASCADE,
+    "event_id" INT REFERENCES "event"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
+);
+
+-- Custom type
+CREATE TYPE packed AS (
+    id INT,
+    name TEXT,
+    email TEXT,
+    password TEXT,
+    role TEXT,
+    user_id INT,
+    categories TEXT[]
 );
 
 COMMIT;

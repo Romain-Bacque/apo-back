@@ -10,7 +10,7 @@ const userController = {
                 
         if(await User.getUserByEmail(email)) {
             return res.status(200).json({ message: 'user already exists' });
-        };  
+        }
         
         const hashedPassword = await User.hashPassword(password);
         const user = new User({ name, email, password: hashedPassword, role });
@@ -22,7 +22,7 @@ const userController = {
             res.sendStatus(200);
         } else {
             res.sendStatus(500);
-        };  
+        }
     },
     logout(req, res, next) {
         req.logout(err => {

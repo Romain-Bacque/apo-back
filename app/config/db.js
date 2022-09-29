@@ -1,4 +1,4 @@
-const debug = require('debug')('Database');
+const debug = require('debug')('database');
 const { Client } = require("pg");
 const database = process.env.PGDATABASE;
 

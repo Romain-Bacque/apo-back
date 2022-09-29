@@ -16,15 +16,23 @@ class Core {
     };
 
     get created_at() {
-    return this.#created_at;
+        return this.#created_at;
     };
 
     get updated_at() {
-    return this.#updated_at;
+        return this.#updated_at;
     };
     
     static getAll() {
-        const results = `SELECT * FROM ${this.tablename};`
+        let query;
+
+        if(this.tableName === "brewery") {
+            query = `SELECT * FROM get_${this.tableName};`;
+        } else {
+            query = `SELECT * FROM ${this.tableName};`;
+        }
+
+        const results = await client.query(query);
 
         if(results.rows?.length > 0) {
             const list = [],

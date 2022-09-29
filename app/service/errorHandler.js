@@ -1,15 +1,15 @@
-const { appendFile } = require("fs");
-const ExpressError = require('./ExpressError')
-const path = require("path");
+const ExpressError = require('./ExpressError');
+const debug = require('debug')('errorHandler');
 
 const errorHandler = {
-    // Méthode de déclenchement d'une erreur si erreur 404
+    // Method to manage 404 error
     notFound() {
         throw new ExpressError("Page Not Found", 404);
     },
 
-    // Methode de gestion des erreurs
-    manage(err, _, res, __) {        
+    // Method to manage error
+    manage(err, _, res, __) {  
+        debug(err);
         switch (err.statusCode) {
             case 404:
                 res.status(404).json({ error: "Not found" });
