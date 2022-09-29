@@ -7,10 +7,10 @@ const { validate } = require('../validation/validate');
 
 router.route('/')
     .get(breweryController.getAllBreweries)
-    .post(checkAuthenticated, validate(brewerySchema), breweryController.addBrewery);
+    // .post(checkAuthenticated, validate(brewerySchema), breweryController.addBrewery);
 
 router.route('/:id')
     .put(checkAuthenticated, validate(brewerySchema), breweryController.editBrewery)
-    .delete(checkAuthenticated, breweryController.deleteBrewery);
+    // .delete(checkAuthenticated, breweryController.deleteBrewery);
 
 module.exports = router;

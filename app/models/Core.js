@@ -6,9 +6,9 @@ class Core {
     static tableName = null;
 
     constructor(config) {
-        this.id = config.id;
-        this.created_at = config.created_at;
-        this.updated_at = config.updated_at;
+        this.#id = config.id;
+        this.#created_at = config.created_at;
+        this.#updated_at = config.updated_at;
     };
 
     get id() {
@@ -23,7 +23,7 @@ class Core {
         return this.#updated_at;
     };
     
-    static getAll() {
+    static async getAll() {
         let query;
 
         if(this.tableName === "brewery") {
