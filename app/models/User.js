@@ -42,9 +42,7 @@ class User extends Core {
         const sqlString = `SELECT * FROM public.user WHERE email = $1;`;
         const values = [email];
 
-        const user = (await client.query(sqlString, values)).rows[0];
-
-        return user;
+        return (await client.query(sqlString, values)).rows[0];
     }
 
     async register() {
