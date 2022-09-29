@@ -34,7 +34,7 @@ class Core {
 
         const results = await client.query(query);
 
-        if(results.rows?.length > 0) {
+        if(results.rows && results.rows.length > 0) {
             const list = [],
                 rows = results.rows;
 

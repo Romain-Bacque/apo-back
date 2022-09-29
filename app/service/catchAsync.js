@@ -1,4 +1,4 @@
-module.exports = catchAsync = controller => {
+module.exports = controller => {
     return async (req, res, next) => {
         try {
             await controller(req, res);

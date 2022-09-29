@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG='server, controller, SGBD, database, errorHandler' nodemon index",
+    "dev": "DEBUG='server, controller, SGBD, database, errorHandler' nodemon index",
+    "start": "DEBUG='server, controller, SGBD, database, errorHandler' node --exec babel-node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -24,5 +25,11 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.19.3",
+    "@babel/node": "^7.19.1",
+    "@babel/preset-env": "^7.19.3"
   }
 }
