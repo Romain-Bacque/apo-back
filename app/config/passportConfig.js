@@ -1,44 +1,32 @@
-//const Users = require('./users'); // User model
 const bcrypt = require('bcryptjs');
-const client = require('./db');
+const { User } = require('../models');
 const localStrategy = require('passport-local').Strategy;
 
 module.exports = async (passport) => {
+    async function authenticate (email, password, done) {      
+        try {            
+            const user = await User.getUserByEmail(email);
 
-// comment
-
-    async function authenticate (email, password, done){
-
-        const sqlString = `SELECT * FROM user WHERE email = $1;`;
-        const values = [email];
-        
-        try {
-
-            const query = await client.query(sqlString, values);
-            if (!query?.rows[0]) return done(null, false);
-
-            const hashPassword = await bcrypt.compare(password, query.rows[0].password);
-
-            if (hashPassword) {
-                return done(null, query.rows[0]);
-            }
-            else {
-                return done(null, false);
-            }
+            if (!user) return done(null, false);
             
-        } catch (err) {
+            const hashPassword = await bcrypt.compare(password, user.password);
+            
+            if (hashPassword) {
+                return done(null, user);
+            } else {
+                return done(null, false);
+            }            
+        } catch(err) {
             return done(err, false);
         }
     }
     
+    // Create a new local strategy with Postgresql
     passport.use(new localStrategy({ usernameField: 'email', passwordField: 'password' }, authenticate));
-
-    passport.serializeUser((user, done) => {
-        done(null, user.email);
-    });
-
-    passport.deserializeUser((id, done) => {
-            done(null, id);
-    });
-
+        
+    // serializeUser sets an id (the user email in this case) as the cookie in the user's browser, Passport takes that user id and stores it internally on req.session
+    passport.serializeUser((user, done) => done(null, user.email));
+        
+    // deserializeUser function uses the id from the session (user email in this case) to look up the user in the database and retrieve the user object with data, and attach it to req.user
+    passport.deserializeUser((email, done) => done(null, email));
 }

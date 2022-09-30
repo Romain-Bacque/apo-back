@@ -1,4 +1,4 @@
-module.exports = async (req, res, next) => {
-
-    res.send('toto');
+module.exports = (req, res, next) => {
+    console.log(req.user);
+    res.send(req.session);
 }

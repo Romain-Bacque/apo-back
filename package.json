@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG='server, controller, SGBD' nodemon index",
+    "dev": "DEBUG='server, controller, SGBD, database, errorHandler' nodemon index",
+    "start": "DEBUG='server, controller, SGBD, database, errorHandler' node --exec babel-node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "assert": "^2.0.0",
     "bcryptjs": "^2.4.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -18,8 +20,16 @@
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "express-session": "^1.17.3",
+    "joi": "^17.6.1",
+    "joi-password": "^4.0.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.19.3",
+    "@babel/core": "^7.19.3",
+    "@babel/node": "^7.19.1",
+    "@babel/preset-env": "^7.19.3"
   }
 }

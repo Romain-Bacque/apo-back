@@ -1,15 +1,37 @@
 const debug = require('debug')('controller');
 const { User } = require('../models');
 
-const userController = {
-    async login(req, res) {
-
+const userController = {    
+    login(req, res) {
+        res.sendStatus(200);
     },
     async register(req, res) {
-    
+        const { name, email, password, role } = req.body;    
+                
+        if(await User.getUserByEmail(email)) {
+            return res.status(200).json({ message: 'user already exists' });
+        }
+        
+        const hashedPassword = await User.hashPassword(password);
+        const user = new User({ name, email, password: hashedPassword, role });
+        
+        const registeredUser = await user.register();
+
+        if (registeredUser) {
+            debug(registeredUser);
+            res.sendStatus(200);
+        } else {
+            res.sendStatus(500);
+        }
     },
-    async logout(req, res) {
-    
+    logout(req, res, next) {
+        req.logout(err => {
+            if (err) return next(err);
+            res.sendStatus(200);
+        });
+    },
+    async getUser(req, res) {
+
     },
     async editUser(req, res) {
 

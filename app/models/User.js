@@ -1,4 +1,4 @@
-const Client = require('../config/db');
+const client = require('../config/db');
 const bcrypt = require('bcryptjs');
 const Core = require('./Core');
 
@@ -11,6 +11,7 @@ class User extends Core {
     static tableName = "user";
 
     constructor(config) {
+        super(config);
         this.#name = config.name;
         this.#email = config.email;
         this.#password = config.password;
@@ -37,14 +38,23 @@ class User extends Core {
         return this.#role;
     }
 
+    static async getUserByEmail(email) {
+        const sqlString = `SELECT * FROM public.user WHERE email = $1;`;
+        const values = [email];
+
+        return (await client.query(sqlString, values)).rows[0];
+    }
+
     async register() {
-        const query = "INSERT INTO user (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *;";
-        const values = [{ name: this.name, email: this.email, password: this.password, role: this.role }];        
-
-        const result = await Client.query(query, values);
-
+        const query = {
+            text: "INSERT INTO public.user (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *;",
+            values: [this.name, this.email, this.password, this.role]   
+        };
+        
+        const result = await client.query(query);
+        
         if(result.rowCount > 0) {
-            return result;
+            return result.rows[0];
         } else return null;
     }    
 }
