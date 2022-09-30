@@ -55,7 +55,6 @@ CREATE TABLE IF NOT EXISTS "participate" (
     "updated_at" TIMESTAMPTZ
 );
 
--- Custom type
 CREATE TYPE packed AS (
     id INT,
     name TEXT,
@@ -65,5 +64,16 @@ CREATE TYPE packed AS (
     user_id INT,
     categories TEXT[]
 );
+
+-- CREATE TYPE packed_extended AS (
+--     id INT,
+--     name TEXT,
+--     email TEXT,
+--     password TEXT,
+--     role TEXT,
+--     user_id INT,
+--     categories TEXT[],
+--     events TEXT[]
+-- );
 
 COMMIT;

@@ -30,6 +30,9 @@ const userController = {
             res.sendStatus(200);
         });
     },
+    async getUser(req, res) {
+
+    },
     async editUser(req, res) {
 
     },

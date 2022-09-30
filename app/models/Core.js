@@ -27,7 +27,7 @@ class Core {
         let query;
 
         if(this.tableName === "brewery") {
-            query = `SELECT * FROM get_${this.tableName};`;
+            query = `SELECT * FROM get_${this.tableName}_records;`;
         } else {
             query = `SELECT * FROM ${this.tableName};`;
         }

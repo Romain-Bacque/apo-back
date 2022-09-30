@@ -11,6 +11,7 @@ router.use('/user', userRoutes);
 router.use('/brewery', breweryRoutes);
 router.use('/category', categoryRoutes);
 router.use('/event', eventRoutes);
+router.use('*', (req, res) => res.sendStatus(404));
 
 // 404 management
 router.use(errorHandler.notFound);
