@@ -38,6 +38,13 @@ class User extends Core {
         return this.#role;
     }
 
+    static async getUserByEmail(email) {
+        const sqlString = `SELECT * FROM public.user WHERE email = $1;`;
+        const values = [email];
+
+        return (await client.query(sqlString, values)).rows[0];
+    }
+
     async register() {
         const query = {
             text: "INSERT INTO public.user (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *;",
@@ -45,7 +52,7 @@ class User extends Core {
         };
         
         const result = await client.query(query);
-
+        
         if(result.rowCount > 0) {
             return result.rows[0];
         } else return null;

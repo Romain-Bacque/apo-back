@@ -3,20 +3,14 @@ const userController = require('../controllers/user');
 const router = express.Router();
 const passport = require('passport');
 const catchAsync = require('../service/catchAsync');
-const errorHandler = require('../service/errorHandler');
+const { loginSchema, registerSchema } = require('../validation/schemas');
+const { validate } = require('../validation/validate');
 
-router.use('/', (req, res, next) => require('../controllers/home')(req, res, next));
-router.post('/login', passport.authenticate('local'), catchAsync(userController.login));
-router.post('/register', userController.register);
+router.post('/login', validate(loginSchema), passport.authenticate('local'), userController.login);
+router.post('/register', validate(registerSchema), catchAsync(userController.register));
 router.post('/logout', userController.logout);
+// router.get('/profile/:id', userController.getUser);
 router.put('/profile/:id', userController.editUser);
-router.get('/delete/:id', userController.deleteAccount);
-router.use('*', (req, res) => res.sendStatus(404));
-
-// // gestion de la 404
-//  router.use(errorHandler.notFound);
-
-// // gestion des erreurs
-//  router.use(errorHandler.manage);
+router.delete('/delete/:id', userController.deleteAccount);
 
 module.exports = router;
