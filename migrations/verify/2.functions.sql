@@ -11,6 +11,7 @@ SELECT "id", "title", "phone", "description", "address", "image", "user_id", "ca
     "description": "test description",
     "address": "test addresse",
     "image": "lien image",
+    "user_id": "1",
     "categories": [
         {
             "id": "1"
@@ -20,12 +21,14 @@ SELECT "id", "title", "phone", "description", "address", "image", "user_id", "ca
         }
     ]
 }');
-SELECT "id", "title", "phone", "description", "address", "image", "user_id", "categories", "events", "created_at", "updated_at" FROM insert_brewery('{
+SELECT "id", "title", "phone", "description", "address", "image", "user_id", "categories", "created_at", "updated_at" FROM update_brewery('{
+    "id": "1",
     "title": "titre brasserie",
     "phone": "0000000000",
     "description": "test description",
     "address": "test addresse",
     "image": "lien image",
+    "user_id": "1",
     "categories": [
         {
             "id": "1"

@@ -2,7 +2,7 @@ const debug = require('debug')('controller');
 const { Brewery } = require('../models/');
 
 const breweryController = {
-    async getAllBreweries(req, res, next) {
+    async getAllBreweries(_, res, next) {
         let breweries = await Brewery.getAll();
 
         if(breweries) {
@@ -16,9 +16,7 @@ const breweryController = {
                 categories: brewery.categories
             }));
             res.status(200).json({ data: breweries });
-        } else {
-            next();
-        }
+        } else next();
     },
     async getBreweriesByUser(req, res, next) {
         const id = parseInt(req.params.userId);
@@ -36,9 +34,7 @@ const breweryController = {
                 categories: brewery.categories
             }));
             res.status(200).json({ data: breweries });
-        } else {
-            next();
-        }
+        } else next();
     },
     async getBreweryById(req, res, next) {
         const id = parseInt(req.params.id);
@@ -57,21 +53,17 @@ const breweryController = {
                 events: brewery.events
             }));
             res.status(200).json({ data: brewery });
-        } else {
-            next();
-        }
+        } else next();
     },
-    async addBrewery(req, res) { 
+    async addBrewery(req, res, next) { 
         const brewery = new Brewery(req.body);
         const breweries = await brewery.addBrewery();
 
         if(breweries) {
             res.status(200).json({ data: breweries });
-        } else {
-            next();
-        }
+        } else next();
     },
-    async editBrewery(req, res) {
+    async editBrewery(req, res, next) {
         const id = parseInt(req.params.id);
 
         const brewery = new Brewery(req.body);
@@ -79,20 +71,16 @@ const breweryController = {
 
         if(updatedBrewery) {
             res.status(200).json({ data: updatedBrewery });
-        } else {
-            next();
-        }
+        } else next();        
     },
-    async deleteBrewery(req, res) {
+    async deleteBrewery(req, res, next) {
         const id = parseInt(req.params.id);
 
         const deletedBrewery = await Brewery.deleteBrewery(id);
 
         if(deletedBrewery) {
             res.sendStatus(200);
-        } else {
-            next();
-        }
+        } else next();
     }
 }
 

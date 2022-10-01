@@ -128,9 +128,9 @@ CREATE FUNCTION insert_brewery(json) RETURNS packed AS $$
 
         IF(SELECT json_array_length( ( $1 ->> 'categories' )::json ) > 0) THEN
             INSERT INTO "brewery_has_category" ("brewery_id", "category_id")
-                SELECT breweryId, category.id
+                SELECT DISTINCT breweryId, category.id
                     FROM (
-                        SELECT * FROM json_to_recordset( ( $1 ->> 'categories' )::json ) as category("id" INT)
+                        SELECT * FROM json_to_recordset( ( $1 ->> 'categories' )::json ) AS category("id" INT)
                     ) as category;      
 		END IF;
 
@@ -141,16 +141,14 @@ $$ LANGUAGE PLPGSQL STRICT;
 
 
 -- Function to update a brewery
-CREATE FUNCTION update_brewery(json) RETURNS packed AS $$
-    BEGIN
+CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
+    DECLARE breweryId INT;
 
-        UPDATE "brewery_has_category"
-        SET "brewery_id" = "relations"."brewery_id", "category_id" = "relations"."category_id"
-        FROM (
-            SELECT ($1 ->> 'id')::int AS brewery_id, category.id AS category_id
-			FROM json_to_recordset( ( $1 ->> 'categories' )::json ) AS category("id" INT)
-        ) AS "relations"
-        WHERE "brewery_has_category"."brewery_id" = ($1 ->> 'id')::int;
+    BEGIN
+	
+		SELECT ($1 ->> 'id')::int INTO breweryId;
+		
+		-- raise notice 'breweryId = %', breweryId;
 
         UPDATE "brewery" SET 
             "title" = ($1 ->> 'title')::text,
@@ -159,7 +157,20 @@ CREATE FUNCTION update_brewery(json) RETURNS packed AS $$
             "address" = ($1 ->> 'address')::text,
             "image" = ($1 ->> 'image')::text,
             "user_id" = ($1 ->> 'user_id')::int
-        RETURNING *;
+        WHERE "brewery"."id" = breweryId;
+
+        DELETE FROM "brewery_has_category"
+        WHERE "brewery_has_category"."brewery_id" = breweryId;
+
+        INSERT INTO "brewery_has_category" ("brewery_id", "category_id")
+        SELECT breweryId, "category"."category_id"
+        FROM (
+            SELECT DISTINCT "category"."id" AS category_id
+			FROM json_to_recordset( ( $1 ->> 'categories' )::json ) AS "category"("id" INT)
+        ) AS "category";
+		
+		RETURN QUERY
+        SELECT * FROM get_brewery_details(breweryId);
 
     END;
 $$ LANGUAGE PLPGSQL STRICT;

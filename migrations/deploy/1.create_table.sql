@@ -55,5 +55,4 @@ CREATE TABLE IF NOT EXISTS "participate" (
     "updated_at" TIMESTAMPTZ
 );
 
-
 COMMIT;

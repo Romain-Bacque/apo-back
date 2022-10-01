@@ -2,14 +2,14 @@ const debug = require('debug')('controller');
 const { User } = require('../models');
 
 const userController = {    
-    login(req, res) {
+    login(_, res) {
         res.sendStatus(200);
     },
     async register(req, res) {
         const { name, email, password, role } = req.body;    
                 
         if(await User.getUserByEmail(email)) {
-            return res.status(200).json({ message: 'user already exists' });
+            return res.status(403).json({ message: 'user already exists' });
         }
         
         const hashedPassword = await User.hashPassword(password);
@@ -20,9 +20,7 @@ const userController = {
         if (registeredUser) {
             debug(registeredUser);
             res.sendStatus(200);
-        } else {
-            res.sendStatus(500);
-        }
+        } else res.sendStatus(500);
     },
     logout(req, res, next) {
         req.logout(err => {

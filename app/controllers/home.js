@@ -1,4 +1,6 @@
+const debug = require('debug')('controller');
+
 module.exports = (req, res, next) => {
-    console.log(req.user);
+    debug(req.user);
     res.send(req.session);
 }

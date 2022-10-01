@@ -3,10 +3,10 @@ BEGIN;
 TRUNCATE TABLE "user", "brewery", "category", "event", "brewery_has_category", "participate" RESTART IDENTITY CASCADE;
 
 INSERT INTO "user" ("name", "email", "password", "role") VALUES 
-    ('toto', 'toto@gmail.com', '$2y$10$GI0l0DmUIG8neObIp06ry.s48MktdewoLlJih1oSGw4w8Xjwygc6G/', 'user'), -- password: 1111tT/
-    ('titi', 'titi@gmail.com', '$2y$10$GI0l0DmUIG8neObIp06ry.s48MktdewoLlJih1oSGw4w8Xjwygc6G/', 'user'), -- password: 1111tT/
-    ('tutu', 'tutu@gmail.com', '$2y$10$GI0l0DmUIG8neObIp06ry.s48MktdewoLlJih1oSGw4w8Xjwygc6G/', 'user'), -- password: 1111tT/
-    ('tata', 'tata@gmail.com', '$2y$10$GI0l0DmUIG8neObIp06ry.s48MktdewoLlJih1oSGw4w8Xjwygc6G/', 'user') -- password: 1111tT/
+    ('toto', 'toto@gmail.com', '$2y$10$fulWNnn/aBRls33vO0ProuAQy1VQs.fS98qo9ge.FBeR88ukuD6N.', 'user'), -- password: 11111tT/
+    ('titi', 'titi@gmail.com', '$2y$10$fulWNnn/aBRls33vO0ProuAQy1VQs.fS98qo9ge.FBeR88ukuD6N.', 'user'), -- password: 11111tT/
+    ('tutu', 'tutu@gmail.com', '$2y$10$fulWNnn/aBRls33vO0ProuAQy1VQs.fS98qo9ge.FBeR88ukuD6N.', 'user'), -- password: 11111tT/
+    ('tata', 'tata@gmail.com', '$2y$10$fulWNnn/aBRls33vO0ProuAQy1VQs.fS98qo9ge.FBeR88ukuD6N.', 'user') -- password: 11111tT/
 ;
 
 INSERT INTO "brewery" ("title", "phone", "description", "address", "image", "user_id") VALUES 
