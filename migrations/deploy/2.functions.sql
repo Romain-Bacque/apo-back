@@ -111,7 +111,7 @@ CREATE FUNCTION get_brewery_details(breweryId INT) RETURNS SETOF packed AS $$
 $$ LANGUAGE SQL STRICT;
 
 -- Function to add a brewery
-CREATE FUNCTION insert_brewery(json) RETURNS packed AS $$
+CREATE FUNCTION insert_brewery(json) RETURNS SETOF brewery_records AS $$
     DECLARE breweryId INT;
 
     BEGIN
@@ -134,13 +134,14 @@ CREATE FUNCTION insert_brewery(json) RETURNS packed AS $$
                     ) as category;      
 		END IF;
 
-        SELECT * FROM get_brewery_details(breweryId);
+		RETURN QUERY
+        SELECT * FROM brewery_records;
 
     END;
 $$ LANGUAGE PLPGSQL STRICT;
 
 
--- Function to update a brewery
+-- Function to update a specific brewery
 CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
     DECLARE breweryId INT;
 

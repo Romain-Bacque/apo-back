@@ -31,7 +31,7 @@ module.exports.loginSchema = joi.object({
     .required(),
 }).required();
 
-module.exports.brewerySchema = joi.object({
+module.exports.brewerySchema = joi.object({    
     title: joi.string().required(),
     phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),

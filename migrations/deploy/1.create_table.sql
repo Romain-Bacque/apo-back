@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS "event" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "event_start" DATE,
-    "brewery_id" INT REFERENCES "brewery"("id"),
+    "brewery_id" INT REFERENCES "brewery"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );

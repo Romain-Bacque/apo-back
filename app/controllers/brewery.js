@@ -76,9 +76,9 @@ const breweryController = {
     async deleteBrewery(req, res, next) {
         const id = parseInt(req.params.id);
 
-        const deletedBrewery = await Brewery.deleteBrewery(id);
+        const isDeleted = await Brewery.deleteBrewery(id);
 
-        if(deletedBrewery) {
+        if(isDeleted) {
             res.sendStatus(200);
         } else next();
     }

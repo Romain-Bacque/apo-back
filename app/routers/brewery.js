@@ -15,6 +15,6 @@ router.route('/:id([0-9]+)')
     .put(checkAuthenticated, validate(brewerySchema), catchAsync(breweryController.editBrewery))
     .delete(checkAuthenticated, breweryController.deleteBrewery);
 
-router.get('/:id([0-9]+)/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getBreweriesByUser));
+router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getBreweriesByUser));
 
 module.exports = router;
