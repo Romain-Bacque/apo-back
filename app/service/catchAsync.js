@@ -1,7 +1,7 @@
 module.exports = controller => {
     return async (req, res, next) => {
         try {
-            await controller(req, res);
+            await controller(req, res, next);
         } catch (err) {
             next(err); // Got to next middleware that manage error (after '404' middleware)
         }

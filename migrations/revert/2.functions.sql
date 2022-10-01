@@ -2,8 +2,10 @@
 
 BEGIN;
 
-DROP FUNCTION IF EXISTS get_brewery_details();
-DROP FUNCTION IF EXISTS insert_brewery(JSON);
 DROP TYPE packed;
+DROP VIEW IF EXISTS brewery_records;
+DROP FUNCTION IF EXISTS get_brewery_details();
+DROP FUNCTION IF EXISTS insert_brewery();
+DROP FUNCTION IF EXISTS update_brewery();
 
 COMMIT;

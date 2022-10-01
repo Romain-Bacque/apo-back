@@ -1,10 +1,69 @@
 const debug = require('debug')('controller');
-const { assert } = require('joi');
 const { Brewery } = require('../models/');
 
 const breweryController = {
     async getAllBreweries(req, res, next) {
-        const breweries = await Brewery.getAll();
+        let breweries = await Brewery.getAll();
+
+        if(breweries) {
+            breweries = breweries.map(brewery => ({ 
+                id: brewery.id,
+                title: brewery.title,
+                phone: brewery.phone,
+                description: brewery.description,
+                image: brewery.image,
+                user_id: brewery.user_id,
+                categories: brewery.categories
+            }));
+            res.status(200).json({ data: breweries });
+        } else {
+            next();
+        }
+    },
+    async getBreweriesByUser(req, res, next) {
+        const id = parseInt(req.params.userId);
+
+        let breweries = await Brewery.getBreweriesByUser(id);
+
+        if(breweries) {
+            breweries = breweries.map(brewery => ({ 
+                id: brewery.id,
+                title: brewery.title,
+                phone: brewery.phone,
+                description: brewery.description,
+                image: brewery.image,
+                user_id: brewery.user_id,
+                categories: brewery.categories
+            }));
+            res.status(200).json({ data: breweries });
+        } else {
+            next();
+        }
+    },
+    async getBreweryById(req, res, next) {
+        const id = parseInt(req.params.id);
+        
+        let brewery = await Brewery.getBreweryById(id);
+
+        if(brewery) {
+            brewery = brewery.map(brewery => ({ 
+                id: brewery.id,
+                title: brewery.title,
+                phone: brewery.phone,
+                description: brewery.description,
+                image: brewery.image,
+                user_id: brewery.user_id,
+                categories: brewery.categories,
+                events: brewery.events
+            }));
+            res.status(200).json({ data: brewery });
+        } else {
+            next();
+        }
+    },
+    async addBrewery(req, res) { 
+        const brewery = new Brewery(req.body);
+        const breweries = await brewery.addBrewery();
 
         if(breweries) {
             res.status(200).json({ data: breweries });
@@ -12,25 +71,10 @@ const breweryController = {
             next();
         }
     },
-    async addBrewery(req, res) {
-        const { title, phone, description, image, user_id, categories } = req.body;
-    
-        const brewery = new Brewery({ title, phone, description, image, user_id, categories });
-        const addedBrewery = await brewery.addBrewery();
-
-        if(addedBrewery) {
-            res.status(200).json({ data: addedBrewery });
-        } else {
-            next();
-        }
-    },
     async editBrewery(req, res) {
         const id = parseInt(req.params.id);
-        const { title, phone, description, image, user_id, categories } = req.body;
 
-        assert.ok(!isNaN(id), 'id must be a number');
-
-        const brewery = new Brewery({ title, phone, description, image, user_id, categories });
+        const brewery = new Brewery(req.body);
         const updatedBrewery = await brewery.updateBrewery(id);
 
         if(updatedBrewery) {
@@ -41,8 +85,6 @@ const breweryController = {
     },
     async deleteBrewery(req, res) {
         const id = parseInt(req.params.id);
-
-        assert.ok(!isNaN(id), 'id must be a number');
 
         const deletedBrewery = await Brewery.deleteBrewery(id);
 

@@ -1,6 +1,7 @@
 const joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
 const joiPassword = joi.extend(joiPasswordExtendCore);
+const joiPhoneNumber = joi.extend(require('joi-phone-number'));
 
 module.exports.registerSchema = joi.object({
     name: joi.string().required(),
@@ -32,9 +33,10 @@ module.exports.loginSchema = joi.object({
 
 module.exports.brewerySchema = joi.object({
     title: joi.string().required(),
-    phone: joi.number().required().min(10).max(10),
+    phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
+    address: joi.string().required(),
     image: joi.string().required(),
     user_id: joi.number().required(),
-    categories: joi.array().items(joi.string()).required(),
+    categories: joi.array().items({id: joi.number()}).required(),
 }).required();

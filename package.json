@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "DEBUG='server, controller, SGBD, database, errorHandler' nodemon index",
-    "start": "DEBUG='server, controller, SGBD, database, errorHandler' node --exec babel-node index",
+    "start": "DEBUG='server, controller, model, SGBD, database, errorHandler' nodemon --exec babel-node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -22,6 +22,7 @@
     "express-session": "^1.17.3",
     "joi": "^17.6.1",
     "joi-password": "^4.0.0",
+    "joi-phone-number": "^5.1.1",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.8.0"
