@@ -1,5 +1,6 @@
 const debug = require('debug')('controller');
 const { Brewery } = require('../models/');
+const { cloudinary } = require("../service/cloudinary");
 
 const breweryController = {
     async getAllBreweries(_, res, next) {
@@ -75,6 +76,10 @@ const breweryController = {
     },
     async deleteBrewery(req, res, next) {
         const id = parseInt(req.params.id);
+
+        let brewery = await Brewery.getBreweryById(id);
+
+        await cloudinary.uploader.destroy(brewery[0].image);
 
         const isDeleted = await Brewery.deleteBrewery(id);
 

@@ -8,9 +8,6 @@ const categoriesController = {
         if(categories) {
             res.status(200).json({ data: categories });
         } else next();
-    },
-    async getBreweriesByCategorie(req, res) {
-        
     }
 }
 

@@ -69,7 +69,7 @@ const { validate } = require('../validation/validate');
  *                $ref: '#/components/schemas/Login'
  *     responses:
  *       200:
- *         description: user is successfully connected
+ *          description: user is successfully connected
  *       400:
  *          description: bad request, error in request body content
  *       401:
@@ -104,7 +104,7 @@ router.post('/login', validate(loginSchema), passport.authenticate('local'), use
  *                $ref: '#/components/schemas/Register' 
  *     responses:
  *       200:
- *         description: user is successfully registered
+ *          description: user is successfully registered
  *       400:
  *          description: bad request, error in request body content
  *       403:
@@ -121,7 +121,7 @@ router.post('/register', validate(registerSchema), catchAsync(userController.reg
  *     tags: [User]
  *     responses:
  *       200:
- *         description: user is successfully disconnected from the session
+ *          description: user is successfully disconnected from the session
  *       400:
  *          description: bad request, error in request body content
  *       403:

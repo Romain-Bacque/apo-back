@@ -5,6 +5,9 @@ const catchAsync = require('../service/catchAsync');
 const { checkAuthenticated } = require('../middlewares/middleware');
 const { brewerySchema } = require('../validation/schemas');
 const { validate } = require('../validation/validate');
+const multer = require("multer");
+const { storage } = require("../utilities/cloudinary");
+const upload = multer({ storage });
 
 
 // SWAGGER CONFIGURATION
@@ -176,7 +179,7 @@ router.route('/')
      *       500:
      *          description: internal server error
      */
-    .post(checkAuthenticated, validate(brewerySchema), catchAsync(breweryController.addBrewery));
+    .post(checkAuthenticated, validate(brewerySchema), upload.single("file"), catchAsync(breweryController.addBrewery));
 
 router.route('/:id([0-9]+)')
     /**
