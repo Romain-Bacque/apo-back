@@ -71,7 +71,7 @@ const { validate } = require('../validation/validate');
  *       200:
  *          description: user is successfully connected
  *       400:
- *          description: bad request, error in request body content
+ *          description: bad request, error in the request body content
  *       401:
  *          description: unauthorized
  *       500:
@@ -106,7 +106,7 @@ router.post('/login', validate(loginSchema), passport.authenticate('local'), use
  *       200:
  *          description: user is successfully registered
  *       400:
- *          description: bad request, error in request body content
+ *          description: bad request, error in the request body content
  *       403:
  *          description: user already exists
  *       500:
@@ -123,7 +123,7 @@ router.post('/register', validate(registerSchema), catchAsync(userController.reg
  *       200:
  *          description: user is successfully disconnected from the session
  *       400:
- *          description: bad request, error in request body content
+ *          description: bad request, error in the request body content
  *       403:
  *          description: user already exists
  *       500:

@@ -4,8 +4,8 @@ class ExpressError extends Error {
     statusCode;
     /**
      * Create custom error
-     * @param {String} message message about error
-     * @param {Number} statusCode http status code
+     * @param {String} message - message about error
+     * @param {Number} statusCode - http status code
      */
     constructor(message, statusCode) {
         super(message);

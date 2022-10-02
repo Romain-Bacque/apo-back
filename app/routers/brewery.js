@@ -171,7 +171,7 @@ router.route('/')
      *             schema:
      *                 $ref: '#/components/schemas/Brewery'
      *       400:
-     *          description: bad request, error in request body content
+     *          description: bad request, error in the request body content
      *       401:
      *          description: unauthorized
      *       404:
@@ -223,7 +223,7 @@ router.route('/:id([0-9]+)')
      *             schema:
      *                 $ref: '#/components/schemas/Brewery'
      *       400:
-     *          description: bad request, error in request body content
+     *          description: bad request, error in the request body content
      *       401:
      *          description: unauthorized
      *       404:

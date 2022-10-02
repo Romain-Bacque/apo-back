@@ -19,10 +19,10 @@ const errorHandler = {
         debug(err);
         switch (err.statusCode) {
             case 404:
-                res.status(404).json({ error: "Not found" });
+                res.sendStatus(404);
                 break;
             default:
-                res.status(500).json({ error: "Internal error" });
+                res.sendStatus(500);
                 break;
         }
     }
