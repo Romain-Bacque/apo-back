@@ -6,17 +6,46 @@ const cors = require('cors');
 const passport = require('passport');
 require('passport-local').Strategy;
 
+
+// SWAGGER
+
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
+
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "API Bières de ta région",
+            version: "1.0.0",
+            description: "API that handle data for 'Bières de ta région' app"
+        },    
+        servers: [
+            {
+                url: "http://localhost:3000",
+                description: "My API Documentation"
+            },
+        ],
+    },
+    apis: ["./app/routers/*.js"],
+};
+
+const specs = swaggerJsDoc(options);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
+
+
+// EXPRESS
+
 // Activate the middleware to parse the cookie
 app.use(cookieParser("secretcode"));
 // Activate the middleware to parse the JSON payload
 app.use(express.json());
 // Activate the middleware to parse the urlencoded payload
 app.use(express.urlencoded({ extended: true }));
-
 app.use(session({
-    secret: "keyboard cats",
-    resave: true,
-    saveUninitialized: true,
+    secret: "keyboard cats", // default name for more security
+    resave: true, // resave session even if there is no change
+    saveUninitialized: true, // don't create session until something stored
     cookie: {
         httpOnly: false,
         secure: false,

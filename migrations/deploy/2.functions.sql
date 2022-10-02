@@ -148,8 +148,6 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
     BEGIN
 	
 		SELECT ($1 ->> 'id')::int INTO breweryId;
-		
-		-- raise notice 'breweryId = %', breweryId;
 
         UPDATE "brewery" SET 
             "title" = ($1 ->> 'title')::text,
