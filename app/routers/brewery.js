@@ -6,7 +6,7 @@ const { checkAuthenticated } = require('../middlewares/middleware');
 const { brewerySchema } = require('../validation/schemas');
 const { validate } = require('../validation/validate');
 const multer = require("multer");
-const { storage } = require("../utilities/cloudinary");
+const { storage } = require("../service/cloudinary");
 const upload = multer({ storage });
 
 
