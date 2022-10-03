@@ -15,11 +15,11 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE TABLE IF NOT EXISTS "brewery" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "title" TEXT NOT NULL,
-    "phone" INTEGER NOT NULL,
+    "phone" TEXT NOT NULL UNIQUE,
     "description" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "image" TEXT,
-    "user_id" INT REFERENCES "user"("id"),
+    "user_id" INT REFERENCES "user"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS "event" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "event_start" DATE,
-    "brewery_id" INT REFERENCES "brewery"("id"),
+    "brewery_id" INT REFERENCES "brewery"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
@@ -54,26 +54,5 @@ CREATE TABLE IF NOT EXISTS "participate" (
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
-
-CREATE TYPE packed AS (
-    id INT,
-    name TEXT,
-    email TEXT,
-    password TEXT,
-    role TEXT,
-    user_id INT,
-    categories TEXT[]
-);
-
--- CREATE TYPE packed_extended AS (
---     id INT,
---     name TEXT,
---     email TEXT,
---     password TEXT,
---     role TEXT,
---     user_id INT,
---     categories TEXT[],
---     events TEXT[]
--- );
 
 COMMIT;

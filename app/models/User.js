@@ -1,6 +1,7 @@
 const client = require('../config/db');
 const bcrypt = require('bcryptjs');
 const Core = require('./Core');
+const debug = require('debug')('model');
 
 class User extends Core {    
     #name;

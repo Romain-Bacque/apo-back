@@ -1,4 +1,6 @@
+const client = require('../config/db');
 const Core = require('./Core')
+const debug = require('debug')('model');
 
 class Brewery extends Core {
     #title;
@@ -8,6 +10,7 @@ class Brewery extends Core {
     #image;
     #user_id;
     #categories;
+    #events;
         
     static tableName = "brewery";
 
@@ -16,8 +19,11 @@ class Brewery extends Core {
         this.#title = config.title;
         this.#phone = config.phone;
         this.#description = config.description;
+        this.#address = config.address;
         this.#image = config.image;
         this.#user_id = config.user_id;
+        this.#categories = config.categories;
+        this.#events = config.events;
     }
 
     get title () {
@@ -48,23 +54,77 @@ class Brewery extends Core {
         return this.#categories;
     }
 
+    get events () {
+        return this.#events;
+    }
+    static async getBreweriesByUser(id) {
+        const query = {
+            text: 'SELECT * FROM public.get_user_breweries($1);',
+            values: [id],
+        };
+        const results = await client.query(query);
+
+        if(results.rows?.length) {
+            const list = [],
+            rows = results.rows;
+
+            for(const row of rows) {
+                list.push(new this(row));
+            }
+
+            return list;
+        } else return null;
+    };
+
+    static async getBreweryById(id) {    
+        const results = await client.query(`SELECT * FROM public.get_brewery_details(${id});`);
+
+        if(results.rows?.length) {
+            const list = [],
+            rows = results.rows;
+
+            for(const row of rows) {
+                list.push(new this(row));
+            }
+
+            return list;
+        } else return null;  
+    }
+
     async addBrewery() {
         const query = {
-            text: "INSERT INTO public.brewery (title, phone, description, image, user_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;",
-            values: [this.title, this.phone, this.description, this.image, this.user_id, this.categories]   
+            text: "SELECT * FROM insert_brewery($1);",
+            values: [{
+                title: this.title,
+                phone: this.phone,
+                description: this.description,
+                address: this.address,
+                image: this.image,
+                user_id: this.user_id,
+                categories: this.categories
+            }]   
         };
         
         const result = await client.query(query);
-        
+
         if(result.rowCount > 0) {
-            return result.rows[0];
+            return result.rows;
         } else return null;    
     }
 
     async updateBrewery(id) {
         const query = {
-            text: `UPDATE public.brewery SET (title = $1, phone = $2, description = $3, image = $4, user_id = $5) WHERE id = ${id};`,
-            values: [this.title, this.phone, this.description, this.image, this.user_id]   
+            text: `SELECT * FROM update_brewery($1);`,
+            values: [{
+                id,
+                title: this.title,
+                phone: this.phone,
+                description: this.description,
+                address: this.address,
+                image: this.image,
+                user_id: this.user_id,
+                categories: this.categories
+            }]   
         };
         
         const result = await client.query(query);
@@ -75,11 +135,13 @@ class Brewery extends Core {
     }
 
     static async deleteBrewery(id) {
-        const result = await client.query(`DELETE * FROM public.brewery WHERE id = ${id};`);
-        
-        if(result.rowCount > 0) {
-            return result.rows[0];
-        } else return null;    
+        const query = {
+            text: 'DELETE FROM public.brewery WHERE id = $1;',
+            values: [id],
+        };
+        const result = await client.query(query);
+
+        return result.rowCount > 0;
     }
 }
 

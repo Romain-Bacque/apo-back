@@ -2,4 +2,4 @@
 %project=bieres
 
 1.create_table 2022-09-21T10:40:34Z Etudiant O'clock <student@teleporter> # création de la table
-2.functions 2022-09-29T09:05:04Z Etudiant O'clock <student@teleporter> # ajout views + fonctions
+2.functions 2022-09-29T09:05:04Z Etudiant O'clock <student@teleporter> # création custom types, views et fonctions
