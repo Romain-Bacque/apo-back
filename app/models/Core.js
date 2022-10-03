@@ -1,3 +1,6 @@
+const client = require('../config/db');
+const debug = require('debug')('model');
+
 class Core {
     #id;
     #created_at;
@@ -27,21 +30,22 @@ class Core {
         let query;
 
         if(this.tableName === "brewery") {
-            query = `SELECT * FROM get_${this.tableName}_records;`;
+            query = `SELECT * FROM public.${this.tableName}_records;`;
         } else {
-            query = `SELECT * FROM ${this.tableName};`;
+            query = `SELECT * FROM public.${this.tableName};`;
         }
 
         const results = await client.query(query);
 
-        if(results.rows && results.rows.length > 0) {
+        if(results.rows?.length) {
             const list = [],
-                rows = results.rows;
+            rows = results.rows;
 
             for(const row of rows) {
                 list.push(new this(row));
-                return list;
             }
+
+            return list;
         } else return null;
     };
 };

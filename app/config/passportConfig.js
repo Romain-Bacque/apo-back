@@ -16,7 +16,7 @@ module.exports = async (passport) => {
             } else {
                 return done(null, false);
             }            
-        } catch(err) {
+        } catch (err) {
             return done(err, false);
         }
     }
@@ -27,6 +27,11 @@ module.exports = async (passport) => {
     // serializeUser sets an id (the user email in this case) as the cookie in the user's browser, Passport takes that user id and stores it internally on req.session
     passport.serializeUser((user, done) => done(null, user.email));
         
-    // deserializeUser function uses the id from the session (user email in this case) to look up the user in the database and retrieve the user object with data, and attach it to req.user
-    passport.deserializeUser((email, done) => done(null, email));
+    // deserializeUser function uses the id from the session (user email in this case) to look up the user in the database
+    // and retrieve the user object with data, and attach it to req.user
+    passport.deserializeUser((email, done) => {
+        const user = await User.getUserByEmail(email);
+
+        return done(null, user);
+    });
 }

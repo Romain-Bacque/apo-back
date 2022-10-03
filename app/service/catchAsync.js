@@ -1,9 +1,13 @@
+/**
+ * Catch system error(s) occuring in an async controller method
+ * @param {Object} controller - the controller to monitor
+ */
 module.exports = controller => {
     return async (req, res, next) => {
         try {
-            await controller(req, res);
+            await controller(req, res, next);
         } catch (err) {
-            next(err); // Got to next middleware that manage error (after '404' middleware)
+            next(err); // Go to the next middleware that manage errors
         }
     }
 };

@@ -1,7 +1,11 @@
 const joi = require('joi');
 const { joiPasswordExtendCore } = require('joi-password');
 const joiPassword = joi.extend(joiPasswordExtendCore);
+const joiPhoneNumber = joi.extend(require('joi-phone-number'));
 
+/**
+ * registerSchema monitor the request body, and return an error if any of requirements doesn't match with it
+ */
 module.exports.registerSchema = joi.object({
     name: joi.string().required(),
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr', 'net'] } }).required(),
@@ -17,6 +21,9 @@ module.exports.registerSchema = joi.object({
     role: joi.string().valid('user','brewer').required(),
 }).required();
 
+/**
+ * loginSchema monitor the request body, and return an error if any of requirements doesn't match with it
+ */
 module.exports.loginSchema = joi.object({
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr', 'net'] } }),
     password: joiPassword
@@ -30,11 +37,15 @@ module.exports.loginSchema = joi.object({
     .required(),
 }).required();
 
-module.exports.brewerySchema = joi.object({
+/**
+ * brewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.brewerySchema = joi.object({    
     title: joi.string().required(),
-    phone: joi.number().required().min(10).max(10),
+    phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
+    address: joi.string().required(),
     image: joi.string().required(),
     user_id: joi.number().required(),
-    categories: joi.array().items(joi.string()).required(),
+    categories: joi.array().items({id: joi.number()}).required(),
 }).required();
