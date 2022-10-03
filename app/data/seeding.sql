@@ -44,7 +44,7 @@ INSERT INTO "brewery_has_category" ("category_id", "brewery_id") VALUES
 INSERT INTO "participate" ("user_id", "event_id") VALUES
     (1, 1),
     (2, 1),
-    (3, 2),
+    (3, 1),
     (4, 2),
     (1, 3),
     (3, 3),
