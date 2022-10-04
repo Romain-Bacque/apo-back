@@ -1,9 +1,10 @@
+const debug = require('debug')('router');
 const express = require('express');
 const breweryController = require('../controllers/brewery');
 const router = express.Router();
 const catchAsync = require('../service/catchAsync');
-const { checkAuthenticated } = require('../middlewares/middleware');
-const { brewerySchema } = require('../validation/schemas');
+const { checkAuthenticated, isOwner } = require('../middlewares/middleware');
+const { postBrewerySchema, editBrewerySchema } = require('../validation/schemas');
 const { validate } = require('../validation/validate');
 const multer = require("multer");
 const { storage } = require("../service/cloudinary");
@@ -24,7 +25,6 @@ const upload = multer({ storage });
 *          - phone
 *          - description
 *          - image
-*          - user_id
 *          - categories
 *       properties:
 *         id:
@@ -86,7 +86,6 @@ const upload = multer({ storage });
 *                 - phone
 *                 - description
 *                 - image
-*                 - user_id
 *                 - categories
 *              properties:
 *                title:
@@ -101,9 +100,6 @@ const upload = multer({ storage });
 *                image:
 *                  type: string
 *                  description: logo/image of the brewery
-*                user_id:
-*                  type: integer
-*                  description: the brewery owner ID
 *                categories:
 *                  type: array
 *                  description: the list of categorie(s) the brewery belongs to
@@ -167,7 +163,7 @@ router.route('/')
      *       200:
      *         description: the brewery was successfully created
      *         content:
-     *           application/json:
+     *           multipart/form-data:
      *             schema:
      *                 $ref: '#/components/schemas/Brewery'
      *       400:
@@ -179,7 +175,7 @@ router.route('/')
      *       500:
      *          description: internal server error
      */
-    .post(checkAuthenticated, validate(brewerySchema), upload.single("file"), catchAsync(breweryController.addBrewery));
+    .post(checkAuthenticated, validate(postBrewerySchema), upload.single("file"), catchAsync(breweryController.addBrewery));
 
 router.route('/:id([0-9]+)')
     /**
@@ -219,7 +215,7 @@ router.route('/:id([0-9]+)')
      *       200:
      *         description: the brewery was successfully created
      *         content:
-     *           application/json:
+     *           multipart/form-data:
      *             schema:
      *                 $ref: '#/components/schemas/Brewery'
      *       400:
@@ -231,7 +227,7 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-    .put(checkAuthenticated, validate(brewerySchema), catchAsync(breweryController.editBrewery))
+    .put(checkAuthenticated, isOwner, validate(editBrewerySchema), catchAsync(breweryController.editBrewery))
     /**
      * @swagger
      * /brewery/{id}:
@@ -250,7 +246,7 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-    .delete(checkAuthenticated, breweryController.deleteBrewery);
+    .delete(checkAuthenticated, isOwner, breweryController.deleteBrewery);
     /**
      * @swagger
      * /brewery{id}/user/{userId}:
@@ -275,6 +271,6 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getBreweriesByBrewer));
+router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getOwnerBreweries));
 
 module.exports = router;

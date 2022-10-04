@@ -26,11 +26,16 @@ class Core {
         return this.#updated_at;
     };
     
-    static async getAll() {
+    static async getAll(id) {
         let query;
 
         if(this.tableName === "brewery") {
-            query = `SELECT * FROM public.${this.tableName}_records;`;
+            query = `SELECT * FROM public.brewery_records;`;
+        } else if(this.tableName === "event") {
+            query = {
+                text: `SELECT * FROM public.get_events_details($1);`,
+                values: [id]
+            };          
         } else {
             query = `SELECT * FROM public.${this.tableName};`;
         }

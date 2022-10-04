@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "DEBUG='server, controller, SGBD, database, errorHandler' nodemon index",
+    "dev": "DEBUG='server, router, model, controller, SGBD, database, errorHandler' nodemon index",
     "start": "DEBUG='server, controller, model, SGBD, database, errorHandler' nodemon --exec babel-node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -3,9 +3,13 @@ const { Category } = require('../models/');
 
 const categoriesController = {
     async getAllCategories(_, res, next) {
-        const categories = await Category.getAll();
-
+        let categories = await Category.getAll();
+    
         if(categories) {
+            categories = categories.map(category => ({ 
+                id: category.id,
+                tag: category.tag
+            }));
             res.status(200).json({ data: categories });
         } else next();
     }
