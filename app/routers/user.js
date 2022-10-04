@@ -5,6 +5,7 @@ const passport = require('passport');
 const catchAsync = require('../service/catchAsync');
 const { loginSchema, registerSchema } = require('../validation/schemas');
 const { validate } = require('../validation/validate');
+const { checkNotAuthenticated } = require('../middlewares/middleware');
 
 
 // SWAGGER CONFIGURATION
@@ -93,7 +94,7 @@ const { validate } = require('../validation/validate');
 
 // ROUTES
 
-router.post('/login', validate(loginSchema), passport.authenticate('local'), userController.login);
+router.post('/login', checkNotAuthenticated, validate(loginSchema), passport.authenticate('local'), userController.login);
 /**
  * @swagger
  * /user/register:
