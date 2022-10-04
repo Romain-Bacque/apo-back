@@ -29,5 +29,9 @@ module.exports = async (passport) => {
         
     // deserializeUser function uses the id from the session (user email in this case) to look up the user in the database
     // and retrieve the user object with data, and attach it to req.user
-    passport.deserializeUser(async (id, done) => done(null, id));
+    passport.deserializeUser(async (id, done) => {
+        const user = await User.getUserById(id);
+
+        return done(null, user);
+    });
 }
