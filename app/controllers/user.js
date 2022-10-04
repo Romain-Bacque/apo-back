@@ -11,7 +11,7 @@ const userController = {
     },
     async register(req, res) {
         const { name, email, password, role } = req.body;    
-                
+
         if(await User.getUserByEmail(email)) {
             return res.status(403).json({ message: 'user already exists' });
         }
@@ -40,7 +40,7 @@ const userController = {
     },
     async deleteAccount(req, res) {
     
-    },
+    }
 }
 
 module.exports = userController;
