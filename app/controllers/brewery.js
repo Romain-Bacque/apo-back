@@ -20,7 +20,7 @@ const breweryController = {
         } else next();
     },
     async getOwnerBreweries(req, res, next) {
-        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
+        if(!req.user.id || req.user.role !== "brewer") return res.sendStatus(401);
 
         let breweries = await Brewery.getOwnerBreweries(req.user.id);
 
@@ -57,8 +57,8 @@ const breweryController = {
         } else next();
     },
     async addBrewery(req, res, next) { 
-        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
-
+        if(!req.user.id || req.user.role !== "brewer") return res.sendStatus(401);
+        
         const brewery = new Brewery({...req.body, user_id: req.user.id});
         const breweries = await brewery.addBrewery();
 
@@ -67,11 +67,9 @@ const breweryController = {
         } else next();
     },
     async editBrewery(req, res, next) {
-        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
-
         const id = parseInt(req.params.id);
 
-        const brewery = new Brewery({id, ...req.body, user_id: req.user.id});
+        const brewery = new Brewery({ id, ...req.body, user_id: req.user.id });
         const updatedBrewery = await brewery.updateBrewery();
 
         if(updatedBrewery) {
@@ -79,8 +77,6 @@ const breweryController = {
         } else next();        
     },
     async deleteBrewery(req, res, next) {
-        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
-
         const id = parseInt(req.params.id);
 
         let brewery = await Brewery.getBreweryById(id);

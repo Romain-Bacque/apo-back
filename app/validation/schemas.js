@@ -40,7 +40,7 @@ module.exports.loginSchema = joi.object({
 /**
  * brewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
  */
-module.exports.brewerySchema = joi.object({    
+module.exports.postBrewerySchema = joi.object({    
     title: joi.string().required(),
     phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
@@ -48,3 +48,17 @@ module.exports.brewerySchema = joi.object({
     image: joi.string().required(),
     categories: joi.array().items({id: joi.number()}).required(),
 }).required();
+
+/**
+ * brewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.editBrewerySchema = joi.object({    
+    title: joi.string().required(),
+    phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
+    description: joi.string().required(),
+    address: joi.string().required(),
+    image: joi.string().required(),
+    user_id: joi.number().required(),
+    categories: joi.array().items({id: joi.number()}).required(),
+}).required();
+
