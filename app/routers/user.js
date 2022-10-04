@@ -79,6 +79,8 @@ const { checkNotAuthenticated } = require('../middlewares/middleware');
  *          description: bad request, error in the request body content
  *       401:
  *          description: unauthorized
+ *       409:
+ *          description: user is already connected
  *       500:
  *          description: internal server error
  */
