@@ -39,6 +39,13 @@ class User extends Core {
         return this.#role;
     }
 
+    static async getUserById(id) {
+        const sqlString = `SELECT * FROM public.user WHERE id = $1;`;
+        const values = [id];
+
+        return (await client.query(sqlString, values)).rows[0];
+    }
+
     static async getUserByEmail(email) {
         const sqlString = `SELECT * FROM public.user WHERE email = $1;`;
         const values = [email];
