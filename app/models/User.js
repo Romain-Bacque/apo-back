@@ -53,13 +53,6 @@ class User extends Core {
         return (await client.query(sqlString, values)).rows[0];
     }
 
-    static async getUserById(id) {
-        const sqlString = `SELECT * FROM public.user WHERE id = $1;`;
-        const values = [id];
-
-        return (await client.query(sqlString, values)).rows[0];
-    }
-
     async register() {
         const query = {
             text: "INSERT INTO public.user (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *;",

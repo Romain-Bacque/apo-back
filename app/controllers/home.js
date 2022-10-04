@@ -1,6 +1,6 @@
 const debug = require('debug')('controller');
 
-module.exports = (req, res, next) => {
+module.exports = (req, res) => {
     if(!req.user) return res.sendStatus(500);
 
     const { id, name, email, password, role } = req.user;

@@ -11,7 +11,6 @@ module.exports.registerSchema = joi.object({
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr', 'net'] } }).required(),
     password: joiPassword
     .string()
-    .minOfSpecialCharacters(1)
     .minOfLowercase(1)
     .minOfUppercase(1)
     .minOfNumeric(1)
@@ -28,7 +27,6 @@ module.exports.loginSchema = joi.object({
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr', 'net'] } }),
     password: joiPassword
     .string()
-    .minOfSpecialCharacters(1)
     .minOfLowercase(1)
     .minOfUppercase(1)
     .minOfNumeric(1)
