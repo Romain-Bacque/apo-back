@@ -57,7 +57,8 @@ class Brewery extends Core {
     get events () {
         return this.#events;
     }
-    static async getBreweriesByUser(id) {
+
+    static async getOwnerBreweries(id) {
         const query = {
             text: 'SELECT * FROM public.get_user_breweries($1);',
             values: [id],
@@ -112,11 +113,11 @@ class Brewery extends Core {
         } else return null;    
     }
 
-    async updateBrewery(id) {
+    async updateBrewery() {
         const query = {
             text: `SELECT * FROM update_brewery($1);`,
             values: [{
-                id,
+                id: this.id,
                 title: this.title,
                 phone: this.phone,
                 description: this.description,

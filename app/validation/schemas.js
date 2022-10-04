@@ -46,6 +46,5 @@ module.exports.brewerySchema = joi.object({
     description: joi.string().required(),
     address: joi.string().required(),
     image: joi.string().required(),
-    user_id: joi.number().required(),
     categories: joi.array().items({id: joi.number()}).required(),
 }).required();

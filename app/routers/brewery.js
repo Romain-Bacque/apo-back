@@ -1,3 +1,4 @@
+const debug = require('debug')('router');
 const express = require('express');
 const breweryController = require('../controllers/brewery');
 const router = express.Router();
@@ -6,9 +7,8 @@ const { checkAuthenticated } = require('../middlewares/middleware');
 const { brewerySchema } = require('../validation/schemas');
 const { validate } = require('../validation/validate');
 const multer = require("multer");
-const { storage } = require("../utilities/cloudinary");
+const { storage } = require("../service/cloudinary");
 const upload = multer({ storage });
-
 
 // SWAGGER CONFIGURATION
 
@@ -86,7 +86,6 @@ const upload = multer({ storage });
 *                 - phone
 *                 - description
 *                 - image
-*                 - user_id
 *                 - categories
 *              properties:
 *                title:
@@ -101,9 +100,6 @@ const upload = multer({ storage });
 *                image:
 *                  type: string
 *                  description: logo/image of the brewery
-*                user_id:
-*                  type: integer
-*                  description: the brewery owner ID
 *                categories:
 *                  type: array
 *                  description: the list of categorie(s) the brewery belongs to
@@ -275,6 +271,6 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getBreweriesByBrewer));
+router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getOwnerBreweries));
 
 module.exports = router;

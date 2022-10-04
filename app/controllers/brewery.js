@@ -19,10 +19,10 @@ const breweryController = {
             res.status(200).json({ data: breweries });
         } else next();
     },
-    async getBreweriesByUser(req, res, next) {
-        const id = parseInt(req.params.userId);
+    async getOwnerBreweries(req, res, next) {
+        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
 
-        let breweries = await Brewery.getBreweriesByUser(id);
+        let breweries = await Brewery.getOwnerBreweries(req.user.id);
 
         if(breweries) {
             breweries = breweries.map(brewery => ({ 
@@ -57,7 +57,9 @@ const breweryController = {
         } else next();
     },
     async addBrewery(req, res, next) { 
-        const brewery = new Brewery(req.body);
+        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
+
+        const brewery = new Brewery({...req.body, user_id: req.user.id});
         const breweries = await brewery.addBrewery();
 
         if(breweries) {
@@ -65,16 +67,20 @@ const breweryController = {
         } else next();
     },
     async editBrewery(req, res, next) {
+        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
+
         const id = parseInt(req.params.id);
 
-        const brewery = new Brewery(req.body);
-        const updatedBrewery = await brewery.updateBrewery(id);
+        const brewery = new Brewery({id, ...req.body, user_id: req.user.id});
+        const updatedBrewery = await brewery.updateBrewery();
 
         if(updatedBrewery) {
             res.status(200).json({ data: updatedBrewery });
         } else next();        
     },
     async deleteBrewery(req, res, next) {
+        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
+
         const id = parseInt(req.params.id);
 
         let brewery = await Brewery.getBreweryById(id);
