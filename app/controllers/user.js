@@ -2,8 +2,12 @@ const debug = require('debug')('controller');
 const { User } = require('../models');
 
 const userController = {    
-    login(_, res) {
-        res.sendStatus(200);
+    login(req, res) {
+        if(!req.user) return res.sendStatus(500);
+
+        const { id, name, email, password, role } = req.user;
+
+        res.status(200).json({ user: { id, name, email, password, role } });
     },
     async register(req, res) {
         const { name, email, password, role } = req.body;    
