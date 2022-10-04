@@ -70,6 +70,10 @@ const { validate } = require('../validation/validate');
  *     responses:
  *       200:
  *          description: user is successfully connected
+ *          content:
+ *            application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Register'
  *       400:
  *          description: bad request, error in the request body content
  *       401:

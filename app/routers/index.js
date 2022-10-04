@@ -4,9 +4,10 @@ const breweryRoutes = require('./brewery');
 const categoryRoutes = require('./category');
 const eventRoutes = require('./event');
 const errorHandler = require('../service/errorHandler');
+const { checkAuthenticated } = require('../middlewares/middleware');
 const router = express.Router();
 
-router.get('/', (req, res, next) => require('../controllers/home')(req, res, next));
+router.get('/', checkAuthenticated, (req, res, next) => require('../controllers/home')(req, res, next));
 router.use('/user', userRoutes);
 router.use('/brewery', breweryRoutes);
 router.use('/category', categoryRoutes);
