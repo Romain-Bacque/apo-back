@@ -36,7 +36,7 @@ module.exports.loginSchema = joi.object({
 }).required();
 
 /**
- * brewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ * postBrewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
  */
 module.exports.postBrewerySchema = joi.object({    
     title: joi.string().required(),
@@ -48,7 +48,7 @@ module.exports.postBrewerySchema = joi.object({
 }).required();
 
 /**
- * brewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ * editBrewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
  */
 module.exports.editBrewerySchema = joi.object({    
     title: joi.string().required(),
