@@ -76,9 +76,46 @@ const upload = multer({ storage });
 *                  type: string
 *                  description: start date of the event
 *   requestBodies:
-*     BreweryBody:
+*     postBody:
 *       content:
-*         application/json:
+*         multipart/form-data:
+*            schema:
+*              type: object
+*              required:
+*                 - title
+*                 - phone
+*                 - description
+*                 - image
+*                 - user_id
+*                 - categories
+*              properties:
+*                title:
+*                  type: string
+*                  description: title of the brewery
+*                phone:
+*                  type: string
+*                  description: phone number of the brewery
+*                description:
+*                  type: string
+*                  description: description of the brewery
+*                image:
+*                  type: string
+*                  description: logo/image of the brewery
+*                user_id:
+*                  type: integer
+*                  description: the brewery owner ID
+*                categories:
+*                  type: array
+*                  description: the list of categorie(s) the brewery belongs to
+*                  items:
+*                    type: object
+*                    properties:
+*                      id:
+*                         type: integer
+*                         description: ID of the category
+*     putBody:
+*       content:
+*         multipart/form-data:
 *            schema:
 *              type: object
 *              required:
@@ -158,12 +195,12 @@ router.route('/')
      *     summary: Create a new brewery
      *     tags: [Brewery]
      *     requestBody:
-     *       $ref: '#/components/requestBodies/BreweryBody'
+     *       $ref: '#/components/requestBodies/postBody'
      *     responses:
      *       200:
      *         description: the brewery was successfully created
      *         content:
-     *           multipart/form-data:
+     *           application/json:
      *             schema:
      *                 $ref: '#/components/schemas/Brewery'
      *       400:
@@ -210,12 +247,12 @@ router.route('/:id([0-9]+)')
      *     parameters:
      *       - $ref: '#/components/parameters/breweryId'
      *     requestBody:
-     *         $ref: '#/components/requestBodies/BreweryBody'
+     *         $ref: '#/components/requestBodies/putBody'
      *     responses:
      *       200:
      *         description: the brewery was successfully created
      *         content:
-     *           multipart/form-data:
+     *           application/json:
      *             schema:
      *                 $ref: '#/components/schemas/Brewery'
      *       400:
