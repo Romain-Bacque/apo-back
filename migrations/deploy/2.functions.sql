@@ -19,18 +19,6 @@ CREATE TYPE packed AS (
     updated_at TIMESTAMPTZ
 );
 
-CREATE TYPE packed2 AS (
-    id INT,
-    title TEXT,
-    description TEXT, 
-    event_start DATE, 
-    participants BIGINT, 
-    brewery json,
-    created_at TIMESTAMPTZ,
-    updated_at TIMESTAMPTZ
-);
-
-
 -- Views
 
 -- View to get all breweries details
@@ -168,7 +156,7 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
             "phone" = ($1 ->> 'phone')::text,
             "description" = ($1 ->> 'description')::text,
             "address" = ($1 ->> 'address')::text,
-            "image" = ($1 ->> 'image')::text,
+            "image" = ($1 ->> 'image')::text
         WHERE "brewery"."id" = breweryId AND "brewery"."user_id" = ownerId ;
 
         DELETE FROM "brewery_has_category"
@@ -187,30 +175,5 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
     END;
 $$ LANGUAGE PLPGSQL STRICT;
 
-
--- Function get all events details by participant
-CREATE FUNCTION get_events_details(userId int) RETURNS SETOF packed2 AS $$
-    SELECT  e.id,
-            e."title",
-            e."description",
-            e."event_start",
-            p.participants,
-            json_build_object(
-                    'id', b.id,
-                    'address', b.address,
-                    'title', b.title) AS brewery,
-            e."created_at", 
-            e."updated_at"
-    FROM
-    ( SELECT p2.user_id, p2.event_id, (
-        SELECT COUNT(event_id) AS participants
-        FROM participate p1
-        WHERE p1.event_id = p2.event_id
-        GROUP BY(event_id)
-    )
-    FROM participate p2 WHERE user_id = userId) p 
-    JOIN event e ON e.id = p.event_id
-    JOIN brewery b ON b.id = e.brewery_id;
-$$ LANGUAGE SQL STRICT;
 
 COMMIT;
