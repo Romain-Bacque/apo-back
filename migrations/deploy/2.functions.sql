@@ -11,6 +11,8 @@ CREATE TYPE packed AS (
     phone TEXT,
     description TEXT, 
     address TEXT, 
+    latitude NUMERIC,
+    longitude NUMERIC,
     image TEXT, 
     user_id INT,
     categories json[],
@@ -51,11 +53,13 @@ CREATE VIEW brewery_records AS
         b."phone",
         b."description", 
         b."address", 
+        b."latitude",
+        b."longitude",
         b."image", 
         b."user_id", 
         array_agg(json_build_object(
-                'id', c.id,
-				'tag', c.tag
+                'id', c."id",
+				'tag', c."tag"
             )::json) AS "categories", 
         b."created_at", 
         b."updated_at"
@@ -67,6 +71,8 @@ CREATE VIEW brewery_records AS
         b."phone",
         b."description",
         b."address",
+        b."latitude",
+        b."longitude",
         b."image",
         b."user_id",
         b."created_at",
@@ -81,12 +87,14 @@ CREATE FUNCTION get_user_breweries(userId INT) RETURNS SETOF brewery_records AS 
         b."title",
         b."phone",
         b."description", 
-        b."address", 
+        b."address",
+        b."latitude",
+        b."longitude", 
         b."image", 
         b."user_id", 
         array_agg(json_build_object(
-                'id', c.id,
-				'tag', c.tag
+                'id', c."id",
+				'tag', c."tag"
             )::json) AS "categories", 
         b."created_at", 
         b."updated_at"
@@ -99,6 +107,8 @@ CREATE FUNCTION get_user_breweries(userId INT) RETURNS SETOF brewery_records AS 
         b."phone",
         b."description",
         b."address",
+        b."latitude",
+        b."longitude",
         b."image",
         b."user_id",
         b."created_at",
@@ -111,20 +121,22 @@ CREATE FUNCTION get_brewery_details(breweryId INT) RETURNS SETOF packed AS $$
         b."title",
         b."phone",
         b."description", 
-        b."address", 
+        b."address",
+        b."latitude",
+        b."longitude", 
         b."image", 
         b."user_id",
         (SELECT array_agg(json_build_object(  
-            'id', c.id,
-			'tag', c.tag
+            'id', c."id",
+			'tag', c."tag"
         )::json) c FROM "category" c WHERE c."id" IN (
             SELECT bc."category_id" FROM "brewery_has_category" bc WHERE bc."brewery_id" = b."id")
         ) AS "categories",
         (SELECT array_agg(json_build_object(
-            'id', e.id,
-            'title', e.title,
-            'description', e.description,
-            'event_start', e.event_start
+            'id', e."id",
+            'title', e."title",
+            'description', e."description",
+            'event_start', e."event_start"
         )::json) FROM "event" e 
         WHERE e."brewery_id" = b."id") AS "events",
         b."created_at", 
@@ -139,11 +151,13 @@ CREATE FUNCTION insert_brewery(json) RETURNS SETOF brewery_records AS $$
 
     BEGIN
 
-        INSERT INTO "brewery" ("title", "phone", "description", "address", "image", "user_id") VALUES ( 
+        INSERT INTO "brewery" ("title", "phone", "description", "address", "latitude", "longitude", "image", "user_id") VALUES ( 
             ($1 ->> 'title')::text,
             ($1 ->> 'phone')::text,
             ($1 ->> 'description')::text,
             ($1 ->> 'address')::text,
+            ($1 ->> 'latitude')::numeric,
+            ($1 ->> 'longitude')::numeric,
             ($1 ->> 'image')::text,
             ($1 ->> 'user_id')::integer
         )
@@ -151,7 +165,7 @@ CREATE FUNCTION insert_brewery(json) RETURNS SETOF brewery_records AS $$
 
         IF(SELECT json_array_length( ( $1 ->> 'categories' )::json ) > 0) THEN
             INSERT INTO "brewery_has_category" ("brewery_id", "category_id")
-                SELECT DISTINCT breweryId, category.id
+                SELECT DISTINCT breweryId, "category".id
                     FROM (
                         SELECT * FROM json_to_recordset( ( $1 ->> 'categories' )::json ) AS category("id" INT)
                     ) as category;      
@@ -179,6 +193,8 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
             "phone" = ($1 ->> 'phone')::text,
             "description" = ($1 ->> 'description')::text,
             "address" = ($1 ->> 'address')::text,
+            "latitude" = ($1 ->> 'latitude')::numeric,
+            "longitude" = ($1 ->> 'longitude')::numeric,
             "image" = ($1 ->> 'image')::text
         WHERE "brewery"."id" = breweryId AND "brewery"."user_id" = ownerId ;
 
@@ -205,57 +221,57 @@ CREATE FUNCTION get_events_details(userId INT) RETURNS SETOF packed2 AS $$
             e."title",
             e."description",
             e."event_start",
-            p.total_participants,
+            p."total_participants",
             json_build_object(
-                    'id', b.id,
-                    'address', b.address,
-                    'title', b.title) AS brewery,
+                    'id', b."id",
+                    'address', b."address",
+                    'title', b."title") AS "brewery",
             e."created_at", 
             e."updated_at"
     FROM (
-        SELECT p2.user_id, p2.event_id, (
-            SELECT COUNT(event_id) AS total_participants
-            FROM participate p1
-            WHERE p1.event_id = p2.event_id
-            GROUP BY(event_id)
+        SELECT p2."user_id", p2."event_id", (
+            SELECT COUNT("event_id") AS "total_participants"
+            FROM "participate" p1
+            WHERE p1."event_id" = p2."event_id"
+            GROUP BY("event_id")
         )
-    FROM participate p2 WHERE user_id = userId) p 
-    JOIN event e ON e.id = p.event_id
-    JOIN brewery b ON b.id = e.brewery_id;
+    FROM "participate" p2 WHERE "user_id" = userId) p 
+    JOIN event e ON e."id" = p."event_id"
+    JOIN "brewery" b ON b."id" = e."brewery_id";
 $$ LANGUAGE SQL STRICT;
 
 
 -- Function get all events details by brewery
 CREATE FUNCTION get_brewery_events(breweryId INT) RETURNS SETOF packed3 AS $$
-    SELECT  e.id,
+    SELECT  e."id",
             e."title",
             e."description",
             e."event_start",
 			array_agg(
 				json_build_object(
-                    'name', name,
-                    'email', email)
-			) AS participants,
-            p.total_participants,
+                    'name', u."name",
+                    'email', u."email")
+			) AS "participants",
+            p."total_participants",
             json_build_object(
-                    'id', b.id,
-                    'address', b.address,
-                    'title', b.title) AS brewery,
+                    'id', b."id",
+                    'address', b."address",
+                    'title', b."title") AS "brewery",
             e."created_at", 
             e."updated_at"
     FROM (
-        SELECT p2.user_id, p2.event_id, (
-            SELECT COUNT(event_id) AS total_participants
-            FROM participate p1
-            WHERE p1.event_id = p2.event_id
-            GROUP BY(event_id)
+        SELECT p2."user_id", p2."event_id", (
+            SELECT COUNT("event_id") AS "total_participants"
+            FROM "participate" p1
+            WHERE p1."event_id" = p2."event_id"
+            GROUP BY("event_id")
         )
-    FROM participate p2) p 
-    JOIN event e ON e.id = p.event_id
-    JOIN brewery b ON b.id = e.brewery_id
-    JOIN public.user u ON u.id = p.user_id
-    WHERE b.id = breweryId
-	GROUP BY (e.id, p.total_participants, b.id);
+    FROM "participate" p2) p 
+    JOIN "event" e ON e."id" = p."event_id"
+    JOIN "brewery" b ON b."id" = e."brewery_id"
+    JOIN public."user" u ON u."id" = p."user_id"
+    WHERE b."id" = breweryId
+	GROUP BY (e."id", p."total_participants", b."id");
 
 $$ LANGUAGE SQL STRICT;
 
@@ -267,26 +283,26 @@ CREATE FUNCTION set_participant(userId INT, eventId INT) RETURNS TABLE("message"
 
     BEGIN
 	
-		SELECT e.id FROM public.event e
+		SELECT e."id" FROM public."event" e
 		INTO selected_event_id
-		WHERE e.id = eventId
+		WHERE e."id" = eventId
 		LIMIT 1; 		
 		
-		SELECT u.id FROM public.user u
+		SELECT u."id" FROM public."user" u
 		INTO selected_user_id
-		WHERE u.id = userId
+		WHERE u."id" = userId
 		LIMIT 1;		
 		
 		IF selected_event_id IS NULL OR selected_user_id IS NULL THEN
             RETURN;
 		ELSE		
-			SELECT user_id FROM participate p
+			SELECT "user_id" FROM "participate" p
 			INTO selected_user_id
-			WHERE p.user_id = userId AND p.event_id = eventId
+			WHERE p."user_id" = userId AND p."event_id" = eventId
 			LIMIT 1;
 
 			IF NOT FOUND THEN
-				INSERT INTO participate (user_id, event_id) VALUES (userId, eventId);
+				INSERT INTO "participate" ("user_id", "event_id") VALUES (userId, eventId);
 				RETURN QUERY SELECT 'user is successfully registered';
 			ELSE
 				RETURN QUERY SELECT 'user is already participate';

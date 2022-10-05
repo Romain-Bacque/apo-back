@@ -48,7 +48,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: "keyboard cats", // default name for more security
     resave: true, // resave session even if there is no change
-    saveUninitialized: true, // don't create session until something stored
+    saveUninitialized: true, // don't create session until something is stored
     cookie: {
         httpOnly: false,
         secure: false,

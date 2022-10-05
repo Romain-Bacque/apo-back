@@ -18,6 +18,8 @@ CREATE TABLE IF NOT EXISTS "brewery" (
     "phone" TEXT NOT NULL UNIQUE,
     "description" TEXT NOT NULL,
     "address" TEXT NOT NULL,
+    "latitude" NUMERIC NOT NULL,
+    "longitude" NUMERIC NOT NULL,
     "image" TEXT,
     "user_id" INT REFERENCES "user"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),

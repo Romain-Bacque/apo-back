@@ -62,7 +62,7 @@ const router = express.Router();
 *               type: string
 *               description: title of the brewery
 *   requestBodies:
-*     postBody:
+*     eventBody:
 *       content:
 *         application/json:
 *            schema:
@@ -170,7 +170,7 @@ router.route('/:id([0-9]+)')
      *     parameters:
      *       - $ref: '#/components/parameters/breweryId'
      *     requestBody:
-     *       $ref: '#/components/requestBodies/postBody'
+     *       $ref: '#/components/requestBodies/eventBody'
      *     responses:
      *       200:
      *         description: the event was successfully created
