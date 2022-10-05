@@ -5,6 +5,7 @@ const passport = require('passport');
 const catchAsync = require('../service/catchAsync');
 const { loginSchema, registerSchema } = require('../validation/schemas');
 const { validate } = require('../validation/validate');
+const { checkNotAuthenticated } = require('../middlewares/middleware');
 
 
 // SWAGGER CONFIGURATION
@@ -70,10 +71,16 @@ const { validate } = require('../validation/validate');
  *     responses:
  *       200:
  *          description: user is successfully connected
+ *          content:
+ *            application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/Register'
  *       400:
  *          description: bad request, error in the request body content
  *       401:
  *          description: unauthorized
+ *       409:
+ *          description: user is already connected
  *       500:
  *          description: internal server error
  */
@@ -89,7 +96,7 @@ const { validate } = require('../validation/validate');
 
 // ROUTES
 
-router.post('/login', validate(loginSchema), passport.authenticate('local'), userController.login);
+router.post('/login', checkNotAuthenticated, validate(loginSchema), passport.authenticate('local'), userController.login);
 /**
  * @swagger
  * /user/register:
