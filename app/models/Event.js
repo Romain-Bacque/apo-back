@@ -34,12 +34,25 @@ class Event extends Core {
         return this.#brewery_id;
     }
 
-    async getEventsByOwner(id) { 
+    static async getEventsByParticipant(id) { 
         const query = {
-            text: `SELECT * FROM get_events_details($1)`,
-            values: [id]   
-        };
+            text: `SELECT * FROM public.get_events_details($1);`,
+            values: [id]
+        };      
         
+        const result = await client.query(query);
+
+        if(result.rowCount > 0) {
+            return result.rows;
+        } else return null;      
+    }
+
+    static async getEventsByBrewery(id) { 
+        const query = {
+            text: `SELECT * FROM public.get_brewery_events($1);`,
+            values: [id]
+        };
+
         const result = await client.query(query);
 
         if(result.rowCount > 0) {
@@ -50,7 +63,7 @@ class Event extends Core {
     async addEvent() {
         const query = {
             text: `INSERT INTO event (title, description, event_start, brewery_id)
-                VALUES ($1, $2, $3, $4) ;`,
+                VALUES ($1, $2, $3, $4);`,
             values: [{
                 title: this.#title,
                 description: this.#description,
@@ -66,9 +79,9 @@ class Event extends Core {
         } else return null;    
     }
 
-    async deleteEvent(id) {
+    static async deleteEvent(id) {
         const query = {
-            text: `DELETE FROM public.event WHERE id = $1;
+            text: `DELETE FROM public.participate WHERE event_id = $1;
                 DELETE FROM public.event WHERE id = $1;`,
             values: [id]   
         };
@@ -76,34 +89,31 @@ class Event extends Core {
         const result = await client.query(query);
 
         if(result.rowCount > 0) {
-            return result.rows;
+            return result.rows[0];
         } else return null;     
     }
 
-    async setParticipant(id) {
+    static async setParticipant(userId, eventId) {
         const query = {
-            text: "DELETE FROM public.event WHERE id = $1;",
-            values: [id]   
+            text: "SELECT * FROM set_participant($1, $2);",
+            values: [userId, eventId]   
         };
         
         const result = await client.query(query);
 
         if(result.rowCount > 0) {
-            return result.rows;
+            return result.rows[0];
         } else return null;     
     }
 
-    async deleteParticipant(id) {
+    static async deleteParticipant(userId, eventId) {
         const query = {
-            text: "DELETE FROM public.event WHERE id = $1;",
-            values: [id]   
+            text: "DELETE FROM public.participate WHERE user_id = $1 AND event_id = $2 RETURNING *;",
+            values: [userId, eventId]   
         };
-        
         const result = await client.query(query);
 
-        if(result.rowCount > 0) {
-            return result.rows;
-        } else return null;     
+        return result.rowCount > 0;
     }
 }
 

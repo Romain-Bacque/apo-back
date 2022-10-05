@@ -137,7 +137,7 @@ class Brewery extends Core {
 
     static async deleteBrewery(id) {
         const query = {
-            text: 'DELETE FROM public.brewery WHERE id = $1;',
+            text: 'DELETE FROM public.brewery WHERE id = $1 RETURNING *;',
             values: [id],
         };
         const result = await client.query(query);

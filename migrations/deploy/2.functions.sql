@@ -19,6 +19,29 @@ CREATE TYPE packed AS (
     updated_at TIMESTAMPTZ
 );
 
+CREATE TYPE packed2 AS (
+    id INT,
+    title TEXT,
+    description TEXT, 
+    event_start DATE, 
+    total_participants BIGINT, 
+    brewery json,
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE TYPE packed3 AS (
+    id INT,
+    title TEXT,
+    description TEXT, 
+    event_start DATE,
+    participants json[],
+    total_participants BIGINT, 
+    brewery json,
+    created_at TIMESTAMPTZ,
+    updated_at TIMESTAMPTZ
+);
+
 -- Views
 
 -- View to get all breweries details
@@ -175,5 +198,102 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
     END;
 $$ LANGUAGE PLPGSQL STRICT;
 
+
+-- Function get all events details by participant
+CREATE FUNCTION get_events_details(userId INT) RETURNS SETOF packed2 AS $$
+    SELECT  e.id,
+            e."title",
+            e."description",
+            e."event_start",
+            p.total_participants,
+            json_build_object(
+                    'id', b.id,
+                    'address', b.address,
+                    'title', b.title) AS brewery,
+            e."created_at", 
+            e."updated_at"
+    FROM (
+        SELECT p2.user_id, p2.event_id, (
+            SELECT COUNT(event_id) AS total_participants
+            FROM participate p1
+            WHERE p1.event_id = p2.event_id
+            GROUP BY(event_id)
+        )
+    FROM participate p2 WHERE user_id = userId) p 
+    JOIN event e ON e.id = p.event_id
+    JOIN brewery b ON b.id = e.brewery_id;
+$$ LANGUAGE SQL STRICT;
+
+
+-- Function get all events details by brewery
+CREATE FUNCTION get_brewery_events(breweryId INT) RETURNS SETOF packed3 AS $$
+    SELECT  e.id,
+            e."title",
+            e."description",
+            e."event_start",
+			array_agg(
+				json_build_object(
+                    'name', name,
+                    'email', email)
+			) AS participants,
+            p.total_participants,
+            json_build_object(
+                    'id', b.id,
+                    'address', b.address,
+                    'title', b.title) AS brewery,
+            e."created_at", 
+            e."updated_at"
+    FROM (
+        SELECT p2.user_id, p2.event_id, (
+            SELECT COUNT(event_id) AS total_participants
+            FROM participate p1
+            WHERE p1.event_id = p2.event_id
+            GROUP BY(event_id)
+        )
+    FROM participate p2) p 
+    JOIN event e ON e.id = p.event_id
+    JOIN brewery b ON b.id = e.brewery_id
+    JOIN public.user u ON u.id = p.user_id
+    WHERE b.id = breweryId
+	GROUP BY (e.id, p.total_participants, b.id);
+
+$$ LANGUAGE SQL STRICT;
+
+
+-- Function to register a participant in an event, by user id and event id
+CREATE FUNCTION set_participant(userId INT, eventId INT) RETURNS TABLE("message" text) AS $$
+    DECLARE selected_event_id INT;
+    DECLARE selected_user_id INT;
+
+    BEGIN
+	
+		SELECT e.id FROM public.event e
+		INTO selected_event_id
+		WHERE e.id = eventId
+		LIMIT 1; 		
+		
+		SELECT u.id FROM public.user u
+		INTO selected_user_id
+		WHERE u.id = userId
+		LIMIT 1;		
+		
+		IF selected_event_id IS NULL OR selected_user_id IS NULL THEN
+            RETURN;
+		ELSE		
+			SELECT user_id FROM participate p
+			INTO selected_user_id
+			WHERE p.user_id = userId AND p.event_id = eventId
+			LIMIT 1;
+
+			IF NOT FOUND THEN
+				INSERT INTO participate (user_id, event_id) VALUES (userId, eventId);
+				RETURN QUERY SELECT 'user is successfully registered';
+			ELSE
+				RETURN QUERY SELECT 'user is already participate';
+			END IF;
+		END IF;
+		
+    END;
+$$ LANGUAGE PLPGSQL STRICT;
 
 COMMIT;
