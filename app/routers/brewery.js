@@ -286,7 +286,7 @@ router.route('/:id([0-9]+)')
     .delete(checkAuthenticated, isOwner, breweryController.deleteBrewery);
     /**
      * @swagger
-     * /brewery{id}/user/{userId}:
+     * /brewery/user:
      *   get:
      *     summary: Returns the list of all the breweries by user id (WITHOUT the 'events' details)
      *     tags: [Brewery]
@@ -308,6 +308,6 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getOwnerBreweries));
+router.get('/user', checkAuthenticated, catchAsync(breweryController.getOwnerBreweries));
 
 module.exports = router;

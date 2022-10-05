@@ -1,5 +1,8 @@
 const express = require('express');
 const eventController = require('../controllers/event');
+const { isOwner } = require('../middlewares/middleware');
+const { postEventSchema } = require('../validation/schemas');
+const { validate } = require('../validation/validate');
 const router = express.Router();
 
 
@@ -90,6 +93,13 @@ const router = express.Router();
 *         type: integer
 *       required: true
 *       description: the event id
+*     breweryId:   
+*       in: path
+*       name: id
+*       schema:
+*         type: integer
+*       required: true
+*       description: the brewery id
 */
 
 /**
@@ -126,27 +136,6 @@ router.route('/')
      *          description: internal server error
      */
     .get(eventController.getEventsByParticipant)
-    /**
-     * @swagger
-     * /event:
-     *   post:
-     *     summary: Create a new event
-     *     tags: [Event]
-     *     requestBody:
-     *       $ref: '#/components/requestBodies/postBody'
-     *     responses:
-     *       200:
-     *         description: the event was successfully created
-     *       400:
-     *          description: bad request, error in the request body content
-     *       401:
-     *          description: unauthorized
-     *       404:
-     *          description: the event was not found
-     *       500:
-     *          description: internal server error
-     */
-    .post(eventController.addEvent);
 
 router.route('/:id([0-9]+)')
     /**
@@ -171,7 +160,30 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-    .get(eventController.getEventsByBrewery)
+    .get(isOwner, eventController.getEventsByBrewery)
+    /**
+     * @swagger
+     * /event/{id}:
+     *   post:
+     *     summary: Create a new event
+     *     tags: [Event]
+     *     parameters:
+     *       - $ref: '#/components/parameters/breweryId'
+     *     requestBody:
+     *       $ref: '#/components/requestBodies/postBody'
+     *     responses:
+     *       200:
+     *         description: the event was successfully created
+     *       400:
+     *          description: bad request, error in the request body content
+     *       401:
+     *          description: unauthorized
+     *       404:
+     *          description: the event was not found
+     *       500:
+     *          description: internal server error
+     */
+    .post(isOwner, validate(postEventSchema), eventController.addEvent)
     /**
      * @swagger
      * /event/{id}:
@@ -237,6 +249,5 @@ router.route('/:id([0-9]+(\/user))')
      *          description: internal server error
      */ 
     .delete(eventController.deleteParticipant);
-
 
 module.exports = router;
