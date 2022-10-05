@@ -15,7 +15,7 @@ module.exports.checkNotAuthenticated = async (req, res, next) => {
 }
 
 module.exports.isOwner = async (req, res, next) => {
-  if(!req.user.id || req.user.role !== "brewer") return res.sendStatus(401);
+  if(!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
 
   const id = parseInt(req.params.id);
 

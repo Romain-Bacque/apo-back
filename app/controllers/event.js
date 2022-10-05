@@ -16,12 +16,6 @@ const eventController = {
 
         const id = parseInt(req.params.id);
 
-        const brewery = await Brewery.getBreweryById(id);
-
-        if(!brewery || brewery.user_id !== req.user.id) {
-            return res.sendStatus(401);
-        }
-
         const events = await Event.getEventsByBrewery(id);
 
         if(events) {
@@ -30,12 +24,6 @@ const eventController = {
     },
     async addEvent(req, res, next) {
         if(!req.user?.id || !req.user.role === "brewer") return res.sendStatus(401);
-
-        const breweries = await Brewery.getOwnerBreweries(req.user.id);
-
-        if(!breweries || !breweries.find(brewery => brewery.id === req.body.brewery_id)) {
-            return res.sendStatus(401);
-        }
 
         const event = await new Event(req.body);
         const isAdded = await event.addEvent();

@@ -60,3 +60,11 @@ module.exports.editBrewerySchema = joi.object({
     categories: joi.array().items({id: joi.number()}).required(),
 }).required();
 
+module.exports.postEventSchema = joi.object({    
+    title: joi.string().required(),
+    description: joi.string().required(),
+    event_start: joi.date().required(),
+    image: joi.string().required(),
+    brewery_id: joi.number().required(),
+}).required();
+
