@@ -1,17 +1,51 @@
 const debug = require('debug')('controller');
-const { Event } = require('../models/');
+const { Event, Brewery } = require('../models/');
 
 const eventController = {
-    async getEventsByParticipant(req, res) {
+    async getEventsByParticipant(req, res, next) {
         if(!req.user?.id) return res.sendStatus(401);
 
-        const events = await Event.getAll(req.user.id);
+        const events = await Event.getEventsByParticipant(req.user.id);
+
+        if(events) {         
+            res.status(200).json({ data: events });
+        } else next();
+    },
+    async getEventsByBrewery(req, res, next) {
+        if(!req.user?.id) return res.sendStatus(401);
+
+        const id = parseInt(req.params.id);
+
+        const brewery = await Brewery.getBreweryById(id);
+
+        if(!brewery || brewery.user_id !== req.user.id) {
+            return res.sendStatus(401);
+        }
+
+        const events = await Event.getEventsByBrewery(id);
 
         if(events) {
             res.status(200).json({ data: events });
         } next();
     },
-    async getEventById(req, res) {
+    async addEvent(req, res, next) {
+        if(!req.user?.id || !req.user.role === "brewer") return res.sendStatus(401);
+
+        const breweries = await Brewery.getOwnerBreweries(req.user.id);
+
+        if(!breweries || !breweries.find(brewery => brewery.id === req.body.brewery_id)) {
+            return res.sendStatus(401);
+        }
+
+        const event = await new Event(req.body);
+
+        const isAdded = await event.addEvent();
+
+        if(isAdded) {
+            res.status(200);
+        } next();
+    },
+    async deleteEvent(req, res, next) {
         if(!req.user?.id) return res.sendStatus(401);
 
         const id = parseInt(req.params.id);
@@ -22,72 +56,34 @@ const eventController = {
             return res.sendStatus(401);
         }
 
-        const event = await Event.getEventById(id);
-
-        if(event) {
-            res.status(200).json({ data: event });
-        } next();
-    },
-    async addEvent(req, res) {
-        if(!req.user?.role === "brewer" || !req.user?.id) return res.sendStatus(401);
-
-        const breweries = await Brewery.getOwnerBreweries(req.user.id);
-
-        if(!breweries || !breweries.find(brewery => brewery.id === req.body.brewery_id)) {
-            return res.sendStatus(401);
-        }
-
-        const event = await new Event(req.body);
-
-        const isAdded =  await event.addEvent();
-
-        if(isAdded) {
-            res.status(200);
-        } next();
-    },
-    async deleteEvent(req, res) {
-        if(!req.user?.id) return res.sendStatus(401);
-
-        const breweries = await Brewery.getOwnerBreweries(req.user.id);
-
-        if(!breweries || !breweries.find(brewery => brewery.id === req.body.brewery_id)) {
-            return res.sendStatus(401);
-        }
-
-        const isDeleted = await Event.deleteEvent(req.user.id);
+        const isDeleted = await Event.deleteEvent(id);
 
         if(isDeleted) {
             res.status(200);
         } next();
     },
-    async setParticipant(req, res) {
+    async setParticipant(req, res, next) {
         if(!req.user?.id) return res.sendStatus(401);
 
-        const participantId = req.user?.id;
+        const participantId = parseInt(req.user.id);
         const eventId = parseInt(req.params.id);
+        
+        const result = await Event.setParticipant(participantId, eventId);
 
-        const event = await Event.getEventById(eventId);
-
-        if(event.participants.find(participant => participant.id === req.user.id)) {
-            return res.status(403).json({ message: 'user already participate in this event'});
-        };
-
-        const isDeleted = await Event.setParticipant(eventId, participantId);
-
-        if(isDeleted) {
-            res.status(200);
+        if(result) {
+            res.status(200).json(...result);
         } next();
     },
-    async deleteParticipant(req, res) {
+    async deleteParticipant(req, res, next) {
         if(!req.user?.id) return res.sendStatus(401);
 
-        const participantId = req.user?.id;
+        const participantId = parseInt(req.user.id);
         const eventId = parseInt(req.params.id);
-
-        const isDeleted = await Event.deleteParticipant(eventId, participantId);
+        
+        const isDeleted = await Event.deleteParticipant(participantId, eventId);
 
         if(isDeleted) {
-            res.status(200);
+            res.sendStatus(200);
         } next();
     }
 }
