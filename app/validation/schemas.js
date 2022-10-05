@@ -43,6 +43,8 @@ module.exports.postBrewerySchema = joi.object({
     phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
     address: joi.string().required(),
+    latitude: joi.number().required(),
+    longitude: joi.number().required(),
     image: joi.string().required(),
     categories: joi.array().items({id: joi.number()}).required(),
 }).required();
@@ -55,6 +57,8 @@ module.exports.editBrewerySchema = joi.object({
     phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
     address: joi.string().required(),
+    latitude: joi.number().required(),
+    longitude: joi.number().required(),
     image: joi.string().required(),
     user_id: joi.number().required(),
     categories: joi.array().items({id: joi.number()}).required(),
