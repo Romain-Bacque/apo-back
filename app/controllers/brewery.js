@@ -11,6 +11,9 @@ const breweryController = {
                 id: brewery.id,
                 title: brewery.title,
                 phone: brewery.phone,
+                address: brewery.address,
+                latitude: brewery.latitude,
+                longitude: brewery.longitude,
                 description: brewery.description,
                 image: brewery.image,
                 user_id: brewery.user_id,
@@ -20,7 +23,7 @@ const breweryController = {
         } else next();
     },
     async getOwnerBreweries(req, res, next) {
-        if(!req.user.id || req.user.role !== "brewer") return res.sendStatus(401);
+        if(!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
 
         let breweries = await Brewery.getOwnerBreweries(req.user.id);
 
@@ -29,6 +32,9 @@ const breweryController = {
                 id: brewery.id,
                 title: brewery.title,
                 phone: brewery.phone,
+                address: brewery.address,
+                latitude: brewery.latitude,
+                longitude: brewery.longitude,
                 description: brewery.description,
                 image: brewery.image,
                 user_id: brewery.user_id,
@@ -47,6 +53,9 @@ const breweryController = {
                 id: brewery.id,
                 title: brewery.title,
                 phone: brewery.phone,
+                address: brewery.address,
+                latitude: brewery.latitude,
+                longitude: brewery.longitude,
                 description: brewery.description,
                 image: brewery.image,
                 user_id: brewery.user_id,
@@ -57,7 +66,7 @@ const breweryController = {
         } else next();
     },
     async addBrewery(req, res, next) { 
-        if(!req.user.id || req.user.role !== "brewer") return res.sendStatus(401);
+        if(!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
         
         const brewery = new Brewery({...req.body, user_id: req.user.id});
         const breweries = await brewery.addBrewery();

@@ -22,7 +22,6 @@ const userController = {
         const registeredUser = await user.register();
 
         if (registeredUser) {
-            debug(registeredUser);
             res.sendStatus(200);
         } else res.sendStatus(500);
     },

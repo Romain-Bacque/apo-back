@@ -17,7 +17,7 @@ const router = express.Router();
 *         id:
 *           type: integer
 *           description: ID of the category
-*         title:
+*         tag:
 *           type: string
 *           description: title of the category
 *   parameters:
