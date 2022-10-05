@@ -38,6 +38,7 @@ SELECT "id", "title", "phone", "description", "address", "image", "user_id", "ca
         }
     ]
 }');
-SELECT "id", "title", "description", "event_start", "participants", "brewery", "created_at", "updated_at" FROM get_events_details(1);
+SELECT "id", "title", "description", "event_start", "total_participants", "brewery", "created_at", "updated_at" FROM get_events_details(1);
+SELECT "id", "title", "description", "event_start", "participants", "total_participants", "brewery", "created_at", "updated_at" FROM get_brewery_events(1);
 
 ROLLBACK;
