@@ -1,9 +1,10 @@
+const debug = require('debug')('router');
 const express = require('express');
 const breweryController = require('../controllers/brewery');
 const router = express.Router();
 const catchAsync = require('../service/catchAsync');
-const { checkAuthenticated } = require('../middlewares/middleware');
-const { brewerySchema } = require('../validation/schemas');
+const { checkAuthenticated, isOwner } = require('../middlewares/middleware');
+const { postBrewerySchema, editBrewerySchema } = require('../validation/schemas');
 const { validate } = require('../validation/validate');
 const multer = require("multer");
 const { storage } = require("../service/cloudinary");
@@ -24,7 +25,6 @@ const upload = multer({ storage });
 *          - phone
 *          - description
 *          - image
-*          - user_id
 *          - categories
 *       properties:
 *         id:
@@ -76,9 +76,9 @@ const upload = multer({ storage });
 *                  type: string
 *                  description: start date of the event
 *   requestBodies:
-*     BreweryBody:
+*     postBody:
 *       content:
-*         application/json:
+*         multipart/form-data:
 *            schema:
 *              type: object
 *              required:
@@ -104,6 +104,39 @@ const upload = multer({ storage });
 *                user_id:
 *                  type: integer
 *                  description: the brewery owner ID
+*                categories:
+*                  type: array
+*                  description: the list of categorie(s) the brewery belongs to
+*                  items:
+*                    type: object
+*                    properties:
+*                      id:
+*                         type: integer
+*                         description: ID of the category
+*     putBody:
+*       content:
+*         multipart/form-data:
+*            schema:
+*              type: object
+*              required:
+*                 - title
+*                 - phone
+*                 - description
+*                 - image
+*                 - categories
+*              properties:
+*                title:
+*                  type: string
+*                  description: title of the brewery
+*                phone:
+*                  type: string
+*                  description: phone number of the brewery
+*                description:
+*                  type: string
+*                  description: description of the brewery
+*                image:
+*                  type: string
+*                  description: logo/image of the brewery
 *                categories:
 *                  type: array
 *                  description: the list of categorie(s) the brewery belongs to
@@ -162,7 +195,7 @@ router.route('/')
      *     summary: Create a new brewery
      *     tags: [Brewery]
      *     requestBody:
-     *       $ref: '#/components/requestBodies/BreweryBody'
+     *       $ref: '#/components/requestBodies/postBody'
      *     responses:
      *       200:
      *         description: the brewery was successfully created
@@ -179,7 +212,7 @@ router.route('/')
      *       500:
      *          description: internal server error
      */
-    .post(checkAuthenticated, validate(brewerySchema), upload.single("file"), catchAsync(breweryController.addBrewery));
+    .post(checkAuthenticated, validate(postBrewerySchema), upload.single("file"), catchAsync(breweryController.addBrewery));
 
 router.route('/:id([0-9]+)')
     /**
@@ -214,7 +247,7 @@ router.route('/:id([0-9]+)')
      *     parameters:
      *       - $ref: '#/components/parameters/breweryId'
      *     requestBody:
-     *         $ref: '#/components/requestBodies/BreweryBody'
+     *         $ref: '#/components/requestBodies/putBody'
      *     responses:
      *       200:
      *         description: the brewery was successfully created
@@ -231,7 +264,7 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-    .put(checkAuthenticated, validate(brewerySchema), catchAsync(breweryController.editBrewery))
+    .put(checkAuthenticated, isOwner, validate(editBrewerySchema), catchAsync(breweryController.editBrewery))
     /**
      * @swagger
      * /brewery/{id}:
@@ -250,7 +283,7 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-    .delete(checkAuthenticated, breweryController.deleteBrewery);
+    .delete(checkAuthenticated, isOwner, breweryController.deleteBrewery);
     /**
      * @swagger
      * /brewery{id}/user/{userId}:
@@ -275,6 +308,6 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getBreweriesByBrewer));
+router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getOwnerBreweries));
 
 module.exports = router;

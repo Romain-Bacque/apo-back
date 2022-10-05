@@ -38,7 +38,6 @@ const eventController = {
         }
 
         const event = await new Event(req.body);
-
         const isAdded = await event.addEvent();
 
         if(isAdded) {
@@ -49,7 +48,6 @@ const eventController = {
         if(!req.user?.id) return res.sendStatus(401);
 
         const id = parseInt(req.params.id);
-
         const breweries = await Brewery.getOwnerBreweries(req.user.id);
 
         if(!breweries || !breweries.find(brewery => brewery.id === req.body.brewery_id)) {
@@ -76,7 +74,7 @@ const eventController = {
     },
     async deleteParticipant(req, res, next) {
         if(!req.user?.id) return res.sendStatus(401);
-
+        
         const participantId = parseInt(req.user.id);
         const eventId = parseInt(req.params.id);
         

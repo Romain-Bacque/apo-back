@@ -11,7 +11,6 @@ module.exports.registerSchema = joi.object({
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr', 'net'] } }).required(),
     password: joiPassword
     .string()
-    .minOfSpecialCharacters(1)
     .minOfLowercase(1)
     .minOfUppercase(1)
     .minOfNumeric(1)
@@ -28,7 +27,6 @@ module.exports.loginSchema = joi.object({
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr', 'net'] } }),
     password: joiPassword
     .string()
-    .minOfSpecialCharacters(1)
     .minOfLowercase(1)
     .minOfUppercase(1)
     .minOfNumeric(1)
@@ -38,9 +36,21 @@ module.exports.loginSchema = joi.object({
 }).required();
 
 /**
- * brewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ * postBrewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
  */
-module.exports.brewerySchema = joi.object({    
+module.exports.postBrewerySchema = joi.object({    
+    title: joi.string().required(),
+    phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
+    description: joi.string().required(),
+    address: joi.string().required(),
+    image: joi.string().required(),
+    categories: joi.array().items({id: joi.number()}).required(),
+}).required();
+
+/**
+ * editBrewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.editBrewerySchema = joi.object({    
     title: joi.string().required(),
     phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
@@ -49,3 +59,4 @@ module.exports.brewerySchema = joi.object({
     user_id: joi.number().required(),
     categories: joi.array().items({id: joi.number()}).required(),
 }).required();
+
