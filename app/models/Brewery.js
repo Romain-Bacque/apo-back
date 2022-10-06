@@ -7,8 +7,8 @@ class Brewery extends Core {
     #phone;
     #description;
     #address;
-    #latitude;
-    #longitude
+    #lat;
+    #lon;
     #image;
     #user_id;
     #categories;
@@ -22,8 +22,8 @@ class Brewery extends Core {
         this.#phone = config.phone;
         this.#description = config.description;
         this.#address = config.address;
-        this.#latitude = config.latitude;
-        this.#longitude = config.longitude;
+        this.#lat = config.lat;
+        this.#lon = config.lon;
         this.#image = config.image;
         this.#user_id = config.user_id;
         this.#categories = config.categories;
@@ -46,12 +46,12 @@ class Brewery extends Core {
         return this.#address;
     }
 
-    get latitude () {
-        return this.#latitude;
+    get lat () {
+        return this.#lat;
     }
 
-    get longitude () {
-        return this.#longitude;
+    get lon () {
+        return this.#lon;
     }
 
     get image () {
@@ -112,8 +112,8 @@ class Brewery extends Core {
                 phone: this.phone,
                 description: this.description,
                 address: this.address,
-                latitude: this.latitude,
-                longitude: this.longitude,
+                lat: this.lat,
+                lon: this.lon,
                 image: this.image,
                 user_id: this.user_id,
                 categories: this.categories
@@ -136,8 +136,8 @@ class Brewery extends Core {
                 phone: this.phone,
                 description: this.description,
                 address: this.address,
-                latitude: this.latitude,
-                longitude: this.longitude,
+                lat: this.lat,
+                lon: this.lon,
                 image: this.image,
                 user_id: this.user_id,
                 categories: this.categories
