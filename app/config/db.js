@@ -1,8 +1,8 @@
 const debug = require('debug')('database');
-const { Client } = require("pg");
+const { Client, Pool } = require("pg");
 const database = process.env.PGDATABASE;
 
-const client = new Client();
+const client = new Pool();
 
 client.connect(err => {
     if (err) {
