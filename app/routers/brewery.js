@@ -25,8 +25,8 @@ const upload = multer({ storage });
 *          - phone
 *          - description
 *          - address
-*          - latitude
-*          - longitude
+*          - lat
+*          - lon
 *          - image
 *          - categories
 *       properties:
@@ -45,12 +45,12 @@ const upload = multer({ storage });
 *         address:
 *           type: string
 *           description: address of the brewery
-*         latitude:
+*         lat:
 *           type: string
-*           description: latitude of the brewery
-*         longitude:
+*           description: lat of the brewery
+*         lon:
 *           type: string
-*           description: longitude of the brewery
+*           description: lon of the brewery
 *         image:
 *           type: string
 *           description: logo/image of the brewery
@@ -87,12 +87,12 @@ const upload = multer({ storage });
 *               address:
 *                  type: string
 *                  description: address of the brewery
-*               latitude:
+*               lat:
 *                  type: string
-*                  description: latitude of the brewery
-*               longitude:
+*                  description: lat of the brewery
+*               lon:
 *                  type: string
-*                  description: longitude of the brewery
+*                  description: lon of the brewery
 *               event_start:
 *                  type: string
 *                  description: start date of the event
@@ -107,8 +107,8 @@ const upload = multer({ storage });
 *                 - phone
 *                 - description
 *                 - address
-*                 - latitude
-*                 - longitude
+*                 - lat
+*                 - lon
 *                 - image
 *                 - user_id
 *                 - categories
@@ -125,12 +125,12 @@ const upload = multer({ storage });
 *                address:
 *                  type: string
 *                  description: address of the brewery
-*                latitude:
+*                lat:
 *                  type: string
-*                  description: latitude of the brewery
-*                longitude:
+*                  description: lat of the brewery
+*                lon:
 *                  type: string
-*                  description: longitude of the brewery
+*                  description: lon of the brewery
 *                image:
 *                  type: string
 *                  format: binary
@@ -157,8 +157,8 @@ const upload = multer({ storage });
 *                 - phone
 *                 - description
 *                 - address
-*                 - latitude
-*                 - longitude
+*                 - lat
+*                 - lon
 *                 - image
 *                 - categories
 *              properties:

@@ -11,8 +11,8 @@ CREATE TYPE packed AS (
     phone TEXT,
     description TEXT, 
     address TEXT, 
-    latitude NUMERIC,
-    longitude NUMERIC,
+    lat NUMERIC,
+    lon NUMERIC,
     image TEXT, 
     user_id INT,
     categories json[],
@@ -53,8 +53,8 @@ CREATE VIEW brewery_records AS
         b."phone",
         b."description", 
         b."address", 
-        b."latitude",
-        b."longitude",
+        b."lat",
+        b."lon",
         b."image", 
         b."user_id", 
         array_agg(json_build_object(
@@ -71,8 +71,8 @@ CREATE VIEW brewery_records AS
         b."phone",
         b."description",
         b."address",
-        b."latitude",
-        b."longitude",
+        b."lat",
+        b."lon",
         b."image",
         b."user_id",
         b."created_at",
@@ -88,8 +88,8 @@ CREATE FUNCTION get_user_breweries(userId INT) RETURNS SETOF brewery_records AS 
         b."phone",
         b."description", 
         b."address",
-        b."latitude",
-        b."longitude", 
+        b."lat",
+        b."lon", 
         b."image", 
         b."user_id", 
         array_agg(json_build_object(
@@ -107,8 +107,8 @@ CREATE FUNCTION get_user_breweries(userId INT) RETURNS SETOF brewery_records AS 
         b."phone",
         b."description",
         b."address",
-        b."latitude",
-        b."longitude",
+        b."lat",
+        b."lon",
         b."image",
         b."user_id",
         b."created_at",
@@ -122,8 +122,8 @@ CREATE FUNCTION get_brewery_details(breweryId INT) RETURNS SETOF packed AS $$
         b."phone",
         b."description", 
         b."address",
-        b."latitude",
-        b."longitude", 
+        b."lat",
+        b."lon", 
         b."image", 
         b."user_id",
         (SELECT array_agg(json_build_object(  
@@ -151,13 +151,13 @@ CREATE FUNCTION insert_brewery(json) RETURNS SETOF brewery_records AS $$
 
     BEGIN
 
-        INSERT INTO "brewery" ("title", "phone", "description", "address", "latitude", "longitude", "image", "user_id") VALUES ( 
+        INSERT INTO "brewery" ("title", "phone", "description", "address", "lat", "lon", "image", "user_id") VALUES ( 
             ($1 ->> 'title')::text,
             ($1 ->> 'phone')::text,
             ($1 ->> 'description')::text,
             ($1 ->> 'address')::text,
-            ($1 ->> 'latitude')::numeric,
-            ($1 ->> 'longitude')::numeric,
+            ($1 ->> 'lat')::numeric,
+            ($1 ->> 'lon')::numeric,
             ($1 ->> 'image')::text,
             ($1 ->> 'user_id')::integer
         )
@@ -193,8 +193,8 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
             "phone" = ($1 ->> 'phone')::text,
             "description" = ($1 ->> 'description')::text,
             "address" = ($1 ->> 'address')::text,
-            "latitude" = ($1 ->> 'latitude')::numeric,
-            "longitude" = ($1 ->> 'longitude')::numeric,
+            "lat" = ($1 ->> 'lat')::numeric,
+            "lon" = ($1 ->> 'lon')::numeric,
             "image" = ($1 ->> 'image')::text
         WHERE "brewery"."id" = breweryId AND "brewery"."user_id" = ownerId ;
 
