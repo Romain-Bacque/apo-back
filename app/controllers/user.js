@@ -7,7 +7,7 @@ const userController = {
 
         const { id, name, email, password, role } = req.user;
 
-        res.status(200).json({ user: { id, name, email, password, role } });
+        res.status(200).json({ data: { id, name, email, password, role } });
     },
     async register(req, res) {
         const { name, email, password, role } = req.body;    
