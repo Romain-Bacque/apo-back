@@ -19,7 +19,7 @@ const reqConfig = {
 };
 
 async function getGeoLocation(address){
-
+  
   reqConfig.params.text = address;
   const req = await axios(reqConfig);
   return req.data.features;
@@ -27,7 +27,6 @@ async function getGeoLocation(address){
 
 const filter = breweries => breweries.filter(e => e["properties"].name.length > 2 && e["properties"].address.length > 2);
 
-  const dataset=[];
   const breweries = filter(json.features);
 
   breweries.forEach(async (item, i) => {
@@ -35,7 +34,7 @@ const filter = breweries => breweries.filter(e => e["properties"].name.length > 
       if(i >= 500) return;
 
       const User = new user({
-        name: faker.name(),
+        name: faker.name.fullName(),
         email: faker.internet.email(),
         password: 'Admin420!',
         role: 'brewer'
@@ -50,13 +49,13 @@ const filter = breweries => breweries.filter(e => e["properties"].name.length > 
           title: striptags(item["properties"].name),
           phone: faker.phone.number(),
           desc: striptags(item["properties"].description),
-          address: address[0]["properties"].formatted,
+          address: address[0]["properties"].formatted.toLowerCase(),
           img: faker.image.nature(640, 480, true),
           userId: User.id,
           geoLoc: {lat: address[0]["properties"]["lat"], lon: address[0]["properties"]["lon"]}
         }
 
-        const Brewery = new brewery({
+        const Brew = new Brewery({
           title: brewery.title,
           phone: brewery.phone,
           description: brewery.desc,
@@ -67,6 +66,7 @@ const filter = breweries => breweries.filter(e => e["properties"].name.length > 
           lon: brewery.geoLoc.lon
         });
       
-        await Brewery.addBrewery();
+        await Brewery.addBrewery().then(r => console.log(r)).catch(err => console.log(err));
+        
       }
 });

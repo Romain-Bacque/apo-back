@@ -58,7 +58,7 @@ app.use(session({
 
 // Lift the CORS restriction
 app.use(cors({
-    origin: `http://${domain}:${port}`,
+    origin: `*`,
     credentials: true
 }));
 
