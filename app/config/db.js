@@ -2,10 +2,10 @@ const debug = require('debug')('database');
 const { Client, Pool } = require("pg");
 
 const client = new Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    database: process.env.PGDATABASE,
-    password: process.env.PGPASSWORD,
+    user: 'apo',
+    host: 'localhost',
+    database: 'apo',
+    password: 'toto',
     port: 5432,
 });
 
