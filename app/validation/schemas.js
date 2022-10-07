@@ -46,8 +46,9 @@ module.exports.postBrewerySchema = joi.object({
     lat: joi.number().required(),
     lon: joi.number().required(),
     image: joi.string().required(),
+    user_id: joi.number().required(),
     categories: joi.array().items(joi.object({
-        id: joi.number().required() 
+        id: joi.number().min(1).required() 
     })).required(),
 }).required();
 
@@ -62,9 +63,8 @@ module.exports.editBrewerySchema = joi.object({
     lat: joi.number().required(),
     lon: joi.number().required(),
     image: joi.string().required(),
-    user_id: joi.number().required(),
     categories: joi.array().items(joi.object({
-        id: joi.number().required() 
+        id: joi.number().min(1).required() 
     })).required(),
 }).required();
 
@@ -78,4 +78,3 @@ module.exports.postEventSchema = joi.object({
     image: joi.string().required(),
     brewery_id: joi.number().required(),
 }).required();
-
