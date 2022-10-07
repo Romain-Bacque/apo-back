@@ -1,11 +1,13 @@
 const user = require('../models/User');
 const Brewery = require('../models/Brewery');
+const category = require('../models/Category');
 
 const json = require('../data/brasseries.json');
 const axios = require('axios');
 
 const striptags = require('striptags');
 const { faker } = require('@faker-js/faker');
+const Category = require('../models/Category');
 
 faker.locale = 'fr';
 
@@ -63,9 +65,10 @@ const filter = breweries => breweries.filter(e => e["properties"].name.length > 
           image: brewery.img,
           user_id: brewer.id,
           lat: brewery.geoLoc.lat,
-          lon: brewery.geoLoc.lon
+          lon: brewery.geoLoc.lon,
+          categories: [{}]
         });
       
-        await Brewery.addBrewery().then(r => console.log(r)).catch(err => console.log(err));
+        await Brew.addBrewery().then(r => console.log(r)).catch(err => console.log(err));
       }
 });
