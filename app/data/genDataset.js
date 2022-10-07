@@ -1,6 +1,5 @@
 const user = require('../models/User');
-const brewery = require('../models/Brewery');
-//const Brewery = new brewery();
+const Brewery = require('../models/Brewery');
 
 const json = require('../data/brasseries.json');
 const axios = require('axios');
@@ -56,10 +55,18 @@ const filter = breweries => breweries.filter(e => e["properties"].name.length > 
           userId: User.id,
           geoLoc: {lat: address[0]["properties"]["lat"], lon: address[0]["properties"]["lon"]}
         }
-      
-        dataset.push(brewery);
-      }
-    
-      console.log(dataset);
 
+        const Brewery = new brewery({
+          title: brewery.title,
+          phone: brewery.phone,
+          description: brewery.desc,
+          address: brewery.address,
+          image: brewery.img,
+          user_id: brewer.id,
+          lat: brewery.geoLoc.lat,
+          lon: brewery.geoLoc.lon
+        });
+      
+        await Brewery.addBrewery();
+      }
 });
