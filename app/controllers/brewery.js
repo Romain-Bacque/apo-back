@@ -66,7 +66,7 @@ const breweryController = {
         } else next();
     },
     async addBrewery(req, res, next) { 
-        if(!req.user?.id || req.user.role !== "user") return res.sendStatus(401);
+        if(!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
         
         const brewery = new Brewery({...req.body, user_id: req.user.id});
         const breweries = await brewery.addBrewery();
