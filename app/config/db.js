@@ -5,7 +5,7 @@ const client = new Pool({
     user: 'apo',
     host: 'localhost',
     database: 'apo',
-    password: 'pass',
+    password: 'toto',
     port: 5432,
 });
 
