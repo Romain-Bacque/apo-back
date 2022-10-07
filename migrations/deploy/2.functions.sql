@@ -64,8 +64,8 @@ CREATE VIEW brewery_records AS
         b."created_at", 
         b."updated_at"
     FROM "brewery" b
-            JOIN "brewery_has_category" bc ON bc."brewery_id" = b."id"
-            JOIN "category" c ON bc."category_id" = c."id"
+            FULL JOIN "brewery_has_category" bc ON bc."brewery_id" = b."id"
+            FULL JOIN "category" c ON bc."category_id" = c."id"
 	GROUP BY b."id",
         b."title",
         b."phone",
