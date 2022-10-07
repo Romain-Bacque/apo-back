@@ -1,5 +1,5 @@
 const client = require('../config/db');
-const Core = require('./Core')
+const Core = require('./Core');
 const debug = require('debug')('model');
 
 class Brewery extends Core {
@@ -106,7 +106,7 @@ class Brewery extends Core {
 
     async addBrewery() {
         const query = {
-            text: "SELECT * FROM insert_brewery($1);",
+            text: "SELECT * FROM public.insert_brewery($1);",
             values: [{
                 title: this.title,
                 phone: this.phone,
@@ -129,7 +129,7 @@ class Brewery extends Core {
 
     async updateBrewery() {
         const query = {
-            text: `SELECT * FROM update_brewery($1);`,
+            text: `SELECT * FROM public.update_brewery($1);`,
             values: [{
                 id: this.id,
                 title: this.title,

@@ -1,5 +1,5 @@
 const debug = require('debug')('database');
-const { Client, Pool } = require("pg");
+const { Pool } = require("pg");
 
 const client = new Pool({
     user: 'apo',
