@@ -14,6 +14,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 
 const port = process.env.PORT || 3000;
 const domain = process.env.DOMAIN || 'localhost';
+const secret = process.env.SECRET;
 
 const options = {
     definition: {
@@ -46,7 +47,7 @@ app.use(express.json());
 // Activate the middleware to parse the urlencoded payload
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
-    secret: "keyboard cats", // default name for more security
+    secret, // default name for more security
     resave: true, // resave session even if there is no change
     saveUninitialized: true, // don't create session until something is stored
     cookie: {
