@@ -53,13 +53,13 @@ app.use(session({
     cookie: {
         httpOnly: false, // set to true for more security
         secure: false, // set to true for more security
-        maxAge: 60000
+        maxAge: 1000 * 60 * 60 * 24 * 7,
     }
 }));
 
 // Lift the CORS restriction
 app.use(cors({
-    origin: `*`,
+    origin: 'http://localhost:3000',
     credentials: true
 }));
 
