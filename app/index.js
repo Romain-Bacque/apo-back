@@ -14,7 +14,6 @@ const swaggerJsDoc = require('swagger-jsdoc');
 
 const port = process.env.PORT || 3000;
 const domain = process.env.DOMAIN || 'localhost';
-const secret = process.env.SECRET;
 
 const options = {
     definition: {
@@ -40,14 +39,23 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 // EXPRESS
 
-// Activate the middleware to parse the cookie
-app.use(cookieParser("secretcode"));
+
 // Activate the middleware to parse the JSON payload
 app.use(express.json());
 // Activate the middleware to parse the urlencoded payload
 app.use(express.urlencoded({ extended: true }));
+
+// Lift the CORS restriction
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
+
+// Activate the middleware to parse the cookie
+app.use(cookieParser("secretcode"));
+
 app.use(session({
-    secret, // default name for more security
+    secret: process.env.SECRET, // default name for more security
     resave: true, // resave session even if there is no change
     saveUninitialized: true, // don't create session until something is stored
     cookie: {
@@ -55,12 +63,6 @@ app.use(session({
         secure: false, // set to true for more security
         maxAge: 1000 * 60 * 60 * 24 * 7,
     }
-}));
-
-// Lift the CORS restriction
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
 }));
 
 app.use(passport.initialize());
