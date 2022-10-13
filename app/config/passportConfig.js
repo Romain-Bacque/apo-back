@@ -17,7 +17,7 @@ module.exports = async (passport) => {
                 return done(null, false);
             }            
         } catch (err) {
-            return done(err, false);
+            return done(err);
         }
     }
     
