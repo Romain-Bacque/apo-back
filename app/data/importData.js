@@ -1,6 +1,6 @@
 const { User, Brewery } = require("../models");
 const client = require("../config/db");
-const breweries = require("./brewery.json");
+const breweries = require("./breweries.json");
 const axios = require("axios");
 const striptags = require("striptags");
 const { faker } = require("@faker-js/faker");
