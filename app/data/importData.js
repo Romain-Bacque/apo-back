@@ -16,6 +16,7 @@ const reqConfig = {
   },
 };
 
+// Fake category
 const fakeCategories = ["blonde", "brune", "ambrée", "blanche", "IPA"];
 const params = fakeCategories.map((_, index) => `($${index + 1})`).join(", ");
 const categories = [];
@@ -90,6 +91,7 @@ const categories = [];
     const generatedCategory = await getRandomCategory(categories);
 
     if (address[0]) {
+      // Fake brewery
       const fakeBrewery = {
         title: striptags(filteredBrewery["properties"].name), // 'striptags' method remove unwanted HTML tags
         phone: faker.phone.number(),
