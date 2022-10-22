@@ -75,11 +75,12 @@ const categories = [];
     if (index >= 200) return; // 500 brewery maximum in the database
 
     // Fake user
+    const roles = ["user", "brewer"];
     const fakeUser = {
       name: faker.name.fullName(),
       email: faker.internet.email().toLowerCase().trim(),
       password: "$2y$10$fulWNnn/aBRls33vO0ProuAQy1VQs.fS98qo9ge.FBeR88ukuD6N.", // Plain password: 11111tT/
-      role: "brewer",
+      role: roles[getRandomNumber(0, 1)],
     };
 
     const user = new User(fakeUser);
