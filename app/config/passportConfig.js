@@ -4,7 +4,7 @@ const localStrategy = require('passport-local').Strategy;
 
 module.exports = async (passport) => {
     async function authenticate (email, password, done) {      
-        try {            
+        try {   
             const user = await User.getUserByEmail(email);
 
             if (!user) return done(null, false);
@@ -17,7 +17,7 @@ module.exports = async (passport) => {
                 return done(null, false);
             }            
         } catch (err) {
-            return done(err, false);
+            return done(err);
         }
     }
     

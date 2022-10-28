@@ -2,14 +2,16 @@
 
 BEGIN;
 
-SELECT "id", "title", "phone", "description", "address", "image", "user_id", "categories", "created_at", "updated_at" FROM brewery_records;
-SELECT "id", "title", "phone", "description", "address", "image", "user_id", "categories", "created_at", "updated_at" FROM get_user_breweries(1);
-SELECT "id", "title", "phone", "description", "address", "image", "user_id", "categories", "events", "created_at", "updated_at" FROM get_brewery_details(1);
-SELECT "id", "title", "phone", "description", "address", "image", "user_id", "categories", "created_at", "updated_at" FROM insert_brewery('{
+SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM brewery_records;
+SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM get_user_breweries(1);
+SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "events", "created_at", "updated_at" FROM get_brewery_details(1);
+SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM insert_brewery('{
     "title": "titre brasserie",
     "phone": "1212121212",
     "description": "test description",
     "address": "test addresse",
+    "lat": "0",
+    "lon": "0",
     "image": "lien image",
     "user_id": "1",
     "categories": [
@@ -27,6 +29,8 @@ SELECT "id", "title", "phone", "description", "address", "image", "user_id", "ca
     "phone": "9999999999",
     "description": "test description",
     "address": "test addresse",
+    "lat": "0",
+    "lon": "0",
     "image": "lien image",
     "user_id": "1",
     "categories": [
@@ -38,5 +42,7 @@ SELECT "id", "title", "phone", "description", "address", "image", "user_id", "ca
         }
     ]
 }');
+SELECT "id", "title", "description", "event_start", "total_participants", "brewery", "created_at", "updated_at" FROM get_events_details(1);
+SELECT "id", "title", "description", "event_start", "participants", "total_participants", "brewery", "created_at", "updated_at" FROM get_brewery_events(1);
 
 ROLLBACK;

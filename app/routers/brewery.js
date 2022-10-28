@@ -24,6 +24,9 @@ const upload = multer({ storage });
 *          - title
 *          - phone
 *          - description
+*          - address
+*          - lat
+*          - lon
 *          - image
 *          - categories
 *       properties:
@@ -39,6 +42,15 @@ const upload = multer({ storage });
 *         description:
 *           type: string
 *           description: description of the brewery
+*         address:
+*           type: string
+*           description: address of the brewery
+*         lat:
+*           type: string
+*           description: lat of the brewery
+*         lon:
+*           type: string
+*           description: lon of the brewery
 *         image:
 *           type: string
 *           description: logo/image of the brewery
@@ -72,6 +84,15 @@ const upload = multer({ storage });
 *               description:
 *                  type: string
 *                  description: description of the event
+*               address:
+*                  type: string
+*                  description: address of the brewery
+*               lat:
+*                  type: string
+*                  description: lat of the brewery
+*               lon:
+*                  type: string
+*                  description: lon of the brewery
 *               event_start:
 *                  type: string
 *                  description: start date of the event
@@ -85,6 +106,9 @@ const upload = multer({ storage });
 *                 - title
 *                 - phone
 *                 - description
+*                 - address
+*                 - lat
+*                 - lon
 *                 - image
 *                 - user_id
 *                 - categories
@@ -98,8 +122,18 @@ const upload = multer({ storage });
 *                description:
 *                  type: string
 *                  description: description of the brewery
+*                address:
+*                  type: string
+*                  description: address of the brewery
+*                lat:
+*                  type: string
+*                  description: lat of the brewery
+*                lon:
+*                  type: string
+*                  description: lon of the brewery
 *                image:
 *                  type: string
+*                  format: binary
 *                  description: logo/image of the brewery
 *                user_id:
 *                  type: integer
@@ -122,6 +156,9 @@ const upload = multer({ storage });
 *                 - title
 *                 - phone
 *                 - description
+*                 - address
+*                 - lat
+*                 - lon
 *                 - image
 *                 - categories
 *              properties:
@@ -136,6 +173,7 @@ const upload = multer({ storage });
 *                  description: description of the brewery
 *                image:
 *                  type: string
+*                  format: binary
 *                  description: logo/image of the brewery
 *                categories:
 *                  type: array
@@ -286,7 +324,7 @@ router.route('/:id([0-9]+)')
     .delete(checkAuthenticated, isOwner, breweryController.deleteBrewery);
     /**
      * @swagger
-     * /brewery{id}/user/{userId}:
+     * /brewery/user:
      *   get:
      *     summary: Returns the list of all the breweries by user id (WITHOUT the 'events' details)
      *     tags: [Brewery]
@@ -308,6 +346,6 @@ router.route('/:id([0-9]+)')
      *       500:
      *          description: internal server error
      */
-router.get('/user/:userId([0-9]+)', checkAuthenticated, catchAsync(breweryController.getOwnerBreweries));
+router.get('/user', checkAuthenticated, catchAsync(breweryController.getOwnerBreweries));
 
 module.exports = router;

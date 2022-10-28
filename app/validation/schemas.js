@@ -4,7 +4,7 @@ const joiPassword = joi.extend(joiPasswordExtendCore);
 const joiPhoneNumber = joi.extend(require('joi-phone-number'));
 
 /**
- * registerSchema monitor the request body, and return an error if any of requirements doesn't match with it
+ * registerSchema monitor the register request body, and return an error if any of requirements doesn't match with it
  */
 module.exports.registerSchema = joi.object({
     name: joi.string().required(),
@@ -21,7 +21,7 @@ module.exports.registerSchema = joi.object({
 }).required();
 
 /**
- * loginSchema monitor the request body, and return an error if any of requirements doesn't match with it
+ * loginSchema monitor the login request body, and return an error if any of requirements doesn't match with it
  */
 module.exports.loginSchema = joi.object({
     email: joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'fr', 'net'] } }),
@@ -36,27 +36,45 @@ module.exports.loginSchema = joi.object({
 }).required();
 
 /**
- * postBrewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ * postBrewerySchema monitor the brewery request body, and return an error if any of requirements doesn't match with it
  */
 module.exports.postBrewerySchema = joi.object({    
     title: joi.string().required(),
     phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
     address: joi.string().required(),
+    lat: joi.number().required(),
+    lon: joi.number().required(),
     image: joi.string().required(),
-    categories: joi.array().items({id: joi.number()}).required(),
+    user_id: joi.number().required(),
+    categories: joi.array().items(joi.object({
+        id: joi.number().min(1).required() 
+    })).required(),
 }).required();
 
 /**
- * editBrewerySchema monitor the request body, and return an error if any of requirements doesn't match with it
+ * editBrewerySchema monitor the brewery request body, and return an error if any of requirements doesn't match with it
  */
 module.exports.editBrewerySchema = joi.object({    
     title: joi.string().required(),
     phone: joiPhoneNumber.string({ defaultCountry: 'FR', format: 'national' }).phoneNumber(),
     description: joi.string().required(),
     address: joi.string().required(),
+    lat: joi.number().required(),
+    lon: joi.number().required(),
     image: joi.string().required(),
-    user_id: joi.number().required(),
-    categories: joi.array().items({id: joi.number()}).required(),
+    categories: joi.array().items(joi.object({
+        id: joi.number().min(1).required() 
+    })).required(),
 }).required();
 
+/**
+ * postEventSchema monitor the event request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.postEventSchema = joi.object({    
+    title: joi.string().required(),
+    description: joi.string().required(),
+    event_start: joi.date().required(),
+    image: joi.string().required(),
+    brewery_id: joi.number().required(),
+}).required();

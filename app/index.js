@@ -39,27 +39,30 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 // EXPRESS
 
-// Activate the middleware to parse the cookie
-app.use(cookieParser("secretcode"));
+
 // Activate the middleware to parse the JSON payload
 app.use(express.json());
 // Activate the middleware to parse the urlencoded payload
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-    secret: "keyboard cats", // default name for more security
-    resave: true, // resave session even if there is no change
-    saveUninitialized: true, // don't create session until something stored
-    cookie: {
-        httpOnly: false,
-        secure: false,
-        maxAge: 60000
-    }
-}));
 
 // Lift the CORS restriction
 app.use(cors({
-    origin: `http://${domain}:${port}`,
+    origin: 'http://localhost:3000',
     credentials: true
+}));
+
+// Activate the middleware to parse the cookie
+app.use(cookieParser("secretcode"));
+
+app.use(session({
+    secret: process.env.SECRET, // default name for more security
+    resave: true, // resave session even if there is no change
+    saveUninitialized: true, // don't create session until something is stored
+    cookie: {
+        httpOnly: false, // set to true for more security
+        secure: false, // set to true for more security
+        maxAge: 1000 * 60 * 60 * 24 * 7,
+    }
 }));
 
 app.use(passport.initialize());

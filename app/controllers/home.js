@@ -5,5 +5,5 @@ module.exports = (req, res) => {
 
     const { id, name, email, password, role } = req.user;
 
-    res.status(200).json({ user: { id, name, email, password, role } });
+    res.status(200).json({ data: { id, name, email, password, role } });
 }

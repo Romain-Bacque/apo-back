@@ -7,7 +7,7 @@ const userController = {
 
         const { id, name, email, password, role } = req.user;
 
-        res.status(200).json({ user: { id, name, email, password, role } });
+        res.status(200).json({ data: { id, name, email, password, role } });
     },
     async register(req, res) {
         const { name, email, password, role } = req.body;    
@@ -22,7 +22,6 @@ const userController = {
         const registeredUser = await user.register();
 
         if (registeredUser) {
-            debug(registeredUser);
             res.sendStatus(200);
         } else res.sendStatus(500);
     },

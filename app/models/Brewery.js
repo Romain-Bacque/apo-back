@@ -1,5 +1,5 @@
 const client = require('../config/db');
-const Core = require('./Core')
+const Core = require('./Core');
 const debug = require('debug')('model');
 
 class Brewery extends Core {
@@ -7,6 +7,8 @@ class Brewery extends Core {
     #phone;
     #description;
     #address;
+    #lat;
+    #lon;
     #image;
     #user_id;
     #categories;
@@ -20,6 +22,8 @@ class Brewery extends Core {
         this.#phone = config.phone;
         this.#description = config.description;
         this.#address = config.address;
+        this.#lat = config.lat;
+        this.#lon = config.lon;
         this.#image = config.image;
         this.#user_id = config.user_id;
         this.#categories = config.categories;
@@ -40,6 +44,14 @@ class Brewery extends Core {
 
     get address () {
         return this.#address;
+    }
+
+    get lat () {
+        return this.#lat;
+    }
+
+    get lon () {
+        return this.#lon;
     }
 
     get image () {
@@ -94,12 +106,14 @@ class Brewery extends Core {
 
     async addBrewery() {
         const query = {
-            text: "SELECT * FROM insert_brewery($1);",
+            text: "SELECT * FROM public.insert_brewery($1);",
             values: [{
                 title: this.title,
                 phone: this.phone,
                 description: this.description,
                 address: this.address,
+                lat: this.lat,
+                lon: this.lon,
                 image: this.image,
                 user_id: this.user_id,
                 categories: this.categories
@@ -115,13 +129,15 @@ class Brewery extends Core {
 
     async updateBrewery() {
         const query = {
-            text: `SELECT * FROM update_brewery($1);`,
+            text: `SELECT * FROM public.update_brewery($1);`,
             values: [{
                 id: this.id,
                 title: this.title,
                 phone: this.phone,
                 description: this.description,
                 address: this.address,
+                lat: this.lat,
+                lon: this.lon,
                 image: this.image,
                 user_id: this.user_id,
                 categories: this.categories
@@ -137,7 +153,7 @@ class Brewery extends Core {
 
     static async deleteBrewery(id) {
         const query = {
-            text: 'DELETE FROM public.brewery WHERE id = $1;',
+            text: 'DELETE FROM public.brewery WHERE id = $1 RETURNING *;',
             values: [id],
         };
         const result = await client.query(query);
