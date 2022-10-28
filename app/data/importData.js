@@ -33,7 +33,7 @@ const categories = [];
         ${params}
         RETURNING *
       `,
-    [...fakeCategories]
+    fakeCategories
   );
 
   if (results?.rowCount > 0) {
