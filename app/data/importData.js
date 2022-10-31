@@ -89,7 +89,7 @@ const categories = [];
     const address = await getGeoLocation(filteredBrewery["properties"].address);
     const generatedCategory = await getRandomCategory(categories);
 
-    if (address[0]) {
+    if (address[0] && registeredUser.role === "brewer") {
       const fakeBrewery = {
         title: striptags(filteredBrewery["properties"].name), // 'striptags' method remove unwanted HTML tags
         phone: faker.phone.number(),

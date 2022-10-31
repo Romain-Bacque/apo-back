@@ -105,7 +105,7 @@ const breweryController = {
       }));
     } else next();
 
-    await cloudinary.uploader.destroy(brewery[0].image);
+    // await cloudinary.uploader.destroy(brewery[0].image);
 
     const isDeleted = await Brewery.deleteBrewery(id);
 
