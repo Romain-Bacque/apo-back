@@ -13,7 +13,7 @@ CREATE TYPE packed AS (
     address TEXT, 
     lat NUMERIC,
     lon NUMERIC,
-    image TEXT, 
+    image json, 
     user_id INT,
     categories json[],
     events json[],
@@ -158,17 +158,15 @@ CREATE FUNCTION insert_brewery(json) RETURNS SETOF brewery_records AS $$
             ($1 ->> 'address')::text,
             ($1 ->> 'lat')::numeric,
             ($1 ->> 'lon')::numeric,
-            ($1 ->> 'image')::text,
+            ($1 ->> 'image')::object,
             ($1 ->> 'user_id')::integer
         )
 		RETURNING "brewery"."id" into breweryId;		
 
         IF(SELECT json_array_length( ( $1 ->> 'categories' )::json ) > 0) THEN
             INSERT INTO "brewery_has_category" ("brewery_id", "category_id")
-                SELECT DISTINCT breweryId, "category".id
-                    FROM (
-                        SELECT * FROM json_to_recordset( ( $1 ->> 'categories' )::json ) AS category("id" INT)
-                    ) as category;      
+                SELECT DISTINCT breweryId, "category".id::integer
+                    FROM json_array_elements_text( ( $1 ->> 'categories' )::json ) AS category(id);      
 		END IF;
 
 		RETURN QUERY

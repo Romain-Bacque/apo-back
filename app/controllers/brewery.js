@@ -67,8 +67,13 @@ const breweryController = {
   },
   async addBrewery(req, res, next) {
     if (!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
-
-    const brewery = new Brewery({ ...req.body, user_id: req.user.id });
+    console.log(req.body.categories ? req.body.categories : []);
+    const brewery = new Brewery({
+      ...req.body,
+      image: { path: req.file.path, filename: req.file.filename },
+      categories: req.body.categories ? req.body.categories : [],
+      user_id: req.user.id,
+    });
     const breweries = await brewery.addBrewery();
 
     if (breweries) {

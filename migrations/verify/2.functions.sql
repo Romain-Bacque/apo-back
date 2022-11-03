@@ -14,14 +14,7 @@ SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", 
     "lon": "0",
     "image": "lien image",
     "user_id": "1",
-    "categories": [
-        {
-            "id": "1"
-        },
-        {
-            "id": "2"
-        }
-    ]
+    "categories": ["1", "2"]
 }');
 SELECT "id", "title", "phone", "description", "address", "image", "user_id", "categories", "created_at", "updated_at" FROM update_brewery('{
     "id": "1",
@@ -33,14 +26,8 @@ SELECT "id", "title", "phone", "description", "address", "image", "user_id", "ca
     "lon": "0",
     "image": "lien image",
     "user_id": "1",
-    "categories": [
-        {
-            "id": "1"
-        },
-        {
-            "id": "2"
-        }
-    ]
+    "categories": "["1", "2"]"
+
 }');
 SELECT "id", "title", "description", "event_start", "total_participants", "brewery", "created_at", "updated_at" FROM get_events_details(1);
 SELECT "id", "title", "description", "event_start", "participants", "total_participants", "brewery", "created_at", "updated_at" FROM get_brewery_events(1);
