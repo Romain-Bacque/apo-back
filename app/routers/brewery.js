@@ -247,8 +247,6 @@ router
    *          description: bad request, error in the request body content
    *       401:
    *          description: unauthorized
-   *       404:
-   *          description: the brewery was not found
    *       500:
    *          description: internal server error
    */

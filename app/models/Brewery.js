@@ -70,25 +70,6 @@ class Brewery extends Core {
     return this.#events;
   }
 
-  static async getOwnerBreweries(id) {
-    const query = {
-      text: "SELECT * FROM public.get_user_breweries($1);",
-      values: [id],
-    };
-    const results = await client.query(query);
-
-    if (results.rows?.length) {
-      const list = [],
-        rows = results.rows;
-
-      for (const row of rows) {
-        list.push(new this(row));
-      }
-
-      return list;
-    } else return null;
-  }
-
   static async getBreweryById(id) {
     const results = await client.query(
       `SELECT * FROM public.get_brewery_details(${id});`
@@ -153,18 +134,20 @@ class Brewery extends Core {
     const result = await client.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows[0];
+      return result.rows;
     } else return null;
   }
 
   static async deleteBrewery(id) {
     const query = {
-      text: "DELETE FROM public.brewery WHERE id = $1 RETURNING *;",
+      text: "SELECT * FROM public.delete_brewery($1);",
       values: [id],
     };
     const result = await client.query(query);
-
-    return result.rowCount > 0;
+    console.log(result.rowCount);
+    if (result.rowCount > 0) {
+      return result.rows;
+    } else return null;
   }
 }
 

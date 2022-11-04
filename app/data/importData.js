@@ -51,7 +51,7 @@ const categories = [];
     for (let i = 0; i <= getRandomNumber(0, fakeCategories.length - 1); i++) {
       const { id } = list[getRandomNumber(0, categories.length - 1)];
 
-      categoryIds.push({ id });
+      categoryIds.push(id);
     }
 
     return categoryIds;
@@ -97,9 +97,9 @@ const categories = [];
         address: address[0]["properties"].formatted,
         lat: address[0]["properties"]["lat"],
         lon: address[0]["properties"]["lon"],
-        image: faker.image.nature(640, 480, true),
+        image: { path: faker.image.nature(640, 480, true), filename: null },
         user_id: registeredUser.id,
-        categories: [...generatedCategory],
+        categories: generatedCategory,
       };
 
       const brewery = new Brewery(fakeBrewery);

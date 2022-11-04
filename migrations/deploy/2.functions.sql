@@ -124,7 +124,7 @@ CREATE FUNCTION get_brewery_details(breweryId INT) RETURNS SETOF packed AS $$
         b."address",
         b."lat",
         b."lon", 
-        b."image", 
+        b."image"::json, 
         b."user_id",
         (SELECT array_agg(json_build_object(  
             'id', c."id",
@@ -158,7 +158,7 @@ CREATE FUNCTION insert_brewery(json) RETURNS SETOF brewery_records AS $$
             ($1 ->> 'address')::text,
             ($1 ->> 'lat')::numeric,
             ($1 ->> 'lon')::numeric,
-            ($1 ->> 'image')::object,
+            ($1 ->> 'image')::json,
             ($1 ->> 'user_id')::integer
         )
 		RETURNING "brewery"."id" into breweryId;		
@@ -177,7 +177,7 @@ $$ LANGUAGE PLPGSQL STRICT;
 
 
 -- Function to update a specific brewery
-CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
+CREATE FUNCTION update_brewery(json) RETURNS SETOF brewery_records AS $$
     DECLARE breweryId INT;
     DECLARE ownerId INT;
 
@@ -193,7 +193,7 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
             "address" = ($1 ->> 'address')::text,
             "lat" = ($1 ->> 'lat')::numeric,
             "lon" = ($1 ->> 'lon')::numeric,
-            "image" = ($1 ->> 'image')::text
+            "image" = ($1 ->> 'image')::json
         WHERE "brewery"."id" = breweryId AND "brewery"."user_id" = ownerId ;
 
         DELETE FROM "brewery_has_category"
@@ -202,13 +202,29 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF packed AS $$
         INSERT INTO "brewery_has_category" ("brewery_id", "category_id")
         SELECT breweryId, "category"."category_id"
         FROM (
-            SELECT DISTINCT "category"."id" AS category_id
-			FROM json_to_recordset( ( $1 ->> 'categories' )::json ) AS "category"("id" INT)
-        ) AS "category";
+            SELECT DISTINCT "category"."id"::integer AS category_id
+            FROM json_array_elements_text( ( $1 ->> 'categories' )::json ) AS category(id)
+        ) AS "category";		
 		
 		RETURN QUERY
-        SELECT * FROM get_brewery_details(breweryId);
+        SELECT * FROM brewery_records;
 
+    END;
+$$ LANGUAGE PLPGSQL STRICT;
+
+
+-- Function to delete a specific brewery
+CREATE FUNCTION delete_brewery(int) RETURNS SETOF brewery_records AS $$
+    DECLARE queryResult INTEGER;
+
+    BEGIN
+		DELETE FROM brewery WHERE id = $1 returning * into queryResult;
+        IF queryResult IS NULL THEN
+            RETURN;
+        ELSE
+            RETURN QUERY
+            SELECT * FROM brewery_records;
+        END IF;
     END;
 $$ LANGUAGE PLPGSQL STRICT;
 
