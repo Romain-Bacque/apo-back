@@ -1,165 +1,154 @@
-const client = require('../config/db');
-const Core = require('./Core');
-const debug = require('debug')('model');
+const client = require("../config/db");
+const Core = require("./Core");
+const debug = require("debug")("model");
 
 class Brewery extends Core {
-    #title;
-    #phone;
-    #description;
-    #address;
-    #lat;
-    #lon;
-    #image;
-    #user_id;
-    #categories;
-    #events;
-        
-    static tableName = "brewery";
+  #title;
+  #phone;
+  #description;
+  #address;
+  #lat;
+  #lon;
+  #image;
+  #user_id;
+  #categories;
+  #events;
 
-    constructor(config) {
-        super(config);
-        this.#title = config.title;
-        this.#phone = config.phone;
-        this.#description = config.description;
-        this.#address = config.address;
-        this.#lat = config.lat;
-        this.#lon = config.lon;
-        this.#image = config.image;
-        this.#user_id = config.user_id;
-        this.#categories = config.categories;
-        this.#events = config.events;
-    }
+  static tableName = "brewery";
 
-    get title () {
-        return this.#title;
-    }
+  constructor(config) {
+    super(config);
+    this.#title = config.title;
+    this.#phone = config.phone;
+    this.#description = config.description;
+    this.#address = config.address;
+    this.#lat = config.lat;
+    this.#lon = config.lon;
+    this.#image = config.image;
+    this.#user_id = config.user_id;
+    this.#categories = config.categories;
+    this.#events = config.events;
+  }
 
-    get phone () {
-        return this.#phone;
-    }
+  get title() {
+    return this.#title;
+  }
 
-    get description () {
-        return this.#description;
-    }
+  get phone() {
+    return this.#phone;
+  }
 
-    get address () {
-        return this.#address;
-    }
+  get description() {
+    return this.#description;
+  }
 
-    get lat () {
-        return this.#lat;
-    }
+  get address() {
+    return this.#address;
+  }
 
-    get lon () {
-        return this.#lon;
-    }
+  get lat() {
+    return this.#lat;
+  }
 
-    get image () {
-        return this.#image;
-    }
+  get lon() {
+    return this.#lon;
+  }
 
-    get user_id () {
-        return this.#user_id;
-    }
+  get image() {
+    return this.#image;
+  }
 
-    get categories () {
-        return this.#categories;
-    }
+  get user_id() {
+    return this.#user_id;
+  }
 
-    get events () {
-        return this.#events;
-    }
+  get categories() {
+    return this.#categories;
+  }
 
-    static async getOwnerBreweries(id) {
-        const query = {
-            text: 'SELECT * FROM public.get_user_breweries($1);',
-            values: [id],
-        };
-        const results = await client.query(query);
+  get events() {
+    return this.#events;
+  }
 
-        if(results.rows?.length) {
-            const list = [],
-            rows = results.rows;
+  static async getBreweryById(id) {
+    const results = await client.query(
+      `SELECT * FROM public.get_brewery_details(${id});`
+    );
 
-            for(const row of rows) {
-                list.push(new this(row));
-            }
+    if (results.rows?.length) {
+      const list = [],
+        rows = results.rows;
 
-            return list;
-        } else return null;
+      for (const row of rows) {
+        list.push(new this(row));
+      }
+
+      return list;
+    } else return null;
+  }
+
+  async addBrewery() {
+    const query = {
+      text: "SELECT * FROM public.insert_brewery($1);",
+      values: [
+        {
+          title: this.title,
+          phone: this.phone,
+          description: this.description,
+          address: this.address,
+          lat: this.lat,
+          lon: this.lon,
+          image: this.image,
+          user_id: this.user_id,
+          categories: this.categories,
+        },
+      ],
     };
 
-    static async getBreweryById(id) {    
-        const results = await client.query(`SELECT * FROM public.get_brewery_details(${id});`);
+    const result = await client.query(query);
 
-        if(results.rows?.length) {
-            const list = [],
-            rows = results.rows;
+    if (result.rowCount > 0) {
+      return result.rows;
+    } else return null;
+  }
 
-            for(const row of rows) {
-                list.push(new this(row));
-            }
+  async updateBrewery() {
+    const query = {
+      text: `SELECT * FROM public.update_brewery($1);`,
+      values: [
+        {
+          id: this.id,
+          title: this.title,
+          phone: this.phone,
+          description: this.description,
+          address: this.address,
+          lat: this.lat,
+          lon: this.lon,
+          image: this.image,
+          user_id: this.user_id,
+          categories: this.categories,
+        },
+      ],
+    };
 
-            return list;
-        } else return null;  
-    }
+    const result = await client.query(query);
 
-    async addBrewery() {
-        const query = {
-            text: "SELECT * FROM public.insert_brewery($1);",
-            values: [{
-                title: this.title,
-                phone: this.phone,
-                description: this.description,
-                address: this.address,
-                lat: this.lat,
-                lon: this.lon,
-                image: this.image,
-                user_id: this.user_id,
-                categories: this.categories
-            }]   
-        };
-        
-        const result = await client.query(query);
+    if (result.rowCount > 0) {
+      return result.rows;
+    } else return null;
+  }
 
-        if(result.rowCount > 0) {
-            return result.rows;
-        } else return null;    
-    }
-
-    async updateBrewery() {
-        const query = {
-            text: `SELECT * FROM public.update_brewery($1);`,
-            values: [{
-                id: this.id,
-                title: this.title,
-                phone: this.phone,
-                description: this.description,
-                address: this.address,
-                lat: this.lat,
-                lon: this.lon,
-                image: this.image,
-                user_id: this.user_id,
-                categories: this.categories
-            }]   
-        };
-        
-        const result = await client.query(query);
-        
-        if(result.rowCount > 0) {
-            return result.rows[0];
-        } else return null;    
-    }
-
-    static async deleteBrewery(id) {
-        const query = {
-            text: 'DELETE FROM public.brewery WHERE id = $1 RETURNING *;',
-            values: [id],
-        };
-        const result = await client.query(query);
-
-        return result.rowCount > 0;
-    }
+  static async deleteBrewery(id) {
+    const query = {
+      text: "SELECT * FROM public.delete_brewery($1);",
+      values: [id],
+    };
+    const result = await client.query(query);
+    console.log(result.rowCount);
+    if (result.rowCount > 0) {
+      return result.rows;
+    } else return null;
+  }
 }
 
 module.exports = Brewery;

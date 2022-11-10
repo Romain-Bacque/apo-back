@@ -12,7 +12,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@faker-js/faker": "^7.5.0",
     "assert": "^2.0.0",
     "axios": "^1.0.0",
     "bcryptjs": "^2.4.3",
@@ -30,15 +29,16 @@
     "multer-storage-cloudinary": "^4.0.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "pg": "^8.8.0",
-    "striptags": "^3.2.0",
-    "swagger-jsdoc": "^6.2.5",
-    "swagger-ui-express": "^4.5.0"
+    "pg": "^8.8.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.19.3",
     "@babel/core": "^7.19.3",
     "@babel/node": "^7.19.1",
-    "@babel/preset-env": "^7.19.3"
+    "@babel/preset-env": "^7.19.3",
+    "@faker-js/faker": "^7.6.0",
+    "striptags": "^3.2.0",
+    "swagger-jsdoc": "^6.2.5",
+    "swagger-ui-express": "^4.6.0"
   }
 }

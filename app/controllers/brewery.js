@@ -68,21 +68,41 @@ const breweryController = {
   async addBrewery(req, res, next) {
     if (!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
 
-    const brewery = new Brewery({ ...req.body, user_id: req.user.id });
-    const breweries = await brewery.addBrewery();
+    const image = req.file
+      ? { path: req.file.path, filename: req.file.filename }
+      : null;
+    const categories = req.body.categories ? req.body.categories : [];
 
-    if (breweries) {
-      res.status(200).json({ data: breweries });
+    const brewery = new Brewery({
+      image,
+      categories,
+      user_id: req.user.id,
+      ...req.body,
+    });
+    const updatedBreweries = await brewery.addBrewery();
+
+    if (updatedBreweries?.length) {
+      res.status(200).json({ data: updatedBreweries });
     } else next();
   },
   async editBrewery(req, res, next) {
     const id = parseInt(req.params.id);
+    const image = req.file
+      ? { path: req.file.path, filename: req.file.filename }
+      : null;
+    const categories = req.body.categories ? req.body.categories : [];
 
-    const brewery = new Brewery({ id, ...req.body, user_id: req.user.id });
-    const updatedBrewery = await brewery.updateBrewery();
+    const brewery = new Brewery({
+      id,
+      image,
+      categories,
+      user_id: req.user.id,
+      ...req.body,
+    });
+    const updatedBreweries = await brewery.updateBrewery();
 
-    if (updatedBrewery) {
-      res.status(200).json({ data: updatedBrewery });
+    if (updatedBreweries?.length) {
+      res.status(200).json({ data: updatedBreweries });
     } else next();
   },
   async deleteBrewery(req, res, next) {
@@ -105,12 +125,18 @@ const breweryController = {
       }));
     } else next();
 
-    // await cloudinary.uploader.destroy(brewery[0].image);
+    if (brewery[0].image?.filename) {
+      const { result } = await cloudinary.uploader.destroy(
+        brewery[0].image.filename
+      );
 
-    const isDeleted = await Brewery.deleteBrewery(id);
+      if (!result) return next();
+    }
 
-    if (isDeleted) {
-      res.sendStatus(200);
+    const updatedBreweries = await Brewery.deleteBrewery(id);
+
+    if (updatedBreweries?.length) {
+      res.status(200).json({ data: updatedBreweries });
     } else next();
   },
 };
