@@ -1,5 +1,5 @@
-{   
+{
   "presets": [
-    "@babel/preset-env"   
-  ] 
+    "@babel/preset-env" // use to translate modern js in older js, understand by all browsers.
+  ]
 }

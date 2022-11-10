@@ -67,11 +67,17 @@ const breweryController = {
   },
   async addBrewery(req, res, next) {
     if (!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
+
+    const image = req.file
+      ? { path: req.file.path, filename: req.file.filename }
+      : null;
+    const categories = req.body.categories ? req.body.categories : [];
+
     const brewery = new Brewery({
-      ...req.body,
-      image: { path: req.file.path, filename: req.file.filename },
-      categories: req.body.categories ? req.body.categories : [],
+      image,
+      categories,
       user_id: req.user.id,
+      ...req.body,
     });
     const updatedBreweries = await brewery.addBrewery();
 
@@ -81,8 +87,18 @@ const breweryController = {
   },
   async editBrewery(req, res, next) {
     const id = parseInt(req.params.id);
+    const image = req.file
+      ? { path: req.file.path, filename: req.file.filename }
+      : null;
+    const categories = req.body.categories ? req.body.categories : [];
 
-    const brewery = new Brewery({ id, ...req.body, user_id: req.user.id });
+    const brewery = new Brewery({
+      id,
+      image,
+      categories,
+      user_id: req.user.id,
+      ...req.body,
+    });
     const updatedBreweries = await brewery.updateBrewery();
 
     if (updatedBreweries?.length) {
@@ -91,8 +107,8 @@ const breweryController = {
   },
   async deleteBrewery(req, res, next) {
     const id = parseInt(req.params.id);
-
     let brewery = await Brewery.getBreweryById(id);
+
     if (brewery) {
       brewery = brewery.map((brewery) => ({
         id: brewery.id,
@@ -109,11 +125,13 @@ const breweryController = {
       }));
     } else next();
 
-    const { result } = await cloudinary.uploader.destroy(
-      brewery[0].image.filename
-    );
+    if (brewery[0].image?.filename) {
+      const { result } = await cloudinary.uploader.destroy(
+        brewery[0].image.filename
+      );
 
-    if (!result) return next();
+      if (!result) return next();
+    }
 
     const updatedBreweries = await Brewery.deleteBrewery(id);
 

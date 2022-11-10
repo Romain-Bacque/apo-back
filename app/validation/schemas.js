@@ -50,6 +50,7 @@ module.exports.loginSchema = joi
 module.exports.postBrewerySchema = joi
   .object({
     title: joi.string().required(),
+    image: joi.binary(),
     phone: joiPhoneNumber
       .string({ defaultCountry: "FR", format: "national" })
       .phoneNumber(),
@@ -67,6 +68,7 @@ module.exports.postBrewerySchema = joi
 module.exports.editBrewerySchema = joi
   .object({
     title: joi.string().required(),
+    image: joi.binary(),
     phone: joiPhoneNumber
       .string({ defaultCountry: "FR", format: "national" })
       .phoneNumber(),
@@ -74,11 +76,7 @@ module.exports.editBrewerySchema = joi
     address: joi.string().required(),
     lat: joi.number().required(),
     lon: joi.number().required(),
-    categories: joi.array().items(
-      joi.object({
-        id: joi.number().min(1).required(),
-      })
-    ),
+    categories: joi.array().items(joi.number().min(1).required()),
   })
   .required();
 

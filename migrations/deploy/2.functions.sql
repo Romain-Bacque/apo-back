@@ -184,7 +184,7 @@ CREATE FUNCTION update_brewery(json) RETURNS SETOF brewery_records AS $$
     BEGIN
 	
 		SELECT ($1 ->> 'id')::int INTO breweryId;
-        SELECT ($1 ->> 'user_id')::int INTO breweryId;
+        SELECT ($1 ->> 'user_id')::int INTO ownerId;
 
         UPDATE "brewery" SET 
             "title" = ($1 ->> 'title')::text,
