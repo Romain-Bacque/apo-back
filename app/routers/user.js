@@ -144,6 +144,8 @@ router.post(
  *          description: internal server error
  */
 router.post("/logout", userController.logout);
+router.post("/forget-password", userController.handleForgotPassword);
+router.get("/reset-password/:id/:token", userController.handleResetPassword);
 router
   .route("/profile/:id([0-9]+)")
   .get(userController.getUser)
