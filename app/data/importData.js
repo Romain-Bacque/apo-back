@@ -51,7 +51,7 @@ const categories = [];
     for (let i = 0; i <= getRandomNumber(0, fakeCategories.length - 1); i++) {
       const { id } = list[getRandomNumber(0, categories.length - 1)];
 
-      categoryIds.push({ id });
+      categoryIds.push(id);
     }
 
     return categoryIds;
@@ -89,7 +89,7 @@ const categories = [];
     const address = await getGeoLocation(filteredBrewery["properties"].address);
     const generatedCategory = await getRandomCategory(categories);
 
-    if (address[0]) {
+    if (address[0] && registeredUser.role === "brewer") {
       const fakeBrewery = {
         title: striptags(filteredBrewery["properties"].name), // 'striptags' method remove unwanted HTML tags
         phone: faker.phone.number(),
@@ -97,9 +97,9 @@ const categories = [];
         address: address[0]["properties"].formatted,
         lat: address[0]["properties"]["lat"],
         lon: address[0]["properties"]["lon"],
-        image: faker.image.nature(640, 480, true),
+        image: { path: faker.image.nature(640, 480, true), filename: null },
         user_id: registeredUser.id,
-        categories: [...generatedCategory],
+        categories: generatedCategory,
       };
 
       const brewery = new Brewery(fakeBrewery);

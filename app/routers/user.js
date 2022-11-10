@@ -1,67 +1,66 @@
-const express = require('express');
-const userController = require('../controllers/user');
+const express = require("express");
+const userController = require("../controllers/user");
 const router = express.Router();
-const passport = require('passport');
-const catchAsync = require('../service/catchAsync');
-const { loginSchema, registerSchema } = require('../validation/schemas');
-const { validate } = require('../validation/validate');
-const { checkNotAuthenticated } = require('../middlewares/middleware');
-
+const passport = require("passport");
+const catchAsync = require("../service/catchAsync");
+const { loginSchema, registerSchema } = require("../validation/schemas");
+const { validate } = require("../validation/validate");
+const { checkNotAuthenticated } = require("../middlewares/middleware");
 
 // SWAGGER CONFIGURATION
 
 /**
-* @swagger
-* components:
-*   schemas:
-*     Register:
-*       type: object
-*       required:
-*          - name
-*          - email
-*          - password
-*          - role
-*       properties:
-*         name:
-*           type: string
-*           description: firstname and lastname of the user
-*         email:
-*           type: string
-*           description: email of the user
-*         password:
-*           type: string
-*           description: password of the user
-*         role:
-*           type: string
-*           description: role of the user
-*     Login:
-*       type: object
-*       required:
-*          - email
-*          - password
-*       properties:
-*         email:
-*           type: string
-*           description: email of the user
-*         password:
-*           type: string
-*           description: password of the user
-*   parameters:
-*     userId:   
-*       in: path
-*       name: id
-*       schema:
-*         type: integer
-*       required: true
-*       description: the user id
-*/
+ * @swagger
+ * components:
+ *   schemas:
+ *     Register:
+ *       type: object
+ *       required:
+ *          - name
+ *          - email
+ *          - password
+ *          - role
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: firstname and lastname of the user
+ *         email:
+ *           type: string
+ *           description: email of the user
+ *         password:
+ *           type: string
+ *           description: password of the user
+ *         role:
+ *           type: string
+ *           description: role of the user
+ *     Login:
+ *       type: object
+ *       required:
+ *          - email
+ *          - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: email of the user
+ *         password:
+ *           type: string
+ *           description: password of the user
+ *   parameters:
+ *     userId:
+ *       in: path
+ *       name: id
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: the user id
+ */
 
 /**
  * @swagger
  * /user/login:
  *   post:
  *     summary: Sign in
- *     tags: [User]  
+ *     tags: [User]
  *     requestBody:
  *        required: true
  *        content:
@@ -86,17 +85,21 @@ const { checkNotAuthenticated } = require('../middlewares/middleware');
  */
 
 /**
- * @swagger 
+ * @swagger
  * tags:
  *  name: User
  *  description: the routes to manage user profile/authentification
  */
 
-
-
 // ROUTES
 
-router.post('/login', checkNotAuthenticated, validate(loginSchema), passport.authenticate('local'), userController.login);
+router.post(
+  "/login",
+  checkNotAuthenticated,
+  validate(loginSchema),
+  passport.authenticate("local"),
+  userController.login
+);
 /**
  * @swagger
  * /user/register:
@@ -108,7 +111,7 @@ router.post('/login', checkNotAuthenticated, validate(loginSchema), passport.aut
  *        content:
  *          application/json:
  *             schema:
- *                $ref: '#/components/schemas/Register' 
+ *                $ref: '#/components/schemas/Register'
  *     responses:
  *       200:
  *          description: user is successfully registered
@@ -119,7 +122,11 @@ router.post('/login', checkNotAuthenticated, validate(loginSchema), passport.aut
  *       500:
  *          description: internal server error
  */
-router.post('/register', validate(registerSchema), catchAsync(userController.register));
+router.post(
+  "/register",
+  validate(registerSchema),
+  catchAsync(userController.register)
+);
 /**
  * @swagger
  * /user/logout:
@@ -136,10 +143,11 @@ router.post('/register', validate(registerSchema), catchAsync(userController.reg
  *       500:
  *          description: internal server error
  */
-router.post('/logout', userController.logout);
-router.route('/profile/:id([0-9]+)')
-    .get(userController.getUser)
-    .put(userController.editUser);
-router.delete('/profile/:id([0-9]+)', userController.deleteAccount);
+router.post("/logout", userController.logout);
+router
+  .route("/profile/:id([0-9]+)")
+  .get(userController.getUser)
+  .put(userController.editUser);
+router.delete("/profile/:id([0-9]+)", userController.deleteAccount);
 
 module.exports = router;
