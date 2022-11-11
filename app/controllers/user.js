@@ -1,7 +1,8 @@
 const debug = require("debug")("controller");
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
-const emailJS = require("../service/emailJS");
+const path = require("path");
+const emailHandler = require("../service/emailHandler");
 
 const userController = {
   login(req, res) {
@@ -33,32 +34,45 @@ const userController = {
       res.sendStatus(200);
     });
   },
-  async handleForgotPassword(req, res, next) {
+  async handleForgetPassword(req, res, next) {
     const { email } = req.body;
-
+    // Check if user exists in database thanks to its email address
     const user = await User.getUserByEmail(email);
 
     if (!user) {
       return res.status(401).json({ message: "user is not registered" });
     }
 
-    const { SECRET, PORT, DOMAIN } = process.env;
+    const { SECRET } = process.env;
     const secret = SECRET + user.password;
     const payload = {
-      email: user.email,
       id: user.id,
+      email: user.email,
     };
-    const token = jwt.sign(payload, secret, { expiresIn: "15min" });
-    const link = `http://${DOMAIN}:${PORT}/reset-password/${user.id}/${token}`;
-    const isEmailSent = await emailJS.sendMail({ email: user.email, link });
+    const token = jwt.sign(payload, secret, { expiresIn: "24h" });
+    const link = `http://localhost:3000/reset-password/${user.id}/${token}`;
 
-    if (isEmailSent) {
-      res.sendStatus(200);
-    } else next();
+    emailHandler.init({
+      service: "gmail",
+      emailFrom: "biere.de.ta.region@gmail.com",
+      subject: "Réinitialisation du mot de passe",
+      template: path.join(
+        __dirname,
+        "../service/emailTemplate/resetPassword.ejs"
+      ),
+    });
+
+    await emailHandler.sendEmail({
+      name: user.name,
+      email: "bacqueromain@orange.fr",
+      link,
+    });
+
+    res.sendStatus(200);
   },
-  async handleResetPassword(req, res) {
+  async resetPassword(req, res) {
     const { id, token } = req.params;
-
+    // Check if user exists in database thanks to its ID
     const user = await User.getUserById(id);
 
     if (!user) {
