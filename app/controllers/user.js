@@ -72,7 +72,7 @@ const userController = {
   },
   async resetPassword(req, res) {
     const { id, token } = req.params;
-    // Check if user exists in database thanks to its ID
+    // Check if the user exists in database thanks to its ID
     const user = await User.getUserById(id);
 
     if (!user) {

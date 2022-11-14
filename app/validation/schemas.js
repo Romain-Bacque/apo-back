@@ -92,3 +92,30 @@ module.exports.postEventSchema = joi
     brewery_id: joi.number().required(),
   })
   .required();
+
+/**
+ * emailSchema monitor the forget password request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.emailSchema = joi
+  .object({
+    email: joi
+      .string()
+      .email({ minDomainSegments: 2, tlds: { allow: ["com", "fr", "net"] } }),
+  })
+  .required();
+
+/**
+ * passwordSchema monitor the reset password request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.passwordSchema = joi
+  .object({
+    password: joiPassword
+      .string()
+      .minOfLowercase(1)
+      .minOfUppercase(1)
+      .minOfNumeric(1)
+      .noWhiteSpaces()
+      .min(8)
+      .required(),
+  })
+  .required();

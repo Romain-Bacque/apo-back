@@ -3,7 +3,12 @@ const userController = require("../controllers/user");
 const router = express.Router();
 const passport = require("passport");
 const catchAsync = require("../service/catchAsync");
-const { loginSchema, registerSchema } = require("../validation/schemas");
+const {
+  loginSchema,
+  registerSchema,
+  emailSchema,
+  passwordSchema,
+} = require("../validation/schemas");
 const { validate } = require("../validation/validate");
 const { checkNotAuthenticated } = require("../middlewares/middleware");
 
@@ -146,10 +151,13 @@ router.post(
 router.post("/logout", userController.logout);
 router.post(
   "/forget-password",
+  checkNotAuthenticated,
+  validate(emailSchema),
   catchAsync(userController.handleForgetPassword)
 );
 router.get(
   "/reset-password/:id([0-9]+)/:token",
+  validate(passwordSchema),
   catchAsync(userController.resetPassword)
 );
 router.route("/profile/:id([0-9]+)").put(userController.editUser);
