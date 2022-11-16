@@ -144,7 +144,7 @@ class Brewery extends Core {
       values: [id],
     };
     const result = await client.query(query);
-    console.log(result.rowCount);
+
     if (result.rowCount > 0) {
       return result.rows;
     } else return null;

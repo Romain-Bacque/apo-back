@@ -3,9 +3,18 @@ const userController = require("../controllers/user");
 const router = express.Router();
 const passport = require("passport");
 const catchAsync = require("../service/catchAsync");
-const { loginSchema, registerSchema } = require("../validation/schemas");
+const {
+  loginSchema,
+  registerSchema,
+  editProfileSchema,
+  emailSchema,
+  passwordSchema,
+} = require("../validation/schemas");
 const { validate } = require("../validation/validate");
-const { checkNotAuthenticated } = require("../middlewares/middleware");
+const {
+  checkNotAuthenticated,
+  checkAuthenticated,
+} = require("../middlewares/middleware");
 
 // SWAGGER CONFIGURATION
 
@@ -55,6 +64,24 @@ const { checkNotAuthenticated } = require("../middlewares/middleware");
  *       description: the user id
  */
 
+// ROUTES
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: user connection status verification
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: user is connected
+ *       401:
+ *          description: user is not connected
+ *       500:
+ *          description: internal server error
+ */
+router.get("/", checkAuthenticated, userController.userVerification);
+
 /**
  * @swagger
  * /user/login:
@@ -91,7 +118,7 @@ const { checkNotAuthenticated } = require("../middlewares/middleware");
  *  description: the routes to manage user profile/authentification
  */
 
-// ROUTES
+router.get("/", checkAuthenticated, userController.userVerification);
 
 router.post(
   "/login",
@@ -144,10 +171,20 @@ router.post(
  *          description: internal server error
  */
 router.post("/logout", userController.logout);
+router.post(
+  "/forget-password",
+  checkNotAuthenticated,
+  validate(emailSchema),
+  catchAsync(userController.handleForgetPassword)
+);
+router.patch(
+  "/reset-password/:id([0-9]+)/:token",
+  validate(passwordSchema),
+  catchAsync(userController.resetPassword)
+);
 router
   .route("/profile/:id([0-9]+)")
-  .get(userController.getUser)
-  .put(userController.editUser);
-router.delete("/profile/:id([0-9]+)", userController.deleteAccount);
+  .patch(validate(editProfileSchema), userController.editUser)
+  .delete(userController.deleteAccount);
 
 module.exports = router;
