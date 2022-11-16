@@ -14,7 +14,6 @@
   "dependencies": {
     "@emailjs/browser": "^3.9.1",
     "assert": "^2.0.0",
-    "axios": "^1.0.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.32.0",
     "cookie-parser": "^1.4.6",
