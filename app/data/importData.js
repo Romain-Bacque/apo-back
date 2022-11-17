@@ -1,4 +1,4 @@
-const { User, Brewery } = require("../models");
+const { User, Brewery, Event } = require("../models");
 const client = require("../config/db");
 const breweries = require("./breweries.json");
 const axios = require("axios");
@@ -104,8 +104,29 @@ const categories = [];
 
       const brewery = new Brewery(fakeBrewery);
 
+      let breweriesList;
+
       await brewery
         .addBrewery()
+        .then((res) => (breweriesList = res))
+        .catch((err) => console.log(err));
+
+      console.log(breweriesList);
+
+      const fakeEvent = {
+        title: `Dégustation numéro ${getRandomNumber(1, 1000)}`,
+        description: "Lorem ipsum",
+        event_start: faker.date.between(
+          "2020-01-01T00:00:00.000Z",
+          "2030-01-01T00:00:00.000Z"
+        ),
+        brewery_id: breweriesList.length - 1,
+      };
+
+      const event = new Event(fakeEvent);
+
+      await event
+        .addEvent()
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
     }
