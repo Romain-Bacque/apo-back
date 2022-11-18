@@ -25,7 +25,7 @@ CREATE TYPE packed2 AS (
     id INT,
     title TEXT,
     description TEXT, 
-    event_start DATE, 
+    event_start TIMESTAMPTZ, 
     total_participants BIGINT, 
     brewery json,
     created_at TIMESTAMPTZ,
@@ -36,7 +36,7 @@ CREATE TYPE packed3 AS (
     id INT,
     title TEXT,
     description TEXT, 
-    event_start DATE,
+    event_start TIMESTAMPTZ,
     participants json[],
     total_participants BIGINT, 
     brewery json,
@@ -136,7 +136,13 @@ CREATE FUNCTION get_brewery_details(breweryId INT) RETURNS SETOF packed AS $$
             'id', e."id",
             'title', e."title",
             'description', e."description",
-            'event_start', e."event_start"
+            'eventStart', e."event_start",
+            'totalParticipants', (
+                SELECT COUNT("event_id") AS "total_participants"
+                FROM "participate" p1
+                WHERE p1."event_id" = e."id"
+                GROUP BY("event_id")
+            )
         )::json) FROM "event" e 
         WHERE e."brewery_id" = b."id") AS "events",
         b."created_at", 
@@ -144,6 +150,7 @@ CREATE FUNCTION get_brewery_details(breweryId INT) RETURNS SETOF packed AS $$
     FROM "brewery" b
     WHERE b."id" = breweryId
 $$ LANGUAGE SQL STRICT;
+
 
 -- Function to add a brewery
 CREATE FUNCTION insert_brewery(json) RETURNS SETOF brewery_records AS $$

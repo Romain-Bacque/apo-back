@@ -37,7 +37,7 @@ const breweryController = {
         lon: brewery.lon,
         description: brewery.description,
         image: brewery.image,
-        user_id: brewery.user_id,
+        userId: brewery.user_id,
         categories: brewery.categories,
       }));
       res.status(200).json({ data: breweries });
