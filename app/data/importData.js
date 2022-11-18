@@ -117,7 +117,8 @@ const categories = [];
       // Create fake event
       const fakeEvent = {
         title: `Dégustation numéro ${getRandomNumber(1, 1000)}`,
-        description: "Lorem ipsum",
+        description:
+          "Et officiis vero ut ullam autem ad dolorem vitae sit dignissimos dicta a maiores odit sit sequi quod aut sapiente ducimus. Ad internos quia ex ipsum corrupti vel vero fugit est recusandae eaque sed laudantium quaerat sit quibusdam illo rem nisi ipsam.",
         event_start: faker.date.between(
           "2020-01-01T00:00:00.000Z",
           "2030-01-01T00:00:00.000Z"

@@ -62,6 +62,7 @@ const breweryController = {
         categories: brewery.categories,
         events: brewery.events,
       }));
+
       res.status(200).json({ data: brewery });
     } else next();
   },

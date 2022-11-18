@@ -1,42 +1,42 @@
-const express = require('express');
-const categoriesController = require('../controllers/category');
+const express = require("express");
+const categoriesController = require("../controllers/category");
+const catchAsync = require("../service/catchAsync");
 const router = express.Router();
 
 // SWAGGER CONFIGURATION
 
 /**
-* @swagger
-* components:
-*   schemas:
-*     category:
-*       type: object
-*       required:
-*          - id
-*          - tag
-*       properties:
-*         id:
-*           type: integer
-*           description: ID of the category
-*         tag:
-*           type: string
-*           description: title of the category
-*   parameters:
-*     categoryId:   
-*       in: path
-*       name: id
-*       schema:
-*         type: integer
-*       required: true
-*       description: the category id
-*/
+ * @swagger
+ * components:
+ *   schemas:
+ *     category:
+ *       type: object
+ *       required:
+ *          - id
+ *          - tag
+ *       properties:
+ *         id:
+ *           type: integer
+ *           description: ID of the category
+ *         tag:
+ *           type: string
+ *           description: title of the category
+ *   parameters:
+ *     categoryId:
+ *       in: path
+ *       name: id
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: the category id
+ */
 
 /**
- * @swagger 
+ * @swagger
  * tags:
  *  name: Category
  *  description: the routes to manage categories
  */
-
 
 // ROUTES
 
@@ -60,6 +60,6 @@ const router = express.Router();
  *       500:
  *          description: internal server error
  */
-router.get('/', categoriesController.getAllCategories);
+router.get("/", catchAsync(categoriesController.getAllCategories));
 
 module.exports = router;

@@ -60,13 +60,11 @@ const eventController = {
 
     const participantId = parseInt(req.user.id);
     const eventId = parseInt(req.params.id);
-
     const result = await Event.setParticipant(participantId, eventId);
 
     if (result) {
-      res.status(200).json(...result);
-    }
-    next();
+      res.status(200).json({ data: result.message });
+    } else next();
   },
   async deleteParticipant(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
