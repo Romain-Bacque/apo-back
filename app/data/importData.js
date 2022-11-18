@@ -72,9 +72,9 @@ const categories = [];
   );
 
   filteredBreweries.forEach(async (filteredBrewery, index) => {
-    if (index >= 300) return; // 500 brewery maximum in the database
+    if (index >= 200) return; // 500 brewery maximum in the database
 
-    // Fake user
+    // Create fake user
     const roles = ["user", "brewer"];
     const fakeUser = {
       name: faker.name.fullName(),
@@ -108,11 +108,13 @@ const categories = [];
 
       await brewery
         .addBrewery()
-        .then((res) => (breweriesList = res))
+        .then((res) => {
+          console.log(res);
+          return (breweriesList = res);
+        })
         .catch((err) => console.log(err));
 
-      console.log(breweriesList);
-
+      // Create fake event
       const fakeEvent = {
         title: `Dégustation numéro ${getRandomNumber(1, 1000)}`,
         description: "Lorem ipsum",
@@ -127,6 +129,11 @@ const categories = [];
 
       await event
         .addEvent()
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+
+      // Create fake participant
+      await Event.setParticipant(registeredUser.id, breweriesList.length - 1)
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
     }
