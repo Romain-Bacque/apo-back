@@ -27,13 +27,13 @@ const eventController = {
     if (!req.user?.id || !req.user.role === "brewer")
       return res.sendStatus(401);
 
-    const event = new Event(req.body);
-    const isAdded = await event.addEvent();
+    const { id: breweryId } = req.params;
+    const event = new Event({ breweryId, ...req.body });
+    const newEvent = await event.addEvent();
 
-    if (isAdded) {
-      res.status(200);
-    }
-    next();
+    if (newEvent) {
+      res.status(200).json({ data: newEvent });
+    } else next();
   },
   async deleteEvent(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
@@ -51,9 +51,8 @@ const eventController = {
     const isDeleted = await Event.deleteEvent(id);
 
     if (isDeleted) {
-      res.status(200);
-    }
-    next();
+      res.sendStatus(200);
+    } else next();
   },
   async setParticipant(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
@@ -76,8 +75,7 @@ const eventController = {
 
     if (isDeleted) {
       res.sendStatus(200);
-    }
-    next();
+    } else next();
   },
 };
 

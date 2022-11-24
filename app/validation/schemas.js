@@ -116,8 +116,7 @@ module.exports.postEventSchema = joi
   .object({
     title: joi.string().required(),
     description: joi.string().required(),
-    event_start: joi.date().required(),
-    brewery_id: joi.number().required(),
+    eventStart: joi.date().required(),
   })
   .required();
 

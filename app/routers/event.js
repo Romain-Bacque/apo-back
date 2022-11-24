@@ -18,7 +18,7 @@ const router = express.Router();
  *          - id
  *          - title
  *          - description
- *          - event_start
+ *          - eventStart
  *          - total_participants
  *          - brewery
  *       properties:
@@ -31,7 +31,7 @@ const router = express.Router();
  *         description:
  *           type: string
  *           description: description of the event
- *         event_start:
+ *         eventStart:
  *           type: string
  *           description: date start of the event
  *         participants:
@@ -70,8 +70,8 @@ const router = express.Router();
  *              required:
  *                - title
  *                - description
- *                - event_start
- *                - brewery_id
+ *                - eventStart
+ *                - breweryId
  *              properties:
  *                title:
  *                  type: string
@@ -79,10 +79,10 @@ const router = express.Router();
  *                description:
  *                  type: string
  *                  description: description of the event
- *                event_start:
+ *                eventStart:
  *                  type: string
  *                  description: date start of the event
- *                brewery_id:
+ *                breweryId:
  *                  type: integer
  *                  description: brewery id the event belongs to
  *   parameters:

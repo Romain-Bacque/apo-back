@@ -5,8 +5,8 @@ const debug = require("debug")("model");
 class Event extends Core {
   #title;
   #description;
-  #event_start;
-  #brewery_id;
+  #eventStart;
+  #breweryId;
 
   static tableName = "event";
 
@@ -14,8 +14,8 @@ class Event extends Core {
     super(config);
     this.#title = config.title;
     this.#description = config.description;
-    this.#event_start = config.event_start;
-    this.#brewery_id = config.brewery_id;
+    this.#eventStart = config.eventStart;
+    this.#breweryId = config.breweryId;
   }
 
   get title() {
@@ -26,12 +26,12 @@ class Event extends Core {
     return this.#description;
   }
 
-  get event_start() {
-    return this.#event_start;
+  get eventStart() {
+    return this.#eventStart;
   }
 
-  get brewery_id() {
-    return this.#brewery_id;
+  get breweryId() {
+    return this.#breweryId;
   }
 
   static async getEventsByParticipant(id) {
@@ -63,34 +63,33 @@ class Event extends Core {
   async addEvent() {
     const query = {
       text: `INSERT INTO event (title, description, event_start, brewery_id)
-                VALUES ($1, $2, $3, $4);`,
+                VALUES ($1, $2, $3, $4) RETURNING *;`,
       values: [
         this.#title,
         this.#description,
-        this.#event_start,
-        this.#brewery_id,
+        this.#eventStart,
+        this.#breweryId,
       ],
     };
-
     const result = await client.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows;
+      return result.rows[0];
     } else return null;
   }
 
   static async deleteEvent(id) {
     const query = {
       text: `DELETE FROM public.participate WHERE event_id = $1;
-                DELETE FROM public.event WHERE id = $1;`,
+                DELETE FROM public.event WHERE id = $1 RETURNING *;`,
       values: [id],
     };
 
     const result = await client.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows[0];
-    } else return null;
+      return true;
+    } else return false;
   }
 
   static async setParticipant(userId, eventId) {
