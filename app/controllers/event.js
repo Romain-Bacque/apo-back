@@ -2,10 +2,21 @@ const debug = require("debug")("controller");
 const { Event, Brewery } = require("../models/");
 
 const eventController = {
+  async getEventsByOwner(req, res, next) {
+    if (!req.user?.id || req.user.role !== "brewer") return res.sendStatus(401);
+
+    const ownerId = +req.user.id;
+    const events = await Event.getEventsByOwner(ownerId);
+
+    if (events) {
+      res.status(200).json({ data: events });
+    } else next();
+  },
   async getEventsByParticipant(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
 
-    const events = await Event.getEventsByParticipant(req.user.id);
+    const participantId = +req.user.id;
+    const events = await Event.getEventsByParticipant(participantId);
 
     if (events) {
       res.status(200).json({ data: events });
@@ -14,7 +25,7 @@ const eventController = {
   async getEventsByBrewery(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
 
-    const id = parseInt(req.params.id);
+    const id = +req.params.id;
 
     const events = await Event.getEventsByBrewery(id);
 
@@ -27,18 +38,19 @@ const eventController = {
     if (!req.user?.id || !req.user.role === "brewer")
       return res.sendStatus(401);
 
-    const { id: breweryId } = req.params;
-    const event = new Event({ breweryId, ...req.body });
-    const newEvent = await event.addEvent();
+    const breweryId = +req.params.id;
+    const ownerId = +req.user.id;
+    const event = new Event({ ...req.body, breweryId, ownerId });
+    const updatedEvents = await event.addEvent();
 
-    if (newEvent) {
-      res.status(200).json({ data: newEvent });
+    if (updatedEvents && updatedEvents.length) {
+      res.status(200).json({ data: updatedEvents });
     } else next();
   },
   async deleteEvent(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
 
-    const id = parseInt(req.params.id);
+    const id = +req.params.id;
     const breweries = await Brewery.getOwnerBreweries(req.user.id);
 
     if (
@@ -57,8 +69,8 @@ const eventController = {
   async setParticipant(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
 
-    const participantId = parseInt(req.user.id);
-    const eventId = parseInt(req.params.id);
+    const participantId = +req.user.id;
+    const eventId = +req.params.id;
     const result = await Event.setParticipant(participantId, eventId);
 
     if (result) {
@@ -68,8 +80,8 @@ const eventController = {
   async deleteParticipant(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
 
-    const participantId = parseInt(req.user.id);
-    const eventId = parseInt(req.params.id);
+    const participantId = +req.user.id;
+    const eventId = +req.params.id;
 
     const isDeleted = await Event.deleteParticipant(participantId, eventId);
 

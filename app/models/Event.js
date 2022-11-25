@@ -7,6 +7,7 @@ class Event extends Core {
   #description;
   #eventStart;
   #breweryId;
+  #ownerId;
 
   static tableName = "event";
 
@@ -16,6 +17,7 @@ class Event extends Core {
     this.#description = config.description;
     this.#eventStart = config.eventStart;
     this.#breweryId = config.breweryId;
+    this.#ownerId = config.ownerId;
   }
 
   get title() {
@@ -34,9 +36,26 @@ class Event extends Core {
     return this.#breweryId;
   }
 
+  get ownerId() {
+    return this.#ownerId;
+  }
+
+  static async getEventsByOwner(id) {
+    const query = {
+      text: `SELECT * FROM public.get_events_by_owner($1);`,
+      values: [id],
+    };
+
+    const result = await client.query(query);
+
+    if (result.rowCount > 0) {
+      return result.rows;
+    } else return null;
+  }
+
   static async getEventsByParticipant(id) {
     const query = {
-      text: `SELECT * FROM public.get_events_details($1);`,
+      text: `SELECT * FROM public.get_events_by_participant($1);`,
       values: [id],
     };
 
@@ -59,22 +78,24 @@ class Event extends Core {
       return result.rows;
     } else return null;
   }
-
   async addEvent() {
     const query = {
-      text: `INSERT INTO event (title, description, event_start, brewery_id)
-                VALUES ($1, $2, $3, $4) RETURNING *;`,
+      text: `SELECT * FROM public.insert_event($1);`,
       values: [
-        this.#title,
-        this.#description,
-        this.#eventStart,
-        this.#breweryId,
+        {
+          title: this.title,
+          description: this.description,
+          eventStart: this.eventStart,
+          breweryId: this.breweryId,
+          ownerId: this.ownerId,
+        },
       ],
     };
+
     const result = await client.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows[0];
+      return result.rows;
     } else return null;
   }
 

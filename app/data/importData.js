@@ -114,16 +114,19 @@ const categories = [];
         })
         .catch((err) => console.log(err));
 
+      const randomBrewery =
+        breweriesList[getRandomNumber(0, breweriesList.length - 1)];
       // Create fake event
       const fakeEvent = {
         title: `Dégustation numéro ${getRandomNumber(1, 1000)}`,
         description:
           "Et officiis vero ut ullam autem ad dolorem vitae sit dignissimos dicta a maiores odit sit sequi quod aut sapiente ducimus. Ad internos quia ex ipsum corrupti vel vero fugit est recusandae eaque sed laudantium quaerat sit quibusdam illo rem nisi ipsam.",
-        event_start: faker.date.between(
+        eventStart: faker.date.between(
           "2020-01-01T00:00:00.000Z",
           "2030-01-01T00:00:00.000Z"
         ),
-        brewery_id: breweriesList.length - 1,
+        breweryId: randomBrewery.id,
+        ownerId: randomBrewery.user_id,
       };
 
       const event = new Event(fakeEvent);
@@ -134,7 +137,7 @@ const categories = [];
         .catch((err) => console.log(err));
 
       // Create fake participant
-      await Event.setParticipant(registeredUser.id, breweriesList.length - 1)
+      await Event.setParticipant(registeredUser.id, randomBrewery.id)
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
     }

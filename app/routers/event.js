@@ -71,7 +71,7 @@ const router = express.Router();
  *                - title
  *                - description
  *                - eventStart
- *                - breweryId
+ *                - ownerId
  *              properties:
  *                title:
  *                  type: string
@@ -82,9 +82,9 @@ const router = express.Router();
  *                eventStart:
  *                  type: string
  *                  description: date start of the event
- *                breweryId:
+ *                ownerId:
  *                  type: integer
- *                  description: brewery id the event belongs to
+ *                  description: owner id the event belongs to
  *   parameters:
  *     eventId:
  *       in: path
@@ -111,31 +111,61 @@ const router = express.Router();
 
 // ROUTES
 
-router
-  .route("/")
-  /**
-   * @swagger
-   * /event:
-   *   get:
-   *     summary: Returns the list of all the events details by participant
-   *     tags: [Event]
-   *     responses:
-   *       200:
-   *         description: the list of the events
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: array
-   *               items:
-   *                 $ref: '#/components/schemas/Event'
-   *       401:
-   *          description: unauthorized
-   *       404:
-   *          description: the events was not found
-   *       500:
-   *          description: internal server error
-   */
-  .get(eventController.getEventsByParticipant);
+/**
+ * @swagger
+ * /event/owner:
+ *   get:
+ *     summary: Returns the list of all the events details by owner
+ *     tags: [Event]
+ *     responses:
+ *       200:
+ *         description: the list of the owner events
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Event'
+ *       401:
+ *          description: unauthorized
+ *       404:
+ *          description: the events was not found
+ *       500:
+ *          description: internal server error
+ */
+router.get(
+  "/owner",
+  checkAuthenticated,
+  catchAsync(eventController.getEventsByOwner)
+);
+
+/**
+ * @swagger
+ * /event/participant:
+ *   get:
+ *     summary: Returns the list of all the events details by participant
+ *     tags: [Event]
+ *     responses:
+ *       200:
+ *         description: the list of the participant events
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Event'
+ *       401:
+ *          description: unauthorized
+ *       404:
+ *          description: the events was not found
+ *       500:
+ *          description: internal server error
+ */
+router.get(
+  "/participant",
+  checkAuthenticated,
+  catchAsync(eventController.getEventsByParticipant)
+);
 
 router
   .route("/:id([0-9]+)")

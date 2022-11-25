@@ -236,8 +236,74 @@ CREATE FUNCTION delete_brewery(int) RETURNS SETOF brewery_records AS $$
 $$ LANGUAGE PLPGSQL STRICT;
 
 
+
+-- Function add event
+CREATE FUNCTION insert_event(json) RETURNS SETOF packed3 AS $$
+    DECLARE queryResult INTEGER;
+
+	BEGIN
+	
+		INSERT INTO event (
+				"title",
+				"description",
+				"event_start",
+				"brewery_id")
+		VALUES (
+			($1 ->> 'title')::text,
+			($1 ->> 'description')::text,
+			($1 ->> 'eventStart')::timestamptz,
+			($1 ->> 'breweryId')::int
+			)
+		RETURNING * INTO queryResult;
+		
+	    IF queryResult IS NOT NULL THEN
+            RETURN QUERY
+			SELECT * FROM get_events_by_owner(($1 ->> 'ownerId')::int);
+        ELSE
+            RETURN;
+		END IF;
+
+	END;
+
+$$ LANGUAGE PLPGSQL STRICT;
+
+-- Function get all events details by owner
+CREATE FUNCTION get_events_by_owner(userId INT) RETURNS SETOF packed3 AS $$
+    SELECT  e."id",
+            e."title",
+            e."description",
+            e."event_start",
+			array_agg(
+				json_build_object(
+                    'name', u."name",
+                    'email', u."email")
+			) AS "participants",
+            p."total_participants",
+            json_build_object(
+                    'id', b."id",
+                    'address', b."address",
+                    'title', b."title") AS "brewery",
+            e."created_at", 
+            e."updated_at"
+    FROM (
+        SELECT p2."user_id", p2."event_id", (
+            SELECT COUNT("event_id") AS "total_participants"
+            FROM "participate" p1
+            WHERE p1."event_id" = p2."event_id"
+            GROUP BY("event_id")
+        )
+    FROM "participate" p2) p 
+    FULL JOIN "event" e ON e."id" = p."event_id"
+    FULL JOIN "brewery" b ON b."id" = e."brewery_id"
+    FULL JOIN public."user" u ON u."id" = p."user_id"
+    WHERE b."user_id" = userId
+	GROUP BY (e."id", p."total_participants", b."id");
+
+$$ LANGUAGE SQL STRICT;
+
+
 -- Function get all events details by participant
-CREATE FUNCTION get_events_details(userId INT) RETURNS SETOF packed2 AS $$
+CREATE FUNCTION get_events_by_participant(userId INT) RETURNS SETOF packed2 AS $$
     SELECT  e.id,
             e."title",
             e."description",
