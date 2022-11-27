@@ -1,19 +1,19 @@
-const Core = require('./Core')
-const debug = require('debug')('model');
+const Core = require("./Core");
+const debug = require("debug")("model");
 
 class Category extends Core {
-    #tag;
+  #tag;
 
-    static tableName = "category";
+  static tableName = "category";
 
-    constructor(config) {
-        super(config);
-        this.#tag = config.tag;
-    }
+  constructor(config) {
+    super(config);
+    this.#tag = config.tag;
+  }
 
-    get tag() {
-        return this.#tag;
-    }
+  get tag() {
+    return this.#tag;
+  }
 }
 
 module.exports = Category;

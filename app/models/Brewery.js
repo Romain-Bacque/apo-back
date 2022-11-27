@@ -75,13 +75,11 @@ class Brewery extends Core {
       `SELECT * FROM public.get_brewery_details(${id});`
     );
 
-    if (results.rows?.length) {
+    if (results.rowCount > 0) {
       const list = [],
-        rows = results.rows;
+        row = results.rows[0];
 
-      for (const row of rows) {
-        list.push(new this(row));
-      }
+      list.push(new this(row));
 
       return list;
     } else return null;
@@ -144,7 +142,7 @@ class Brewery extends Core {
       values: [id],
     };
     const result = await client.query(query);
-    console.log(result.rowCount);
+
     if (result.rowCount > 0) {
       return result.rows;
     } else return null;

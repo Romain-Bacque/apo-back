@@ -45,6 +45,35 @@ module.exports.loginSchema = joi
   .required();
 
 /**
+ * editProfileSchema monitor the edit profile request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.editProfileSchema = joi
+  .object({
+    name: joi.string().required(),
+    email: joi
+      .string()
+      .email({ minDomainSegments: 2, tlds: { allow: ["com", "fr", "net"] } })
+      .required(),
+    actualPassword: joiPassword
+      .string()
+      .minOfLowercase(1)
+      .minOfUppercase(1)
+      .minOfNumeric(1)
+      .noWhiteSpaces()
+      .min(8)
+      .required(),
+    newPassword: joiPassword
+      .string()
+      .minOfLowercase(1)
+      .minOfUppercase(1)
+      .minOfNumeric(1)
+      .noWhiteSpaces()
+      .min(8)
+      .required(),
+  })
+  .required();
+
+/**
  * postBrewerySchema monitor the brewery request body, and return an error if any of requirements doesn't match with it
  */
 module.exports.postBrewerySchema = joi
@@ -87,8 +116,33 @@ module.exports.postEventSchema = joi
   .object({
     title: joi.string().required(),
     description: joi.string().required(),
-    event_start: joi.date().required(),
-    image: joi.string().required(),
-    brewery_id: joi.number().required(),
+    eventStart: joi.date().required(),
+  })
+  .required();
+
+/**
+ * emailSchema monitor the forget password request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.emailSchema = joi
+  .object({
+    email: joi
+      .string()
+      .email({ minDomainSegments: 2, tlds: { allow: ["com", "fr", "net"] } }),
+  })
+  .required();
+
+/**
+ * passwordSchema monitor the reset password request body, and return an error if any of requirements doesn't match with it
+ */
+module.exports.passwordSchema = joi
+  .object({
+    password: joiPassword
+      .string()
+      .minOfLowercase(1)
+      .minOfUppercase(1)
+      .minOfNumeric(1)
+      .noWhiteSpaces()
+      .min(8)
+      .required(),
   })
   .required();

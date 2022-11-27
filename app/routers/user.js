@@ -3,9 +3,18 @@ const userController = require("../controllers/user");
 const router = express.Router();
 const passport = require("passport");
 const catchAsync = require("../service/catchAsync");
-const { loginSchema, registerSchema } = require("../validation/schemas");
+const {
+  loginSchema,
+  registerSchema,
+  editProfileSchema,
+  emailSchema,
+  passwordSchema,
+} = require("../validation/schemas");
 const { validate } = require("../validation/validate");
-const { checkNotAuthenticated } = require("../middlewares/middleware");
+const {
+  checkNotAuthenticated,
+  checkAuthenticated,
+} = require("../middlewares/middleware");
 
 // SWAGGER CONFIGURATION
 
@@ -13,6 +22,42 @@ const { checkNotAuthenticated } = require("../middlewares/middleware");
  * @swagger
  * components:
  *   schemas:
+ *     Email:
+ *       type: object
+ *       required:
+ *          - email
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: user email
+ *     Password:
+ *       type: object
+ *       required:
+ *          - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: user password
+ *     Profile:
+ *       type: object
+ *       required:
+ *          - name
+ *          - email
+ *          - actualPassword
+ *          - newPassword
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: user name/pseudo
+ *         email:
+ *           type: string
+ *           description: user email
+ *         actualPassword:
+ *           type: string
+ *           description: actual user password
+ *         newPassword:
+ *           type: string
+ *           description: new password user password
  *     Register:
  *       type: object
  *       required:
@@ -23,16 +68,16 @@ const { checkNotAuthenticated } = require("../middlewares/middleware");
  *       properties:
  *         name:
  *           type: string
- *           description: firstname and lastname of the user
+ *           description: user name/pseudo
  *         email:
  *           type: string
- *           description: email of the user
+ *           description: user email
  *         password:
  *           type: string
- *           description: password of the user
+ *           description: user password
  *         role:
  *           type: string
- *           description: role of the user
+ *           description: user role
  *     Login:
  *       type: object
  *       required:
@@ -41,10 +86,10 @@ const { checkNotAuthenticated } = require("../middlewares/middleware");
  *       properties:
  *         email:
  *           type: string
- *           description: email of the user
+ *           description: user email
  *         password:
  *           type: string
- *           description: password of the user
+ *           description: user password
  *   parameters:
  *     userId:
  *       in: path
@@ -52,8 +97,33 @@ const { checkNotAuthenticated } = require("../middlewares/middleware");
  *       schema:
  *         type: integer
  *       required: true
- *       description: the user id
+ *       description: user id
+ *     token:
+ *       in: path
+ *       name: token
+ *       schema:
+ *         type: integer
+ *       required: true
+ *       description: user jwt token
  */
+
+// ROUTES
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *     summary: user connection status verification
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: user is connected
+ *       401:
+ *          description: user is not connected
+ *       500:
+ *          description: internal server error
+ */
+router.get("/", checkAuthenticated, userController.userVerification);
 
 /**
  * @swagger
@@ -91,7 +161,7 @@ const { checkNotAuthenticated } = require("../middlewares/middleware");
  *  description: the routes to manage user profile/authentification
  */
 
-// ROUTES
+router.get("/", checkAuthenticated, userController.userVerification);
 
 router.post(
   "/login",
@@ -106,6 +176,9 @@ router.post(
  *   post:
  *     summary: Sign up
  *     tags: [User]
+ *     parameters:
+ *       - $ref: '#/components/parameters/id'
+ *       - $ref: '#/components/parameters/token'
  *     requestBody:
  *        required: true
  *        content:
@@ -144,10 +217,107 @@ router.post(
  *          description: internal server error
  */
 router.post("/logout", userController.logout);
+/**
+ * @swagger
+ * /user/forget-password:
+ *   post:
+ *     summary: Forget password
+ *     tags: [User]
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Email'
+ *     responses:
+ *       200:
+ *          description: user is successfully registered
+ *       400:
+ *          description: bad request, error in the request body content
+ *       401:
+ *          description: user doesn't exists
+ *       500:
+ *          description: internal server error
+ */
+router.post(
+  "/forget-password",
+  checkNotAuthenticated,
+  validate(emailSchema),
+  catchAsync(userController.handleForgetPassword)
+);
+/**
+ * @swagger
+ * /user/reset-password/{id}/{token}:
+ *   patch:
+ *     summary: Reset password
+ *     tags: [User]
+ *     requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *             schema:
+ *                $ref: '#/components/schemas/Password'
+ *     parameters:
+ *       - $ref: '#/components/parameters/userId'
+ *       - $ref: '#/components/parameters/token'
+ *     responses:
+ *       200:
+ *          description: user password is successfully updated
+ *       400:
+ *          description: bad request, error in the request body content
+ *       401:
+ *          description: user doesn't exists
+ *       500:
+ *          description: internal server error
+ */
+router.patch(
+  "/reset-password/:id([0-9]+)/:token",
+  validate(passwordSchema),
+  catchAsync(userController.resetPassword)
+);
 router
   .route("/profile/:id([0-9]+)")
-  .get(userController.getUser)
-  .put(userController.editUser);
-router.delete("/profile/:id([0-9]+)", userController.deleteAccount);
+  /**
+   * @swagger
+   * /user/profile/{id}:
+   *   patch:
+   *     summary: Update profile
+   *     tags: [User]
+   *     requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *             schema:
+   *                $ref: '#/components/schemas/Profile'
+   *     parameters:
+   *       - $ref: '#/components/parameters/userId'
+   *     responses:
+   *       200:
+   *          description: user profile is successfully updated
+   *       400:
+   *          description: bad request, error in the request body content
+   *       401:
+   *          description: user doesn't exists
+   *       500:
+   *          description: internal server error
+   */
+  .patch(validate(editProfileSchema), catchAsync(userController.editUser))
+  /**
+   * @swagger
+   * /user/profile/{id}:
+   *   delete:
+   *     summary: Delete profile
+   *     tags: [User]
+   *     parameters:
+   *       - $ref: '#/components/parameters/userId'
+   *     responses:
+   *       200:
+   *          description: account is successfully deleted
+   *       401:
+   *          description: user doesn't exists
+   *       500:
+   *          description: internal server error
+   */
+  .delete(catchAsync(userController.deleteAccount));
 
 module.exports = router;
