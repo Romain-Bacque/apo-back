@@ -1,4 +1,4 @@
-const { User, Brewery } = require("../models");
+const { User, Brewery, Event } = require("../models");
 const client = require("../config/db");
 const breweries = require("./breweries.json");
 const axios = require("axios");
@@ -72,9 +72,9 @@ const categories = [];
   );
 
   filteredBreweries.forEach(async (filteredBrewery, index) => {
-    if (index >= 300) return; // 500 brewery maximum in the database
+    if (index >= 200) return; // 500 brewery maximum in the database
 
-    // Fake user
+    // Create fake user
     const roles = ["user", "brewer"];
     const fakeUser = {
       name: faker.name.fullName(),
@@ -104,8 +104,40 @@ const categories = [];
 
       const brewery = new Brewery(fakeBrewery);
 
+      let breweriesList;
+
       await brewery
         .addBrewery()
+        .then((res) => {
+          console.log(res);
+          return (breweriesList = res);
+        })
+        .catch((err) => console.log(err));
+
+      const randomBrewery =
+        breweriesList[getRandomNumber(0, breweriesList.length - 1)];
+      // Create fake event
+      const fakeEvent = {
+        title: `Dégustation numéro ${getRandomNumber(1, 1000)}`,
+        description:
+          "Et officiis vero ut ullam autem ad dolorem vitae sit dignissimos dicta a maiores odit sit sequi quod aut sapiente ducimus. Ad internos quia ex ipsum corrupti vel vero fugit est recusandae eaque sed laudantium quaerat sit quibusdam illo rem nisi ipsam.",
+        eventStart: faker.date.between(
+          "2020-01-01T00:00:00.000Z",
+          "2030-01-01T00:00:00.000Z"
+        ),
+        breweryId: randomBrewery.id,
+        ownerId: randomBrewery.user_id,
+      };
+
+      const event = new Event(fakeEvent);
+
+      await event
+        .addEvent()
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
+
+      // Create fake participant
+      await Event.setParticipant(registeredUser.id, randomBrewery.id)
         .then((res) => console.log(res))
         .catch((err) => console.log(err));
     }

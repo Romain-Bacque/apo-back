@@ -30,7 +30,15 @@ SELECT  "id", "title", "phone", "description", "address", "lat", "lon", "image",
 
 }');
 SELECT  "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM delete_brewery(1);
-SELECT "id", "title", "description", "event_start", "total_participants", "brewery", "created_at", "updated_at" FROM get_events_details(1);
+SELECT * FROM insert_event('{						   
+    "title": "titre brasserie",
+    "description": "test description",
+    "eventStart": "20/02/2022",
+    "breweryId": 1,
+	"userId": 1										   
+}');
+SELECT "id", "title", "description", "event_start", "total_participants", "brewery", "created_at", "updated_at" FROM get_events_by_owner(1);
+SELECT "id", "title", "description", "event_start", "total_participants", "brewery", "created_at", "updated_at" FROM get_events_by_participant(1);
 SELECT "id", "title", "description", "event_start", "participants", "total_participants", "brewery", "created_at", "updated_at" FROM get_brewery_events(1);
 
 ROLLBACK;

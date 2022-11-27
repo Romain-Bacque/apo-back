@@ -301,7 +301,7 @@ router
    *       500:
    *          description: internal server error
    */
-  .patch(validate(editProfileSchema), userController.editUser)
+  .patch(validate(editProfileSchema), catchAsync(userController.editUser))
   /**
    * @swagger
    * /user/profile/{id}:
@@ -318,6 +318,6 @@ router
    *       500:
    *          description: internal server error
    */
-  .delete(userController.deleteAccount);
+  .delete(catchAsync(userController.deleteAccount));
 
 module.exports = router;

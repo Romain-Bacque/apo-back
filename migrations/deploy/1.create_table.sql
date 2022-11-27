@@ -37,22 +37,22 @@ CREATE TABLE IF NOT EXISTS "event" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "event_start" DATE,
+    "event_start" TIMESTAMPTZ NOT NULL,
     "brewery_id" INT REFERENCES "brewery"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS "brewery_has_category" (
-    "category_id" INT REFERENCES "category"("id") ON DELETE CASCADE,
-    "brewery_id" INT REFERENCES "brewery"("id") ON DELETE CASCADE,
+    "category_id" INT NOT NULL REFERENCES "category"("id") ON DELETE CASCADE,
+    "brewery_id" INT NOT NULL REFERENCES "brewery"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS "participate" (
-    "user_id" INT REFERENCES "user"("id") ON DELETE CASCADE,
-    "event_id" INT REFERENCES "event"("id") ON DELETE CASCADE,
+    "user_id" INT NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+    "event_id" INT NOT NULL REFERENCES "event"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
