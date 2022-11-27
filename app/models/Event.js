@@ -101,16 +101,13 @@ class Event extends Core {
 
   static async deleteEvent(id) {
     const query = {
-      text: `DELETE FROM public.participate WHERE event_id = $1;
-                DELETE FROM public.event WHERE id = $1 RETURNING *;`,
+      text: `DELETE FROM public.event WHERE id = $1 RETURNING *;`,
       values: [id],
     };
 
     const result = await client.query(query);
 
-    if (result.rowCount > 0) {
-      return true;
-    } else return false;
+    return result.rowCount > 0;
   }
 
   static async setParticipant(userId, eventId) {
@@ -118,7 +115,6 @@ class Event extends Core {
       text: "SELECT * FROM set_participant($1, $2);",
       values: [userId, eventId],
     };
-
     const result = await client.query(query);
 
     if (result.rowCount > 0) {

@@ -168,6 +168,51 @@ router.get(
 );
 
 router
+  .route("/participant/:id([0-9]+)")
+  /**
+   * @swagger
+   * /event/participant/{id}:
+   *   post:
+   *     summary: Register a new participant in an event
+   *     tags: [Event]
+   *     parameters:
+   *       - $ref: '#/components/parameters/eventId'
+   *     responses:
+   *       200:
+   *         description: the participant was successfully added
+   *       400:
+   *          description: bad request, error in the request body content
+   *       401:
+   *          description: unauthorized
+   *       404:
+   *          description: the event or/and user was not found
+   *       500:
+   *          description: internal server error
+   */
+  .post(checkAuthenticated, catchAsync(eventController.setParticipant))
+  /**
+   * @swagger
+   * /event/participant/{id}:
+   *   delete:
+   *     summary: Delete a participant from an event
+   *     tags: [Event]
+   *     parameters:
+   *       - $ref: '#/components/parameters/eventId'
+   *     responses:
+   *       200:
+   *         description: the participant was successfully deleted
+   *       400:
+   *          description: bad request, error in the request body content
+   *       401:
+   *          description: unauthorized
+   *       404:
+   *          description: the participant was not found
+   *       500:
+   *          description: internal server error
+   */
+  .delete(checkAuthenticated, catchAsync(eventController.deleteParticipant));
+
+router
   .route("/:id([0-9]+)")
   /**
    * @swagger
@@ -236,50 +281,5 @@ router
    *          description: internal server error
    */
   .delete(eventController.deleteEvent);
-
-router
-  .route("/:id([0-9]+(/user))")
-  /**
-   * @swagger
-   * /event/{id}/user:
-   *   post:
-   *     summary: Register a new participant in an event
-   *     tags: [Event]
-   *     parameters:
-   *       - $ref: '#/components/parameters/eventId'
-   *     responses:
-   *       200:
-   *         description: the participant was successfully added
-   *       400:
-   *          description: bad request, error in the request body content
-   *       401:
-   *          description: unauthorized
-   *       404:
-   *          description: the event or/and user was not found
-   *       500:
-   *          description: internal server error
-   */
-  .post(checkAuthenticated, catchAsync(eventController.setParticipant))
-  /**
-   * @swagger
-   * /event/{id}/user:
-   *   delete:
-   *     summary: Delete a participant from an event
-   *     tags: [Event]
-   *     parameters:
-   *       - $ref: '#/components/parameters/eventId'
-   *     responses:
-   *       200:
-   *         description: the participant was successfully deleted
-   *       400:
-   *          description: bad request, error in the request body content
-   *       401:
-   *          description: unauthorized
-   *       404:
-   *          description: the participant was not found
-   *       500:
-   *          description: internal server error
-   */
-  .delete(checkAuthenticated, catchAsync(eventController.deleteParticipant));
 
 module.exports = router;

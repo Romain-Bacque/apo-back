@@ -50,17 +50,14 @@ const eventController = {
   async deleteEvent(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
 
-    const id = +req.params.id;
-    const breweries = await Brewery.getOwnerBreweries(req.user.id);
+    const eventId = +req.params.id;
+    const events = await Event.getEventsByOwner(req.user.id);
 
-    if (
-      !breweries ||
-      !breweries.find((brewery) => brewery.id === req.body.breweryId)
-    ) {
+    if (!events?.length || !events.find((event) => event.id === eventId)) {
       return res.sendStatus(401);
     }
 
-    const isDeleted = await Event.deleteEvent(id);
+    const isDeleted = await Event.deleteEvent(eventId);
 
     if (isDeleted) {
       res.sendStatus(200);
@@ -71,6 +68,12 @@ const eventController = {
 
     const participantId = +req.user.id;
     const eventId = +req.params.id;
+    const events = await Event.getEventsByOwner(req.user.id);
+
+    if (events?.length && events.find((event) => event.id === eventId)) {
+      return res.sendStatus(409);
+    }
+
     const result = await Event.setParticipant(participantId, eventId);
 
     if (result) {
@@ -82,7 +85,6 @@ const eventController = {
 
     const participantId = +req.user.id;
     const eventId = +req.params.id;
-
     const isDeleted = await Event.deleteParticipant(participantId, eventId);
 
     if (isDeleted) {
