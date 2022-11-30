@@ -107,6 +107,13 @@ const {
  *       description: user jwt token
  */
 
+/**
+ * @swagger
+ * tags:
+ *  name: User
+ *  description: the routes to manage user profile/authentification
+ */
+
 // ROUTES
 
 /**
@@ -153,15 +160,6 @@ router.get("/", checkAuthenticated, userController.userVerification);
  *       500:
  *          description: internal server error
  */
-
-/**
- * @swagger
- * tags:
- *  name: User
- *  description: the routes to manage user profile/authentification
- */
-
-router.get("/", checkAuthenticated, userController.userVerification);
 
 router.post(
   "/login",
@@ -219,9 +217,9 @@ router.post(
 router.post("/logout", userController.logout);
 /**
  * @swagger
- * /user/forget-password:
+ * /user/forgot-password:
  *   post:
- *     summary: Forget password
+ *     summary: Forgot password
  *     tags: [User]
  *     requestBody:
  *        required: true
@@ -240,10 +238,10 @@ router.post("/logout", userController.logout);
  *          description: internal server error
  */
 router.post(
-  "/forget-password",
+  "/forgot-password",
   checkNotAuthenticated,
   validate(emailSchema),
-  catchAsync(userController.handleForgetPassword)
+  catchAsync(userController.handleForgotPassword)
 );
 /**
  * @swagger
@@ -276,10 +274,10 @@ router.patch(
   catchAsync(userController.resetPassword)
 );
 router
-  .route("/profile/:id([0-9]+)")
+  .route("/profile")
   /**
    * @swagger
-   * /user/profile/{id}:
+   * /user/profile:
    *   patch:
    *     summary: Update profile
    *     tags: [User]
@@ -289,8 +287,6 @@ router
    *          application/json:
    *             schema:
    *                $ref: '#/components/schemas/Profile'
-   *     parameters:
-   *       - $ref: '#/components/parameters/userId'
    *     responses:
    *       200:
    *          description: user profile is successfully updated
@@ -304,12 +300,10 @@ router
   .patch(validate(editProfileSchema), catchAsync(userController.editUser))
   /**
    * @swagger
-   * /user/profile/{id}:
+   * /user/profile:
    *   delete:
    *     summary: Delete profile
    *     tags: [User]
-   *     parameters:
-   *       - $ref: '#/components/parameters/userId'
    *     responses:
    *       200:
    *          description: account is successfully deleted
@@ -318,6 +312,6 @@ router
    *       500:
    *          description: internal server error
    */
-  .delete(catchAsync(userController.deleteAccount));
+  .delete(checkAuthenticated, catchAsync(userController.deleteAccount));
 
 module.exports = router;
