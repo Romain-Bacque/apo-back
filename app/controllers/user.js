@@ -4,7 +4,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const emailHandler = require("../service/emailHandler");
-const { networkInterfaces } = require("os");
 
 const userController = {
   userVerification(req, res) {
