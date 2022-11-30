@@ -43,7 +43,7 @@ const userController = {
       res.sendStatus(200);
     });
   },
-  async handleForgetPassword(req, res, next) {
+  async handleForgotPassword(req, res, next) {
     const { email } = req.body;
     const user = await User.getUserByEmail(email);
 
@@ -104,8 +104,10 @@ const userController = {
       res.sendStatus(200);
     } else next();
   },
-  async editUser(req, res) {
-    const { id } = req.params;
+  async editUser(req, res, next) {
+    if (!req.user) return res.sendStatus(500);
+
+    const { id } = req.user;
     const { name, email, actualPassword, newPassword } = req.body;
     const user = await User.getUserByEmail(email);
 
@@ -130,8 +132,9 @@ const userController = {
     } else next();
   },
   async deleteAccount(req, res, next) {
-    const { id } = req.params;
+    if (!req.user) return res.sendStatus(500);
 
+    const { id } = req.user;
     const isDeleted = await User.deleteUser(id);
 
     if (isDeleted) {
