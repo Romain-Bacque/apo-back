@@ -297,7 +297,11 @@ router
    *       500:
    *          description: internal server error
    */
-  .patch(validate(editProfileSchema), catchAsync(userController.editUser))
+  .patch(
+    checkAuthenticated,
+    validate(editProfileSchema),
+    catchAsync(userController.editUser)
+  )
   /**
    * @swagger
    * /user/profile:
