@@ -1,4 +1,4 @@
-const client = require("../config/db");
+const pool = require("../config/db");
 const debug = require("debug")("model");
 
 class Core {
@@ -40,7 +40,7 @@ class Core {
       query = `SELECT * FROM public.${this.tableName};`;
     }
 
-    const results = await client.query(query);
+    const results = await pool.query(query);
 
     if (results.rows?.length) {
       const list = [],

@@ -1,3 +1,4 @@
+const debug = require("debug")("validate");
 const ExpressError = require("../service/ExpressError");
 
 /**
@@ -11,6 +12,7 @@ module.exports.validate = (schema) => {
     if (error) {
       const message = error.details.map((el) => el.message).join(",");
 
+      debug(error);
       res.sendStatus(400);
       throw new ExpressError(400, message);
     } else next();

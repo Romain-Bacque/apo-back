@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "DEBUG='server, router, model, controller, SGBD, database, errorHandler' nodemon index",
-    "start": "DEBUG='server, controller, model, SGBD, database, errorHandler' nodemon --exec babel-node index",
+    "dev": "DEBUG='server, router, model, controller, SGBD, database, errorHandler, validate' nodemon index",
+    "start": "DEBUG='server, controller, model, SGBD, database, errorHandler, validate' nodemon --exec babel-node index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -34,7 +34,8 @@
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "pg": "^8.8.0"
+    "pg": "^8.8.0",
+    "sanitize-html": "^2.9.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.19.3",
