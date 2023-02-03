@@ -1,9 +1,12 @@
 const debug = require("debug")("validate");
 const ExpressError = require("../service/ExpressError");
+const express = require("express");
+const joi = require("joi");
 
 /**
- * Function to validate the body of a request
- * @param {Joi.ObjectSchema} schema - schema to heed
+ * function that validate schema
+ * @param {joi.ObjectSchema} schema The joi object schema
+ * @returns {((req: express.Request, _: any, next: express.NextFunction) => void)}
  */
 module.exports.validate = (schema) => {
   return (req, res, next) => {

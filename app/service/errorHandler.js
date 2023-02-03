@@ -11,11 +11,12 @@ const errorHandler = {
     throw new ExpressError("Page Not Found", 404);
   },
   /**
-   * Method to manage error
    * @param {Error} err error reported by the system
    * @param {*} _ unused parameter
-   * @param {Object} res Express response
+   * @param {express.Response} res Express Response
    * @param {*} __ unused parameter
+   * @returns {} 404 - not found
+   * @returns {} 500 - internal server error
    */
   manage(err, _, res, __) {
     const now = new Date();
