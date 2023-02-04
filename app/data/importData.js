@@ -136,7 +136,6 @@ const categories = [];
         console.log("breweries: ", breweriesList);
         console.log("events: ", eventsList);
         console.log("participants: ", participantsList);
-        return;
       }
     } catch (err) {
       console.log(err);
