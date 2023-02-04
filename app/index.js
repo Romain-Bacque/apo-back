@@ -50,8 +50,8 @@ app.use(
   })
 );
 
-// Activate the middleware to parse the cookie
-app.use(cookieParser("secretcode"));
+// Activate the middleware to parse the cookie and populate req.cookies
+app.use(cookieParser());
 
 // express-session configuration
 app.use(
@@ -61,7 +61,7 @@ app.use(
     saveUninitialized: true, // don't create session until something is stored
     cookie: {
       httpOnly: true, // set to true for more security
-      secure: false, // set to true for more security
+      secure: true, // set to true for more security
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   })
