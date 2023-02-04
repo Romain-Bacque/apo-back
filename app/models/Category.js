@@ -1,5 +1,5 @@
-const Core = require("./Core");
 const debug = require("debug")("model");
+const Core = require("./Core");
 
 class Category extends Core {
   #tag;

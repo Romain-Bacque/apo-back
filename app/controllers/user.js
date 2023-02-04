@@ -4,9 +4,14 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const path = require("path");
 const emailHandler = require("../service/emailHandler");
-const { networkInterfaces } = require("os");
+const express = require("express");
 
 const userController = {
+  /**
+   * Method to verify if user is logged in session
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   */
   userVerification(req, res) {
     if (!req.user) return res.sendStatus(500);
 
@@ -14,6 +19,11 @@ const userController = {
 
     res.status(200).json({ data: { id, name, email, password, role } });
   },
+  /**
+   * Method to sign in
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   */
   login(req, res) {
     if (!req.user) return res.sendStatus(500);
 
@@ -21,6 +31,11 @@ const userController = {
 
     res.status(200).json({ data: { id, name, email, password, role } });
   },
+  /**
+   * Method to sign up
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   */
   async register(req, res) {
     const { name, email, password, role } = req.body;
 
@@ -37,13 +52,24 @@ const userController = {
       res.sendStatus(200);
     } else res.sendStatus(500);
   },
+  /**
+   * Method to sign out
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   * @param {express.NextFunction} next Express response function
+   */
   logout(req, res, next) {
     req.logout((err) => {
       if (err) return next(err);
       res.sendStatus(200);
     });
   },
-  async handleForgotPassword(req, res, next) {
+  /**
+   * Method to handle user forgotten password
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   */
+  async handleForgotPassword(req, res) {
     const { email } = req.body;
     const user = await User.getUserByEmail(email);
 
@@ -79,6 +105,11 @@ const userController = {
 
     res.sendStatus(200);
   },
+  /**
+   * Method to reset user password
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   */
   async resetPassword(req, res) {
     const { id, token } = req.params;
     const { password } = req.body;
@@ -104,6 +135,12 @@ const userController = {
       res.sendStatus(200);
     } else next();
   },
+  /**
+   * Method to edit user profile
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   * @param {express.NextFunction} next Express response function
+   */
   async editUser(req, res, next) {
     if (!req.user) return res.sendStatus(500);
 
@@ -131,6 +168,12 @@ const userController = {
       res.status(200).json({ data: updatedUser });
     } else next();
   },
+  /**
+   * Method to delete user account
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   * @param {express.NextFunction} next Express response function
+   */
   async deleteAccount(req, res, next) {
     if (!req.user) return res.sendStatus(500);
 

@@ -1,7 +1,7 @@
-const client = require("../config/db");
+const debug = require("debug")("model");
+const pool = require("../config/db");
 const bcrypt = require("bcryptjs");
 const Core = require("./Core");
-const debug = require("debug")("model");
 
 class User extends Core {
   #name;
@@ -43,14 +43,14 @@ class User extends Core {
     const sqlString = `SELECT * FROM public.user WHERE id = $1;`;
     const values = [id];
 
-    return (await client.query(sqlString, values)).rows[0];
+    return (await pool.query(sqlString, values)).rows[0];
   }
 
   static async getUserByEmail(email) {
     const sqlString = `SELECT * FROM public.user WHERE email = $1;`;
     const values = [email];
 
-    return (await client.query(sqlString, values)).rows[0];
+    return (await pool.query(sqlString, values)).rows[0];
   }
 
   async register() {
@@ -59,7 +59,7 @@ class User extends Core {
       values: [this.name, this.email, this.password, this.role],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows[0];
@@ -76,7 +76,7 @@ class User extends Core {
       values: [id, name, email, hashedPassword],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows[0];
@@ -89,7 +89,7 @@ class User extends Core {
       values: [id, hashedPassword],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     return result.rowCount > 0;
   }
@@ -100,7 +100,7 @@ class User extends Core {
       values: [id],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     return result.rowCount > 0;
   }

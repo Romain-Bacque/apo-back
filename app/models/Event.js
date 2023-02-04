@@ -1,6 +1,6 @@
-const client = require("../config/db");
-const Core = require("./Core");
 const debug = require("debug")("model");
+const pool = require("../config/db");
+const Core = require("./Core");
 
 class Event extends Core {
   #title;
@@ -46,7 +46,7 @@ class Event extends Core {
       values: [id],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows;
@@ -59,7 +59,7 @@ class Event extends Core {
       values: [id],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows;
@@ -72,7 +72,7 @@ class Event extends Core {
       values: [id],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows;
@@ -92,7 +92,7 @@ class Event extends Core {
       ],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows;
@@ -105,7 +105,7 @@ class Event extends Core {
       values: [id],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     return result.rowCount > 0;
   }
@@ -115,7 +115,7 @@ class Event extends Core {
       text: "SELECT * FROM set_participant($1, $2);",
       values: [userId, eventId],
     };
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows[0];
@@ -127,7 +127,7 @@ class Event extends Core {
       text: "DELETE FROM public.participate WHERE user_id = $1 AND event_id = $2 RETURNING *;",
       values: [userId, eventId],
     };
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     return result.rowCount > 0;
   }

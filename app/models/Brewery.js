@@ -1,6 +1,6 @@
-const client = require("../config/db");
-const Core = require("./Core");
 const debug = require("debug")("model");
+const pool = require("../config/db");
+const Core = require("./Core");
 
 class Brewery extends Core {
   #title;
@@ -71,7 +71,7 @@ class Brewery extends Core {
   }
 
   static async getBreweryById(id) {
-    const results = await client.query(
+    const results = await pool.query(
       `SELECT * FROM public.get_brewery_details(${id});`
     );
 
@@ -103,7 +103,7 @@ class Brewery extends Core {
       ],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows;
@@ -129,7 +129,7 @@ class Brewery extends Core {
       ],
     };
 
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows;
@@ -141,7 +141,7 @@ class Brewery extends Core {
       text: "SELECT * FROM public.delete_brewery($1);",
       values: [id],
     };
-    const result = await client.query(query);
+    const result = await pool.query(query);
 
     if (result.rowCount > 0) {
       return result.rows;
