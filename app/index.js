@@ -60,8 +60,8 @@ app.use(
     resave: true, // resave session even if there is no change
     saveUninitialized: true, // don't create session until something is stored
     cookie: {
-      httpOnly: true, // set to true for more security
-      secure: true, // set to true for more security
+      httpOnly: true,
+      secure: false,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     },
   })
