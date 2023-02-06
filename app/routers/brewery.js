@@ -252,7 +252,7 @@ router
    */
   .post(
     checkAuthenticated,
-    upload.single("image"),
+    upload.single("image"), // single arg value must match with the file, here "image"
     validate(postBrewerySchema),
     catchAsync(breweryController.addBrewery)
   );
@@ -311,7 +311,7 @@ router
   .put(
     checkAuthenticated,
     isOwner,
-    upload.single("image"),
+    upload.single("image"), // single arg value must match with the file, here "image"
     validate(editBrewerySchema),
     catchAsync(breweryController.editBrewery)
   )

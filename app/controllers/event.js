@@ -102,7 +102,6 @@ const eventController = {
    */
   async setParticipant(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
-
     const participantId = +req.user.id;
     const eventId = +req.params.id;
     const events = await Event.getEventsByOwner(req.user.id);
