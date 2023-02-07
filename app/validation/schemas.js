@@ -46,6 +46,7 @@ module.exports.registerSchema = joi
       .minOfLowercase(1)
       .minOfUppercase(1)
       .minOfNumeric(1)
+      .minOfSpecialCharacters(1)
       .noWhiteSpaces()
       .min(10)
       .required(),
@@ -68,6 +69,7 @@ module.exports.loginSchema = joi
       .minOfLowercase(1)
       .minOfUppercase(1)
       .minOfNumeric(1)
+      .minOfSpecialCharacters(1)
       .noWhiteSpaces()
       .min(10)
       .required(),
@@ -90,6 +92,7 @@ module.exports.editProfileSchema = joi
       .minOfLowercase(1)
       .minOfUppercase(1)
       .minOfNumeric(1)
+      .minOfSpecialCharacters(1)
       .noWhiteSpaces()
       .min(10)
       .required(),
@@ -98,6 +101,7 @@ module.exports.editProfileSchema = joi
       .minOfLowercase(1)
       .minOfUppercase(1)
       .minOfNumeric(1)
+      .minOfSpecialCharacters(1)
       .noWhiteSpaces()
       .min(10)
       .required(),
@@ -174,6 +178,7 @@ module.exports.passwordSchema = joi
       .minOfLowercase(1)
       .minOfUppercase(1)
       .minOfNumeric(1)
+      .minOfSpecialCharacters(1)
       .noWhiteSpaces()
       .min(10)
       .required(),
