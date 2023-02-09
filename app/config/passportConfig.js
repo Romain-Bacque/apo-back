@@ -29,7 +29,7 @@ module.exports = async (passport) => {
     )
   );
 
-  // serializeUser sets an id as the cookie in the user's browser, Passport takes that user id and stores it internally on req.session
+  // serializeUser takes that user id and stores it internally on req.session.passport
   passport.serializeUser((user, done) => done(null, user.id));
 
   // deserializeUser function uses the id from the session to look up the user in the database
