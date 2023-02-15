@@ -111,7 +111,7 @@ const {
  * @swagger
  * tags:
  *  name: User
- *  description: the routes to manage user profile/authentification
+ *  description: the routes to manage user profile/authentication
  */
 
 // ROUTES
@@ -273,6 +273,7 @@ router.patch(
   validate(passwordSchema),
   catchAsync(userController.resetPassword)
 );
+
 router
   .route("/profile")
   /**

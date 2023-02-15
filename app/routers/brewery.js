@@ -46,7 +46,7 @@ const upload = multer({ storage });
  *           description: description of the brewery
  *         address:
  *           type: string
- *           description: address of the brewery
+ *           description: adress of the brewery
  *         lat:
  *           type: string
  *           description: lat of the brewery
@@ -88,13 +88,13 @@ const upload = multer({ storage });
  *                  description: description of the event
  *               address:
  *                  type: string
- *                  description: address of the brewery
+ *                  description: adress of the brewery
  *               lat:
  *                  type: string
- *                  description: lat of the brewery
+ *                  description: latitude of the brewery
  *               lon:
  *                  type: string
- *                  description: lon of the brewery
+ *                  description: longitude of the brewery
  *               event_start:
  *                  type: string
  *                  description: start date of the event
@@ -126,13 +126,13 @@ const upload = multer({ storage });
  *                  description: description of the brewery
  *                address:
  *                  type: string
- *                  description: address of the brewery
+ *                  description: adress of the brewery
  *                lat:
  *                  type: string
- *                  description: lat of the brewery
+ *                  description: latitude of the brewery
  *                lon:
  *                  type: string
- *                  description: lon of the brewery
+ *                  description: longitude of the brewery
  *                image:
  *                  type: string
  *                  format: binary
