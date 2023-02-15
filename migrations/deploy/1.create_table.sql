@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS "user" (
 CREATE TABLE IF NOT EXISTS "brewery" (
     "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "title" TEXT NOT NULL,
-    "phone" TEXT NOT NULL,
+    "phone" TEXT NOT NULL UNIQUE,
     "description" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "lat" NUMERIC NOT NULL,
