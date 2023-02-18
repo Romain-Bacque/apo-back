@@ -24,7 +24,7 @@ module.exports = async (passport) => {
   // Create a new local strategy with Postgresql
   passport.use(
     new localStrategy(
-      { usernameField: "email", passwordField: "password" },
+      { usernameField: "email", passwordField: "password" }, // specify the name of the HTML form fields corresponding to the email address and password that the user submits for authentication.
       authenticate
     )
   );
