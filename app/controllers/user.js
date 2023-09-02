@@ -78,7 +78,7 @@ const userController = {
     // Send confirmation email
     await emailHandler.sendEmail({
       name: registeredUser.name,
-      email: registeredUser.email,
+      emailTo: registeredUser.email,
       content: { link },
     });
 
@@ -170,7 +170,7 @@ const userController = {
 
     await emailHandler.sendEmail({
       name: user.name,
-      email: user.email,
+      emailTo: user.email,
       content: { link },
     });
 
@@ -184,6 +184,7 @@ const userController = {
   async resetPassword(req, res) {
     const { id, token } = req.params;
     const { password } = req.body;
+    
     const user = await User.getUserById(id);
     // Check if the user exists in database thanks to its ID
     if (!user) {

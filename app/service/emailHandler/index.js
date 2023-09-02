@@ -28,7 +28,7 @@ const emailHandler = {
    * Method to send an email
    *  @param {Object} data - contains the receiver name, its email address and a content to put in the email body
    */
-  sendEmail: async function ({ name, email: emailTo, content }) {
+  sendEmail: async function ({ name, emailTo, content }) {
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
       service: emailHandler.service,

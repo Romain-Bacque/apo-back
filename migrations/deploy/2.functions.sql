@@ -390,9 +390,9 @@ CREATE FUNCTION set_participant(userId INT, eventId INT) RETURNS TABLE("message"
 
 			IF NOT FOUND THEN
 				INSERT INTO "participate" ("user_id", "event_id") VALUES (userId, eventId);
-				RETURN QUERY SELECT 'Vous êtes désormais inscrit à cet évènement.';
+				RETURN QUERY SELECT 'Vous êtes désormais inscrit à cet évènement.'::text;
 			ELSE
-				RETURN QUERY SELECT 'Vous êtes déjà enregistré à cet évènement.';
+				RETURN QUERY SELECT 'Vous êtes déjà enregistré à cet évènement.'::text;
 			END IF;
 		END IF;
 		

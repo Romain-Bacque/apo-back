@@ -1,6 +1,55 @@
 const debug = require("debug")("controller");
 const { Event } = require("../models/");
 const express = require("express");
+const { appendFile } = require("fs");
+const path = require("path");
+const emailHandler = require("../service/emailHandler");
+
+// the email for event news
+async function sendEventNewsEmail(event, brewery, description, link) {
+  try {
+    const emails =
+      event.participants?.length > 0
+        ? event.participants
+            .filter((participant) => participant?.email)
+            .map((participant) => participant.email)
+        : [];
+
+    if (emails.length <= 0) return;
+
+    emailHandler.init({
+      service: "gmail",
+      emailFrom: process.env.ADMIN_EMAIL,
+      subject: `Evenement de la brasserie "${brewery.title}".`,
+      template: path.join(__dirname, "../service/emailTemplate/eventNews.ejs"),
+    });
+
+    await emailHandler.sendEmail({
+      name: null,
+      emailTo: emails,
+      content: {
+        title: event?.title,
+        eventStart: event?.eventStart,
+        description,
+        link,
+      },
+    });
+  } catch (error) {
+    console.error("Error sending email:", error);
+
+    const now = new Date();
+    const fileName = `${now.getFullYear()}-${
+      now.getMonth() + 1
+    }-${now.getDate()}.log`;
+    // path module is used to get file extensions and join paths,
+    // because it is easy to make mistakes if you’re manipulating paths as strings.
+    const filePath = path.join(__dirname, `../../logs/${fileName}`);
+
+    const errorMessage = now.getHours() + "h - " + error + "\r";
+    // Creation of log file
+    appendFile(filePath, errorMessage, (err) => {});
+  }
+}
 
 const eventController = {
   /**
@@ -83,12 +132,24 @@ const eventController = {
 
     const eventId = +req.params.id;
     const events = await Event.getEventsByOwner(req.user.id);
+    const event = events?.length
+      ? events.find((event) => event.id === eventId)
+      : null;
 
-    if (!events?.length || !events.find((event) => event.id === eventId)) {
+    if (!event) {
       return res.sendStatus(401);
     }
 
     const isDeleted = await Event.deleteEvent(eventId);
+    // Website link
+    const link = `${process.env.CLIENT_DOMAIN}/`;
+
+    sendEventNewsEmail(
+      event,
+      event.brewery,
+      "Cet événement a été malheureusement annulé, veuillez contacter la brasserie pour plus de détails.",
+      link
+    );
 
     if (isDeleted) {
       res.sendStatus(200);
@@ -102,7 +163,7 @@ const eventController = {
    */
   async setParticipant(req, res, next) {
     if (!req.user?.id) return res.sendStatus(401);
-    
+
     const participantId = +req.user.id;
     const eventId = +req.params.id;
     const events = await Event.getEventsByOwner(req.user.id);
