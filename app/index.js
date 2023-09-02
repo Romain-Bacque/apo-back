@@ -11,20 +11,17 @@ require("passport-local").Strategy;
 const swaggerUI = require("swagger-ui-express");
 const swaggerJsDoc = require("swagger-jsdoc");
 
-const port = process.env.PORT || 3000;
-const domain = process.env.DOMAIN || "localhost";
-
 const options = {
   definition: {
     openapi: "3.0.0",
     info: {
-      title: "API Bières de ta région",
+      title: "API Cheers",
       version: "1.0.0",
-      description: "API that handle data for 'Bières de ta région' app",
+      description: "API that handle data for 'Cheers' app",
     },
     servers: [
       {
-        url: `http://${domain}:${port}`,
+        url: process.env.CLIENT_DOMAIN,
         description: "My API Documentation",
       },
     ],
@@ -45,7 +42,7 @@ app.use(express.urlencoded({ extended: true }));
 // Lift the CORS restriction
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_DOMAIN,
     credentials: true,
   })
 );

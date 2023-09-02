@@ -8,6 +8,7 @@ class User extends Core {
   #email;
   #password;
   #role;
+  #isValid;
 
   static tableName = "user";
 
@@ -17,6 +18,7 @@ class User extends Core {
     this.#email = config.email;
     this.#password = config.password;
     this.#role = config.role;
+    this.#isValid = config.isValid;
   }
 
   static async hashPassword(plainTextPassword) {
@@ -39,6 +41,10 @@ class User extends Core {
     return this.#role;
   }
 
+  get isValid() {
+    return this.#isValid;
+  }
+
   static async getUserById(id) {
     const sqlString = `SELECT * FROM public.user WHERE id = $1;`;
     const values = [id];
@@ -53,10 +59,23 @@ class User extends Core {
     return (await pool.query(sqlString, values)).rows[0];
   }
 
+  static findAndValidate = async function (password, email) {
+    const sqlString = `SELECT * FROM public.user WHERE email = $1 AND "isValid" = 'true';`;
+    const values = [email];
+
+    const result = await pool.query(sqlString, values);
+
+    if (result.rowCount <= 0) return false;
+
+    const isValid = await bcrypt.compare(password, result.rows[0].password);
+
+    return isValid ? result.rows[0] : false;
+  };
+
   async register() {
     const query = {
-      text: "INSERT INTO public.user (name, email, password, role) VALUES ($1, $2, $3, $4) RETURNING *;",
-      values: [this.name, this.email, this.password, this.role],
+      text: 'INSERT INTO public.user (name, email, password, role, "isValid") VALUES ($1, $2, $3, $4, $5) RETURNING *;',
+      values: [this.name, this.email, this.password, this.role, this.isValid],
     };
 
     const result = await pool.query(query);
@@ -87,6 +106,17 @@ class User extends Core {
     const query = {
       text: "UPDATE public.user SET password = $2 WHERE id = $1 RETURNING *;",
       values: [id, hashedPassword],
+    };
+
+    const result = await pool.query(query);
+
+    return result.rowCount > 0;
+  }
+
+  static async updaterUserValidity(id, validity) {
+    const query = {
+      text: 'UPDATE public.user SET "isValid" = $2 WHERE id = $1 RETURNING *;',
+      values: [id, validity],
     };
 
     const result = await pool.query(query);

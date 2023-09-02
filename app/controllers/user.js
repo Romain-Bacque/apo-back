@@ -44,13 +44,84 @@ const userController = {
     }
 
     const hashedPassword = await User.hashPassword(password);
-    const user = new User({ name, email, password: hashedPassword, role });
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+      role,
+      isValid: false,
+    });
 
     const registeredUser = await user.register();
+
+    // Generate a JWT token
+    const secret = process.env.SECRET;
+    const payload = {
+      id: registeredUser.id,
+    };
+    const token = jwt.sign(payload, secret, { expiresIn: "24h" });
+
+    // Construct the confirmation link
+    const link = `${process.env.CLIENT_DOMAIN}/signup/email-confirm?id=${registeredUser.id}&t=${token}`;
+
+    // Initialize email handler
+    emailHandler.init({
+      service: "gmail",
+      emailFrom: process.env.ADMIN_EMAIL,
+      subject: "Email de confirmation",
+      template: path.join(
+        __dirname,
+        "../service/emailTemplate/confirmEmail.ejs"
+      ),
+    });
+
+    // Send confirmation email
+    await emailHandler.sendEmail({
+      name: registeredUser.name,
+      email: registeredUser.email,
+      content: { link },
+    });
 
     if (registeredUser) {
       res.sendStatus(200);
     } else res.sendStatus(500);
+  },
+  /**
+   * Method to confirm email
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   */
+  async emailConfirm(req, res) {
+    const { id, token } = req.query;
+
+    // Find user by ID
+    const user = await User.getUserById(id);
+
+    // Check if user exists
+    if (!user) {
+      return res.sendStatus(401);
+    }
+    // Check if user's email is already confirmed
+    if (user.isValid) {
+      return res.sendStatus(200);
+    }
+
+    // Secret for JWT verification
+    const secret = process.env.SECRET;
+
+    // Verify the provided token
+    jwt.verify(token, secret, (err) => {
+      if (err) {
+        return res.sendStatus(401);
+      }
+    });
+
+    // Update the user's email confirmation status
+    const result = await User.updaterUserValidity(id, true);
+
+    if (!result) throw new Error();
+
+    res.sendStatus(200);
   },
   /**
    * Method to sign out
@@ -85,11 +156,11 @@ const userController = {
       email: user.email,
     };
     const token = jwt.sign(payload, secret, { expiresIn: "24h" });
-    const link = `http://localhost:3000/reset-password/${user.id}/${token}`;
+    const link = `${process.env.CLIENT_DOMAIN}/reset-password/${user.id}/${token}`;
 
     emailHandler.init({
       service: "gmail",
-      emailFrom: "biere.de.ta.region@gmail.com",
+      emailFrom: process.env.ADMIN_EMAIL,
       subject: "Réinitialisation du mot de passe",
       template: path.join(
         __dirname,
@@ -99,8 +170,8 @@ const userController = {
 
     await emailHandler.sendEmail({
       name: user.name,
-      email: "bacqueromain@orange.fr",
-      link,
+      email: user.email,
+      content: { link },
     });
 
     res.sendStatus(200);

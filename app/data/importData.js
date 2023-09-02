@@ -4,6 +4,11 @@ const breweries = require("./breweries.json");
 const axios = require("axios");
 const striptags = require("striptags");
 const { faker } = require("@faker-js/faker");
+const path = require("path");
+
+const dotenvPath = path.resolve(process.cwd(), "server/.env");
+
+require("dotenv").config({ path: dotenvPath });
 
 faker.locale = "fr";
 
@@ -80,6 +85,7 @@ const categories = [];
         email: faker.internet.email().toLowerCase().trim(),
         password:
           "$2a$12$uvZXcvYjgcd6zsSEU8ExY.AfiWdfX83Frb3We/4yaQkN9Jod13fh6", // Plain password: 1111111tT/
+        isValid: true,
         role: roles[getRandomNumber(0, 1)],
       };
 

@@ -9,26 +9,26 @@ const emailHandler = {
   /**
    * Method to create and return the html template of the email body
    * @param {String} name - contains the receiver name
-   * @param {String} link - contains a link to put in the email body
+   * @param {String} content - contains the email content
    */
-  createTemplate: async function (name, link) {
+  createTemplate: async function (name, content) {
     try {
       const result = await ejs.renderFile(emailHandler.template, {
         name,
-        link,
+        ...content,
       });
 
       return result;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return null;
     }
   },
   /**
    * Method to send an email
-   *  @param {Object} data - contains the receiver name, its email address and a link to put in the email body
+   *  @param {Object} data - contains the receiver name, its email address and a content to put in the email body
    */
-  sendEmail: async function ({ name, email: emailTo, link }) {
+  sendEmail: async function ({ name, email: emailTo, content }) {
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
       service: emailHandler.service,
@@ -37,10 +37,10 @@ const emailHandler = {
         pass: process.env.AUTH_PASSWORD,
       },
     });
-    const template = await emailHandler.createTemplate(name, link);
+    const template = await emailHandler.createTemplate(name, content);
     const response = await transporter.sendMail({
       from: emailHandler.emailFrom,
-      to: emailTo,
+      bcc: emailTo,
       subject: emailHandler.subject,
       html: template,
     });

@@ -198,6 +198,12 @@ router.post(
   validate(registerSchema),
   catchAsync(userController.register)
 );
+
+router.get(
+  "/email-confirm",
+  catchAsync(userController.emailConfirm)
+);
+
 /**
  * @swagger
  * /user/logout:
