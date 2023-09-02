@@ -1,17 +1,12 @@
-const bcrypt = require("bcryptjs");
 const { User } = require("../models");
 const localStrategy = require("passport-local").Strategy;
 
 module.exports = async (passport) => {
   async function authenticate(email, password, done) {
     try {
-      const user = await User.getUserByEmail(email);
+      const user = await User.findAndValidate(password, email);
 
-      if (!user) return done(null, false);
-
-      const isPasswordMatch = await bcrypt.compare(password, user.password);
-
-      if (isPasswordMatch) {
+      if (user) {
         return done(null, user);
       } else {
         return done(null, false);

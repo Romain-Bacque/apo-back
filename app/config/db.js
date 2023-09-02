@@ -1,4 +1,3 @@
-require("dotenv").config();
 const debug = require("debug")("database");
 const { Pool } = require("pg");
 

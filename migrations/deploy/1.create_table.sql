@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS "user" (
     "email" TEXT NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "role" TEXT NOT NULL,
+    "isValid" BOOL DEFAULT 'true',
     "created_at" TIMESTAMPTZ DEFAULT NOW(),
     "updated_at" TIMESTAMPTZ
 );
