@@ -92,7 +92,7 @@ class Brewery extends Core {
     const { rows } = await pool.query(query);
 
     if (rows.length > 0) {
-      return result.rows.map((row) => new Brewery(row));
+      return rows.map((row) => new Brewery(row));
     } else {
       return null;
     }

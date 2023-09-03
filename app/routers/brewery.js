@@ -263,8 +263,6 @@ router
  *   get:
  *     summary: Returns the list of all the user favorites (WITHOUT the events details)
  *     tags: [Brewery]
- *     parameters:
- *       - $ref: '#/components/parameters/breweryId'
  *     responses:
  *       200:
  *         description: the list of the user favorites
@@ -283,6 +281,31 @@ router.get(
   "/favorites",
   checkAuthenticated,
   catchAsync(breweryController.getUserFavorites)
+);
+/**
+ * @swagger
+ * /brewery/favoriteIds:
+ *   get:
+ *     summary: Returns the list of all the user favorite ids
+ *     tags: [Brewery]
+ *     responses:
+ *       200:
+ *         description: the list of the user favorite ids
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Brewery'
+ *       401:
+ *          description: unauthorized
+ *       500:
+ *          description: internal server error
+ */
+router.get(
+  "/favoriteIds",
+  checkAuthenticated,
+  catchAsync(breweryController.getUserFavoriteIds)
 );
 
 router

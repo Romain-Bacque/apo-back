@@ -80,6 +80,8 @@ const breweryController = {
         (favoriteId) => favoriteId.id
       );
 
+      console.log(formattedFavoriteIds)
+
       res.status(200).json({ data: formattedFavoriteIds });
     } else next();
   },
