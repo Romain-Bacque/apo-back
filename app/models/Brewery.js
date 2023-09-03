@@ -71,12 +71,12 @@ class Brewery extends Core {
   }
 
   static async getUserFavorites(userId) {
-    const result = await pool.query(
+    const { rows } = await pool.query(
       `SELECT * FROM public.get_user_favorites(${userId});`
     );
 
     if (rows.length > 0) {
-      return result.rows.map((row) => new Brewery(row));
+      return rows.map((row) => new Brewery(row));
     } else {
       return null;
     }

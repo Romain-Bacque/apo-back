@@ -99,7 +99,7 @@ const eventController = {
         total_participants: event.total_participants,
         brewery: event.brewery,
       }));
-console.log(formattedEvents)
+
       res.status(200).json({ data: formattedEvents });
     } else next();
   },
