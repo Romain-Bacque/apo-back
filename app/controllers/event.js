@@ -29,7 +29,7 @@ async function sendEventNewsEmail(event, brewery, description, link) {
       emailTo: emails,
       content: {
         title: event?.title,
-        eventStart: event?.eventStart,
+        event_start: event?.event_start,
         description,
         link,
       },
@@ -65,7 +65,17 @@ const eventController = {
     const events = await Event.getEventsByOwner(ownerId);
 
     if (events) {
-      res.status(200).json({ data: events });
+      const formattedEvents = events.map((event) => ({
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        event_start: event.event_start,
+        participants: event.participants,
+        total_participants: event.total_participants,
+        brewery: event.brewery,
+      }));
+
+      res.status(200).json({ data: formattedEvents });
     } else next();
   },
   /**
@@ -81,7 +91,16 @@ const eventController = {
     const events = await Event.getEventsByParticipant(participantId);
 
     if (events) {
-      res.status(200).json({ data: events });
+      const formattedEvents = events.map((event) => ({
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        event_start: event.event_start,
+        total_participants: event.total_participants,
+        brewery: event.brewery,
+      }));
+console.log(formattedEvents)
+      res.status(200).json({ data: formattedEvents });
     } else next();
   },
   /**
@@ -98,9 +117,18 @@ const eventController = {
     const events = await Event.getEventsByBrewery(id);
 
     if (events) {
-      res.status(200).json({ data: events });
-    }
-    next();
+      const formattedEvents = events.map((event) => ({
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        event_start: event.event_start,
+        participants: event.participants,
+        total_participants: event.total_participants,
+        brewery: event.brewery,
+      }));
+
+      res.status(200).json({ data: formattedEvents });
+    } else next();
   },
   /**
    * Method to add an event
@@ -118,7 +146,17 @@ const eventController = {
     const updatedEvents = await event.addEvent();
 
     if (updatedEvents && updatedEvents.length) {
-      res.status(200).json({ data: updatedEvents });
+      const formattedUpdatedEvents = events.map((event) => ({
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        event_start: event.event_start,
+        participants: event.participants,
+        total_participants: event.total_participants,
+        brewery: event.brewery,
+      }));
+
+      res.status(200).json({ data: formattedUpdatedEvents });
     } else next();
   },
   /**
@@ -131,9 +169,22 @@ const eventController = {
     if (!req.user?.id) return res.sendStatus(401);
 
     const eventId = +req.params.id;
+
     const events = await Event.getEventsByOwner(req.user.id);
-    const event = events?.length
-      ? events.find((event) => event.id === eventId)
+
+    if (!events) return next();
+
+    const formattedEvents = events.map((event) => ({
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      event_start: event.event_start,
+      participants: event.participants,
+      total_participants: event.total_participants,
+      brewery: event.brewery,
+    }));
+    const event = formattedEvents?.length
+      ? formattedEvents.find((formattedEvent) => formattedEvent.id === eventId)
       : null;
 
     if (!event) {

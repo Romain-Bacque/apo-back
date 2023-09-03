@@ -7,6 +7,7 @@ DROP FUNCTION IF EXISTS get_user_breweries(int);
 DROP FUNCTION IF EXISTS insert_brewery(json);
 DROP FUNCTION IF EXISTS update_brewery(json);
 DROP FUNCTION IF EXISTS delete_brewery(int);
+DROP FUNCTION IF EXISTS get_user_favorites(int);
 DROP FUNCTION IF EXISTS insert_event(json);
 DROP FUNCTION IF EXISTS get_events_by_owner(int);
 DROP FUNCTION IF EXISTS get_events_by_participant(int);

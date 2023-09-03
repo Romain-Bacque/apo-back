@@ -117,7 +117,7 @@ const userController = {
     });
 
     // Update the user's email confirmation status
-    const result = await User.updaterUserValidity(id, true);
+    const result = await User.updateUserValidity(id, true);
 
     if (!result) throw new Error();
 
@@ -184,7 +184,7 @@ const userController = {
   async resetPassword(req, res) {
     const { id, token } = req.params;
     const { password } = req.body;
-    
+
     const user = await User.getUserById(id);
     // Check if the user exists in database thanks to its ID
     if (!user) {
@@ -235,9 +235,16 @@ const userController = {
     const hashedPassword = await User.hashPassword(newPassword);
 
     const updatedUser = await User.updateUser(id, name, email, hashedPassword);
+    const formattedUpdatedUser = {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      isValid: updatedUser.isValid,
+    };
 
     if (updatedUser) {
-      res.status(200).json({ data: updatedUser });
+      res.status(200).json({ data: formattedUpdatedUser });
     } else next();
   },
   /**

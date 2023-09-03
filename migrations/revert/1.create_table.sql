@@ -2,6 +2,7 @@
 
 BEGIN;
 
+DROP TABLE IF EXISTS "user_has_favorite";
 DROP TABLE IF EXISTS "brewery_has_category";
 DROP TABLE IF EXISTS "participate";
 DROP TABLE IF EXISTS "event";

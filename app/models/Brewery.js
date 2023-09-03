@@ -70,18 +70,67 @@ class Brewery extends Core {
     return this.#events;
   }
 
+  static async getUserFavorites(userId) {
+    const result = await pool.query(
+      `SELECT * FROM public.get_user_favorites(${userId});`
+    );
+
+    if (rows.length > 0) {
+      return result.rows.map((row) => new Brewery(row));
+    } else {
+      return null;
+    }
+  }
+
+  static async getUserFavoriteIds(userId) {
+    const query = {
+      text: `SELECT brewery_id AS id FROM public.user_has_favorite
+              WHERE user_id = $1;`,
+      values: [userId],
+    };
+
+    const { rows } = await pool.query(query);
+
+    if (rows.length > 0) {
+      return result.rows.map((row) => new Brewery(row));
+    } else {
+      return null;
+    }
+  }
+
+  static async addUserFavorite(userId, breweryId) {
+    const query = {
+      text: `INSERT INTO public.user_has_favorite (user_id, brewery_id) 
+              VALUES ($1, $2)
+              RETURNING *;`,
+      values: [userId, breweryId],
+    };
+
+    const result = await pool.query(query);
+
+    return result.rowCount > 0;
+  }
+
+  static async deleteUserFavorite(userId, breweryId) {
+    const query = {
+      text: `DELETE FROM public.user_has_favorite uf 
+          WHERE uf.user_id = $1 AND uf.brewery_id = $2
+          RETURNING *`,
+      values: [userId, breweryId],
+    };
+
+    const result = await pool.query(query);
+
+    return result.rowCount > 0;
+  }
+
   static async getBreweryById(id) {
-    const results = await pool.query(
+    const result = await pool.query(
       `SELECT * FROM public.get_brewery_details(${id});`
     );
 
-    if (results.rowCount > 0) {
-      const list = [],
-        row = results.rows[0];
-
-      list.push(new this(row));
-
-      return list;
+    if (result.rowCount > 0) {
+      return new Brewery(result.rows[0]);
     } else return null;
   }
 
@@ -105,9 +154,11 @@ class Brewery extends Core {
 
     const result = await pool.query(query);
 
-    if (result.rowCount > 0) {
-      return result.rows;
-    } else return null;
+    if (rows.length > 0) {
+      return result.rows.map((row) => new Brewery(row));
+    } else {
+      return null;
+    }
   }
 
   async updateBrewery() {
@@ -131,9 +182,11 @@ class Brewery extends Core {
 
     const result = await pool.query(query);
 
-    if (result.rowCount > 0) {
-      return result.rows;
-    } else return null;
+    if (rows.length > 0) {
+      return result.rows.map((row) => new Brewery(row));
+    } else {
+      return null;
+    }
   }
 
   static async deleteBrewery(id) {
@@ -143,9 +196,11 @@ class Brewery extends Core {
     };
     const result = await pool.query(query);
 
-    if (result.rowCount > 0) {
-      return result.rows;
-    } else return null;
+    if (rows.length > 0) {
+      return result.rows.map((row) => new Brewery(row));
+    } else {
+      return null;
+    }
   }
 }
 

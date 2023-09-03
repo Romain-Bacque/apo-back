@@ -27,7 +27,7 @@ class Core {
   }
 
   static async getAll(id) {
-    let query;
+    let query = null;
 
     if (this.tableName === "brewery") {
       query = `SELECT * FROM public.brewery_records;`;
@@ -40,18 +40,16 @@ class Core {
       query = `SELECT * FROM public.${this.tableName};`;
     }
 
-    const results = await pool.query(query);
+    const result = await pool.query(query);
 
-    if (results.rows?.length) {
-      const list = [],
-        rows = results.rows;
+    const list = [],
+      rows = result.rows;
 
-      for (const row of rows) {
-        list.push(new this(row));
-      }
+    for (const row of rows) {
+      list.push(new this(row));
+    }
 
-      return list;
-    } else return null;
+    return list;
   }
 }
 

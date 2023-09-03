@@ -3,6 +3,23 @@ const { Brewery } = require("../models/");
 const { cloudinary } = require("../service/cloudinary");
 const express = require("express");
 
+function formattedBreweries(breweries) {
+  return breweries?.length > 0
+    ? breweries.map((brewery) => ({
+        id: brewery.id,
+        title: brewery.title,
+        phone: brewery.phone,
+        address: brewery.address,
+        lat: brewery.lat,
+        lon: brewery.lon,
+        description: brewery.description,
+        image: brewery.image,
+        userId: brewery.user_id,
+        categories: brewery.categories,
+      }))
+    : [];
+}
+
 const breweryController = {
   /**
    * Method to return a list of breweries
@@ -14,19 +31,7 @@ const breweryController = {
     let breweries = await Brewery.getAll();
 
     if (breweries) {
-      breweries = breweries.map((brewery) => ({
-        id: brewery.id,
-        title: brewery.title,
-        phone: brewery.phone,
-        address: brewery.address,
-        lat: brewery.lat,
-        lon: brewery.lon,
-        description: brewery.description,
-        image: brewery.image,
-        user_id: brewery.user_id,
-        categories: brewery.categories,
-      }));
-      res.status(200).json({ data: breweries });
+      res.status(200).json({ data: formattedBreweries(breweries) });
     } else next();
   },
   /**
@@ -41,19 +46,75 @@ const breweryController = {
     let breweries = await Brewery.getOwnerBreweries(req.user.id);
 
     if (breweries) {
-      breweries = breweries.map((brewery) => ({
-        id: brewery.id,
-        title: brewery.title,
-        phone: brewery.phone,
-        address: brewery.address,
-        lat: brewery.lat,
-        lon: brewery.lon,
-        description: brewery.description,
-        image: brewery.image,
-        userId: brewery.user_id,
-        categories: brewery.categories,
-      }));
-      res.status(200).json({ data: breweries });
+      res.status(200).json({ data: formattedBreweries(breweries) });
+    } else next();
+  },
+  /**
+   * Method to return the user favorites
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   * @param {express.NextFunction} next Express response function
+   */
+  async getUserFavorites(req, res, next) {
+    if (!req.user?.id) return res.sendStatus(401);
+
+    let breweries = await Brewery.getUserFavorites(req.user.id);
+
+    if (breweries) {
+      res.status(200).json({ data: formattedBreweries(breweries) });
+    } else next();
+  },
+  /**
+   * Method to return the user favorite ids
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   * @param {express.NextFunction} next Express response function
+   */
+  async getUserFavoriteIds(req, res, next) {
+    if (!req.user?.id) return res.sendStatus(401);
+
+    let favoriteIds = await Brewery.getUserFavoriteIds(req.user.id);
+
+    if (favoriteIds) {
+      const formattedFavoriteIds = favoriteIds.map(
+        (favoriteId) => favoriteId.id
+      );
+
+      res.status(200).json({ data: formattedFavoriteIds });
+    } else next();
+  },
+  /**
+   * Method to add a user favorite
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   * @param {express.NextFunction} next Express response function
+   */
+  async addUserFavorite(req, res, next) {
+    if (!req.user?.id) return res.sendStatus(401);
+
+    const { breweryId } = req.params;
+
+    let isAdded = await Brewery.addUserFavorite(req.user.id, breweryId);
+
+    if (isAdded) {
+      res.sendStatus(200);
+    } else next();
+  },
+  /**
+   * Method to delete a user favorite
+   * @param {express.Request} req Express request object
+   * @param {express.Response} res Express response object
+   * @param {express.NextFunction} next Express response function
+   */
+  async deleteUserFavorite(req, res, next) {
+    if (!req.user?.id) return res.sendStatus(401);
+
+    const { breweryId } = req.params;
+
+    let isDeleted = await Brewery.deleteUserFavorite(req.user.id, breweryId);
+
+    if (isDeleted) {
+      res.sendStatus(200);
     } else next();
   },
   /**
@@ -68,7 +129,7 @@ const breweryController = {
     let brewery = await Brewery.getBreweryById(id);
 
     if (brewery) {
-      brewery = brewery.map((brewery) => ({
+      const formattedBrewery = {
         id: brewery.id,
         title: brewery.title,
         phone: brewery.phone,
@@ -80,9 +141,9 @@ const breweryController = {
         user_id: brewery.user_id,
         categories: brewery.categories,
         events: brewery.events,
-      }));
+      };
 
-      res.status(200).json({ data: brewery });
+      res.status(200).json({ data: formattedBrewery });
     } else next();
   },
   /**

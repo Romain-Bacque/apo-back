@@ -7,7 +7,15 @@ module.exports = async (passport) => {
       const user = await User.findAndValidate(password, email);
 
       if (user) {
-        return done(null, user);
+        const formattedUser = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          isValid: user.isValid,
+        };
+
+        return done(null, formattedUser);
       } else {
         return done(null, false);
       }
@@ -31,7 +39,14 @@ module.exports = async (passport) => {
   // and retrieve the user object with data, and attach it to req.user
   passport.deserializeUser(async (id, done) => {
     const user = await User.getUserById(id);
+    const formattedUser = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      isValid: user.isValid,
+    };
 
-    return done(null, user);
+    return done(null, formattedUser);
   });
 };

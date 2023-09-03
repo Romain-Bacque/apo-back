@@ -49,14 +49,26 @@ class User extends Core {
     const sqlString = `SELECT * FROM public.user WHERE id = $1;`;
     const values = [id];
 
-    return (await pool.query(sqlString, values)).rows[0];
+    const result = await pool.query(sqlString, values);
+
+    if (result.rowCount > 0) {
+      return new User(result.rows[0]);
+    } else {
+      return null;
+    }
   }
 
   static async getUserByEmail(email) {
     const sqlString = `SELECT * FROM public.user WHERE email = $1;`;
     const values = [email];
 
-    return (await pool.query(sqlString, values)).rows[0];
+    const result = await pool.query(sqlString, values);
+
+    if (result.rowCount > 0) {
+      return new User(result.rows[0]);
+    } else {
+      return null;
+    }
   }
 
   static findAndValidate = async function (password, email) {
@@ -69,7 +81,7 @@ class User extends Core {
 
     const isValid = await bcrypt.compare(password, result.rows[0].password);
 
-    return isValid ? result.rows[0] : false;
+    return isValid ? new User(result.rows[0]) : false;
   };
 
   async register() {
@@ -81,8 +93,10 @@ class User extends Core {
     const result = await pool.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows[0];
-    } else return null;
+      return new User(result.rows[0]);
+    } else {
+      return null;
+    }
   }
 
   static async updateUser(id, name, email, hashedPassword) {
@@ -98,8 +112,10 @@ class User extends Core {
     const result = await pool.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows[0];
-    } else return null;
+      return new User(result.rows[0]);
+    } else {
+      return null;
+    }
   }
 
   static async updatePassword(id, hashedPassword) {
@@ -113,7 +129,7 @@ class User extends Core {
     return result.rowCount > 0;
   }
 
-  static async updaterUserValidity(id, validity) {
+  static async updateUserValidity(id, validity) {
     const query = {
       text: 'UPDATE public.user SET "isValid" = $2 WHERE id = $1 RETURNING *;',
       values: [id, validity],

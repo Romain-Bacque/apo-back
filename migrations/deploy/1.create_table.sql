@@ -51,6 +51,14 @@ CREATE TABLE IF NOT EXISTS "brewery_has_category" (
     "updated_at" TIMESTAMPTZ
 );
 
+CREATE TABLE IF NOT EXISTS "user_has_favorite" (
+    "user_id" INT NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+    "brewery_id" INT NOT NULL REFERENCES "brewery"("id") ON DELETE CASCADE,
+    "created_at" TIMESTAMPTZ DEFAULT NOW(),
+    "updated_at" TIMESTAMPTZ
+);
+
+
 CREATE TABLE IF NOT EXISTS "participate" (
     "user_id" INT NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
     "event_id" INT NOT NULL REFERENCES "event"("id") ON DELETE CASCADE,

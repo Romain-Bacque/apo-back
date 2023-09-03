@@ -151,7 +151,7 @@ module.exports.postEventSchema = joi
   .object({
     title: joi.string().escapeHTML().required(),
     description: joi.string().escapeHTML().required(),
-    eventStart: joi.date().required(),
+    event_start: joi.date().required(),
   })
   .required();
 

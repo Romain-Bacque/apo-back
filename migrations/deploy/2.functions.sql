@@ -236,6 +236,16 @@ CREATE FUNCTION delete_brewery(int) RETURNS SETOF brewery_records AS $$
 $$ LANGUAGE PLPGSQL STRICT;
 
 
+-- Function get user favorites
+CREATE OR REPLACE FUNCTION get_user_favorites(int) RETURNS SETOF brewery_records AS $$
+	BEGIN
+	
+        RETURN QUERY
+        SELECT br.* FROM brewery_records br WHERE br.id IN (
+            SELECT brewery_id FROM public."user_has_favorite" WHERE user_id = $1);
+
+	END;
+$$ LANGUAGE PLPGSQL STRICT;
 
 -- Function add event
 CREATE FUNCTION insert_event(json) RETURNS SETOF packed3 AS $$

@@ -5,7 +5,10 @@ const Core = require("./Core");
 class Event extends Core {
   #title;
   #description;
-  #eventStart;
+  #event_start;
+  #brewery;
+  #participants;
+  #total_participants;
   #breweryId;
   #ownerId;
 
@@ -15,7 +18,10 @@ class Event extends Core {
     super(config);
     this.#title = config.title;
     this.#description = config.description;
-    this.#eventStart = config.eventStart;
+    this.#event_start = config.event_start;
+    this.#brewery = config.brewery;
+    this.#participants = config.participants;
+    this.#total_participants = config.total_participants;
     this.#breweryId = config.breweryId;
     this.#ownerId = config.ownerId;
   }
@@ -28,8 +34,20 @@ class Event extends Core {
     return this.#description;
   }
 
-  get eventStart() {
-    return this.#eventStart;
+  get event_start() {
+    return this.#event_start;
+  }
+
+  get brewery() {
+    return this.#brewery;
+  }
+
+  get participants() {
+    return this.#participants;
+  }
+
+  get total_participants() {
+    return this.#total_participants;
   }
 
   get breweryId() {
@@ -49,7 +67,7 @@ class Event extends Core {
     const result = await pool.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows;
+      return result.rows.map((row) => new Event(row));
     } else return null;
   }
 
@@ -62,7 +80,7 @@ class Event extends Core {
     const result = await pool.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows;
+      return result.rows.map((row) => new Event(row));
     } else return null;
   }
 
@@ -75,7 +93,7 @@ class Event extends Core {
     const result = await pool.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows;
+      return result.rows.map((row) => new Event(row));
     } else return null;
   }
   async addEvent() {
@@ -85,7 +103,7 @@ class Event extends Core {
         {
           title: this.title,
           description: this.description,
-          eventStart: this.eventStart,
+          event_start: this.event_start,
           breweryId: this.breweryId,
           ownerId: this.ownerId,
         },
@@ -95,7 +113,7 @@ class Event extends Core {
     const result = await pool.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows;
+      return result.rows.map((row) => new Event(row));
     } else return null;
   }
 
@@ -118,7 +136,7 @@ class Event extends Core {
     const result = await pool.query(query);
 
     if (result.rowCount > 0) {
-      return result.rows[0];
+      return result.rows[0]; // return a message
     } else return null;
   }
 

@@ -4,6 +4,7 @@ BEGIN;
 
 SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM brewery_records;
 SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM get_user_breweries(1);
+SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM get_user_favorites(1);
 SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "events", "created_at", "updated_at" FROM get_brewery_details(1);
 SELECT "id", "title", "phone", "description", "address", "lat", "lon", "image", "user_id", "categories", "created_at", "updated_at" FROM insert_brewery('{
     "title": "titre brasserie",

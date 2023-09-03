@@ -257,6 +257,79 @@ router
     catchAsync(breweryController.addBrewery)
   );
 
+/**
+ * @swagger
+ * /brewery/favorites:
+ *   get:
+ *     summary: Returns the list of all the user favorites (WITHOUT the events details)
+ *     tags: [Brewery]
+ *     parameters:
+ *       - $ref: '#/components/parameters/breweryId'
+ *     responses:
+ *       200:
+ *         description: the list of the user favorites
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Brewery'
+ *       401:
+ *          description: unauthorized
+ *       500:
+ *          description: internal server error
+ */
+router.get(
+  "/favorites",
+  checkAuthenticated,
+  catchAsync(breweryController.getUserFavorites)
+);
+
+router
+  .route("/favorites/:breweryId([0-9]+)")
+  /**
+   * @swagger
+   * /brewery:
+   *   post:
+   *     summary: Add a user favorite and returns the list of all the user favorites (WITHOUT the events details)
+   *     tags: [Brewery]
+   *     parameters:
+   *       - $ref: '#/components/parameters/breweryId'
+   *     responses:
+   *       200:
+   *         description: the brewery was successfully created
+   *         content:
+   *           application/json:
+   *             schema:
+   *                 $ref: '#/components/schemas/Brewery'
+   *       401:
+   *          description: unauthorized
+   *       500:
+   *          description: internal server error
+   */
+  .post(checkAuthenticated, catchAsync(breweryController.addUserFavorite))
+  /**
+   * @swagger
+   * /brewery:
+   *   delete:
+   *     summary: Delete a user favorite and returns the list of all the user favorites (WITHOUT the events details)
+   *     tags: [Brewery]
+   *     parameters:
+   *       - $ref: '#/components/parameters/breweryId'
+   *     responses:
+   *       200:
+   *         description: the brewery was successfully deleted
+   *         content:
+   *           application/json:
+   *             schema:
+   *                 $ref: '#/components/schemas/Brewery'
+   *       401:
+   *          description: unauthorized
+   *       500:
+   *          description: internal server error
+   */
+  .delete(checkAuthenticated, catchAsync(breweryController.deleteUserFavorite));
+
 router
   .route("/:id([0-9]+)")
   /**
